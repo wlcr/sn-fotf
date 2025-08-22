@@ -1,11 +1,31 @@
+/*
+ * Design Foundation - Sierra Nevada Friends of the Family
+ * 
+ * This stylesheet provides a foundational design system using Open Props.
+ * Open Props may be lightly used or replaced entirely as we implement
+ * Sierra Nevada's specific brand guidelines and member-only design requirements.
+ * 
+ * TODO: Update to match SN - FOTF designs and branding
+ */
+
+/* Import Open Props design tokens (foundational, may be customized/removed) */
+@import "open-props/style";
+@import "open-props/normalize";
+@import "open-props/buttons";
+@import "open-props/colors";
+
 :root {
+  /* Project-specific custom properties */
   --aside-width: 400px;
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
   --header-height: 64px;
-  --color-dark: #000;
-  --color-light: #fff;
+  
+  /* Use Open Props colors as defaults, with fallbacks */
+  /* TODO: Replace with Sierra Nevada brand colors */
+  --color-dark: var(--gray-9, #000);
+  --color-light: var(--gray-0, #fff);
 }
 
 img {
