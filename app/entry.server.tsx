@@ -12,11 +12,44 @@ export default async function handleRequest(
   reactRouterContext: EntryContext,
   context: AppLoadContext,
 ) {
+  // Production-ready CSP configuration with Klaviyo and external service support
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
+    // External services that Hydrogen doesn't automatically include
+    connectSrc: [
+      'https://www.klaviyo.com',
+      'https://*.klaviyo.com',
+    ],
+    scriptSrc: [
+      'https://www.klaviyo.com', 
+      'https://*.klaviyo.com',
+    ],
+    // Comprehensive img-src support (Hydrogen doesn't reliably auto-generate this)
+    imgSrc: [
+      'https://www.klaviyo.com',
+      'https://*.klaviyo.com',
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://shopify.com', 
+      'http://localhost:*',
+      'data:',
+    ],
+    // Required for Shopify store video content
+    mediaSrc: [
+      `https://${context.env.PUBLIC_STORE_DOMAIN}`,
+    ],
+    // Required for React Router v7 module scripts and Shopify tracking
+    scriptSrcElem: [
+      'https://www.klaviyo.com',
+      'https://*.klaviyo.com',
+      'https://cdn.shopify.com',
+      "'self'",
+      'http://localhost:*',
+      "'unsafe-inline'", // Required for React Router v7 inline script compatibility
+    ],
   });
 
   const body = await renderToReadableStream(
@@ -42,7 +75,13 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
-  responseHeaders.set('Content-Security-Policy', header);
+  
+  // Add data: URI support to font-src for inline fonts
+  const modifiedHeader = header.includes('font-src') 
+    ? header.replace(/font-src ([^;]+)/, "font-src $1 data:")
+    : header + "; font-src 'self' data:";
+  
+  responseHeaders.set('Content-Security-Policy', modifiedHeader);
 
   return new Response(body, {
     headers: responseHeaders,
