@@ -35,10 +35,22 @@
 - [ ] Error boundaries
 
 ### Styling & Assets
+- [ ] PostCSS configuration and setup
+- [ ] Open Props integration for design tokens
+- [ ] SVG-Go setup for icon management (vite-plugin-svgr)
 - [ ] CSS modules and styling improvements
 - [ ] Responsive design enhancements
 - [ ] Typography improvements
 - [ ] Color schemes (adapted for SN brand)
+
+### Package Dependencies to Add
+- [ ] **UI/UX Packages**: `@heroicons/react`, `@radix-ui/*`, `clsx`, `motion`
+- [ ] **PostCSS/Styling**: `open-props`, `postcss`, `postcss-custom-media`, `postcss-import`, `postcss-preset-env`, `postcss-pxtorem`, `@csstools/postcss-global-data`
+- [ ] **SVG/Icons**: `vite-plugin-svgr`
+- [ ] **Utilities**: `string-strip-html`, `what-input`, `js-cookie`
+- [ ] **Components**: `swiper`, `react-datepicker` (if needed)
+- [ ] **State Management**: `@tanstack/react-query`
+- [ ] **Development**: `dotenv`, `dotenv-cli`
 
 ### Performance & SEO
 - [ ] SEO optimizations
@@ -97,13 +109,14 @@
 
 ## 📋 Next Steps
 
-1. Start with core utilities and layout components
-2. Migrate cart and commerce functionality  
-3. Adapt product/collection pages
-4. Configure native Shopify account page navigation
-5. Add Sanity CMS integration
-6. Apply Sierra Nevada branding
-7. Implement members-only features
+1. Set up foundational tooling (PostCSS, Open Props, SVG-Go)
+2. Start with core utilities and layout components
+3. Migrate cart and commerce functionality  
+4. Adapt product/collection pages
+5. Configure native Shopify account page navigation
+6. Add Sanity CMS integration
+7. Apply Sierra Nevada branding
+8. Implement members-only features
 
 ## Notes
 
