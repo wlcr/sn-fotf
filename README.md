@@ -1,9 +1,19 @@
 # SN - Friends of the Family
 
-A Hydrogen-powered headless commerce storefront for Sierra Nevada Brewing Co.'s "Friends of the Family" program. Built with Shopify's modern stack including Hydrogen, Remix, and Oxygen deployment.
+A **members-only** Hydrogen-powered headless commerce storefront for Sierra Nevada Brewing Co.'s "Friends of the Family" program. Built with Shopify's modern stack including Hydrogen, React Router v7, and Oxygen deployment.
 
 [Check out Hydrogen docs](https://shopify.dev/custom-storefronts/hydrogen)
-[Get familiar with Remix](https://remix.run/docs/en/v1)
+[Get familiar with React Router v7](https://reactrouter.com/7.6.0)
+
+## Technology Stack
+
+- **Framework**: Shopify Hydrogen 2025.5.0
+- **Routing**: React Router v7.6.0 ⚠️ **(NOT Remix)**
+- **Styling**: CSS Modules + PostCSS + Open Props
+- **CMS**: Sanity CMS (not Shopify metafields)
+- **Icons**: SVG-Go via vite-plugin-svgr
+- **State**: React Query + React hooks
+- **Security**: Pre-configured CSP with Klaviyo integration
 
 ## Automatic Deployments with Hydrogen and Oxygen
 
@@ -67,6 +77,34 @@ npx shopify hydrogen link --storefront "SN - Friends of the Family"
 ```
 
 [Linking your project](https://shopify.dev/docs/custom-storefronts/hydrogen/cli#link) automatically keeps your local environment variables in sync with Oxygen, allows you to query your store data, and lets you create deployments from the command line at any time. Check the complete [list of Hydrogen CLI](https://shopify.dev/docs/custom-storefronts/hydrogen/cli) for a complete list of features.
+
+## GraphQL & Type Safety
+
+**Important**: Always use Shopify's built-in codegen for GraphQL types instead of creating custom types manually.
+
+```bash
+npm run codegen      # Generates TypeScript types from GraphQL schemas
+```
+
+This ensures:
+- ✅ **Type accuracy**: Types match Shopify's actual GraphQL schema
+- ✅ **Auto-updates**: Types stay in sync when Shopify updates their API
+- ✅ **IntelliSense**: Full autocompletion for Shopify queries and mutations
+- ✅ **Error prevention**: Compile-time checks for invalid field access
+
+Use the generated types in your components:
+
+```typescript
+import type { ProductQuery } from '~/storefrontapi.generated';
+
+// ✅ GOOD: Use generated types
+export function ProductDetails({ product }: { product: ProductQuery['product'] }) {
+  return <div>{product?.title}</div>;
+}
+
+// ❌ AVOID: Manual type definitions for Shopify data
+interface CustomProduct { title: string; } // Don't do this
+```
 
 ## Setup for using Customer Account API (`/account` section)
 
