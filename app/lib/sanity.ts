@@ -107,33 +107,18 @@ export async function sanityServerQuery<T = any>(
   const { cache, tags, displayName } = options;
   
   try {
-    // If Hydrogen cache is provided, use it
-    if (cache) {
-      const cacheKey = `sanity:${btoa(query + JSON.stringify(params))}`;
-      
-      // Try to get from cache first
-      const cachedResult = await cache.match(cacheKey);
-      if (cachedResult) {
-        return await cachedResult.json();
-      }
-      
-      // Fetch fresh data from Sanity
-      const result = await client.fetch<T>(query, params);
-      
-      // Cache the result using Hydrogen's caching
-      const response = new Response(JSON.stringify(result), {
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(displayName && { 'X-Debug-Display-Name': displayName })
-        }
-      });
-      await cache.put(cacheKey, response.clone());
-      
-      return result;
+    // For server-side caching, we'll rely on Sanity's built-in CDN caching
+    // and the client configuration (useCdn: true in production)
+    // Custom caching can be added here if needed in the future
+    
+    const result = await client.fetch<T>(query, params);
+    
+    // Log for debugging if displayName is provided
+    if (displayName && process.env.NODE_ENV === 'development') {
+      console.log(`[Sanity Query] ${displayName}: ${query}`);
     }
     
-    // Direct fetch without caching
-    return await client.fetch<T>(query, params);
+    return result;
   } catch (error) {
     console.error('Sanity server query failed:', { query, params, error });
     throw new SanityError(
@@ -432,22 +417,19 @@ export function getSanityImageUrl(
   let dataset = config?.dataset;
   
   // Fallback to environment variables if config not provided
+  // Use safe cross-environment access pattern to avoid runtime errors
   if (!projectId) {
-    if (typeof process !== 'undefined' && process.env) {
-      projectId = process.env.PUBLIC_SANITY_PROJECT_ID;
-    }
-    if (!projectId && typeof window !== 'undefined') {
-      projectId = window.ENV?.PUBLIC_SANITY_PROJECT_ID;
-    }
+    const env = typeof window === 'undefined' 
+      ? (typeof process !== 'undefined' ? process.env : {}) 
+      : (window.ENV || {});
+    projectId = env.PUBLIC_SANITY_PROJECT_ID;
   }
   
   if (!dataset) {
-    if (typeof process !== 'undefined' && process.env) {
-      dataset = process.env.PUBLIC_SANITY_DATASET;
-    }
-    if (!dataset && typeof window !== 'undefined') {
-      dataset = window.ENV?.PUBLIC_SANITY_DATASET;
-    }
+    const env = typeof window === 'undefined' 
+      ? (typeof process !== 'undefined' ? process.env : {}) 
+      : (window.ENV || {});
+    dataset = env.PUBLIC_SANITY_DATASET;
     // Fallback to production if still not found
     dataset = dataset || 'production';
   }

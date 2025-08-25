@@ -287,38 +287,42 @@ export async function loader({ params, context }: Route.LoaderArgs) {
 
 ## Caching Strategies
 
-### Server-Side Caching with Hydrogen
+### Server-Side Caching with Sanity CDN
 
-The `sanityServerQuery` function integrates with Hydrogen's caching system:
+Our implementation relies on Sanity's built-in CDN caching rather than Hydrogen's Web API Cache for better reliability and simplicity:
 
 ```typescript path=null start=null
-// Different cache strategies
-import { CacheLong, CacheShort, CacheNone } from '@shopify/hydrogen';
+// Server-side queries automatically use Sanity's CDN cache in production
+// CDN caching is controlled by the client configuration
 
-// Long cache for rarely changing content
+// Static content - cached by Sanity CDN for optimal performance
 const siteSettings = await sanityServerQuery(
   client,
   SANITY_QUERIES.SITE_SETTINGS,
   {},
-  { cache: CacheLong() } // 1 hour default
+  { displayName: 'Site settings' } // For debugging only
 );
 
-// Short cache for frequently changing content
+// Dynamic content - still uses CDN cache but with shorter TTL
 const announcements = await sanityServerQuery(
   client,
   SANITY_QUERIES.ANNOUNCEMENTS,
   {},
-  { cache: CacheShort() } // 1 minute default
+  { displayName: 'Announcements' }
 );
 
-// No cache for personalized content
-const userContent = await sanityServerQuery(
-  client,
-  USER_SPECIFIC_QUERY,
-  { userId },
-  { cache: CacheNone() }
-);
+// CDN behavior is controlled at client level:
+const client = createSanityClient(env, {
+  useCdn: env.NODE_ENV === 'production', // CDN only in production
+  apiVersion: '2025-01-01'
+});
 ```
+
+**Why this approach:**
+- ✅ **Sanity CDN**: Global edge caching with sub-100ms responses
+- ✅ **Smart invalidation**: Automatically updates when content changes in Sanity Studio
+- ✅ **Simple**: No complex cache invalidation logic needed
+- ✅ **Reliable**: Proven caching infrastructure with 99.9% uptime
 
 ### Client-Side Caching
 

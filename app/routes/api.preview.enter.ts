@@ -10,14 +10,14 @@
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const secret = url.searchParams.get('secret');
   const slug = url.searchParams.get('slug');
   const type = url.searchParams.get('type') || 'page';
   
   // Check the secret
-  if (!secret || secret !== process.env.SANITY_PREVIEW_SECRET) {
+  if (!secret || secret !== context.env.SANITY_PREVIEW_SECRET) {
     return new Response('Invalid preview secret', { status: 401 });
   }
   
@@ -52,14 +52,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 // Also handle POST requests for more complex preview scenarios
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method === 'POST') {
     try {
       const body = await request.json();
       const { secret, slug, type } = body;
       
       // Validate secret
-      if (!secret || secret !== process.env.SANITY_PREVIEW_SECRET) {
+      if (!secret || secret !== context.env.SANITY_PREVIEW_SECRET) {
         return new Response(JSON.stringify({ error: 'Invalid preview secret' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json' }
