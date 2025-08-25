@@ -375,7 +375,7 @@ export function HydrateFallback() {
   );
 }
 
-export default function ProductWithInventory() {
+export default function ProductHandleInventory() {
   const { product, realTimeInventory, lastUpdated } = useLoaderData<typeof clientLoader>();
   
   return (
@@ -489,15 +489,26 @@ When deploying to Shopify's Oxygen platform, consider edge-specific optimization
 
 ```tsx
 export async function clientLoader({ request }) {
-  // Check if we're running on Oxygen edge
-  const isEdge = typeof EdgeRuntime !== 'undefined';
+  // Check if we're running on Oxygen edge runtime
+  // Oxygen uses the Web Cache API and standard Web APIs
+  const isOxygen = typeof caches !== 'undefined' && 
+                   request.headers.get('oxygen-deployment-id');
   
-  if (isEdge) {
-    // Use edge-optimized data fetching
-    const cachedData = await caches.default.match(request);
-    if (cachedData) {
-      return cachedData.json();
+  if (isOxygen) {
+    // Use Oxygen-optimized data fetching with Web Cache API
+    const cache = caches.default;
+    const cachedResponse = await cache.match(request);
+    if (cachedResponse) {
+      return cachedResponse.json();
     }
+    
+    // Fetch and cache for future requests
+    const data = await fetchFromAPI();
+    const response = new Response(JSON.stringify(data), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    await cache.put(request, response.clone());
+    return data;
   }
   
   // Fallback to regular client-side fetching

@@ -358,6 +358,8 @@ export const SANITY_QUERIES = {
     mainNavigation[] {
       title,
       url,
+      // Conditional reference resolution: if item is a reference, resolve it and build URL
+      // The @-> syntax dereferences the referenced document and accesses its fields
       _type == "reference" => @->{
         title,
         "url": "/pages/" + slug.current
@@ -366,6 +368,7 @@ export const SANITY_QUERIES = {
     memberNavigation[] {
       title,
       url,
+      // Same pattern: resolve references to page documents and construct URLs
       _type == "reference" => @->{
         title,
         "url": "/pages/" + slug.current
@@ -374,6 +377,7 @@ export const SANITY_QUERIES = {
     footerNavigation[] {
       title,
       url,
+      // Consistent reference resolution pattern across all navigation arrays
       _type == "reference" => @->{
         title,
         "url": "/pages/" + slug.current
