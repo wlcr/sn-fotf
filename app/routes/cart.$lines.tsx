@@ -25,7 +25,18 @@ export async function loader({request, context, params}: LoaderFunctionArgs) {
   const linesMap = lines.split(',').map((line) => {
     const lineDetails = line.split(':');
     const variantId = lineDetails[0];
-    const quantity = parseInt(lineDetails[1], 10);
+    const quantityStr = lineDetails[1];
+
+    if (!quantityStr) {
+      throw new Response(
+        'Invalid cart line format. Expected format: variantId:quantity',
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const quantity = parseInt(quantityStr, 10);
 
     return {
       merchandiseId: `gid://shopify/ProductVariant/${variantId}`,

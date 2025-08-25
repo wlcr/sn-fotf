@@ -69,7 +69,7 @@ export default function Homepage() {
 function FeaturedCollection({
   collection,
 }: {
-  collection: FeaturedCollectionFragment;
+  collection: FeaturedCollectionFragment | undefined;
 }) {
   if (!collection) return null;
   const image = collection?.image;

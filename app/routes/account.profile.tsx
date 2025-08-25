@@ -61,7 +61,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     );
 
     if (errors?.length) {
-      throw new Error(errors[0].message);
+      throw new Error(errors[0]?.message || 'Unknown error');
     }
 
     if (!data?.customerUpdate?.customer) {
