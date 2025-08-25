@@ -198,10 +198,10 @@ export function createSanityPreviewClient(
  * @param options - Caching and debugging options
  * @returns Promise resolving to query result
  */
-export async function sanityServerQuery<T = any>(
+export async function sanityServerQuery<T = unknown>(
   client: SanityClient,
   query: string,
-  params: Record<string, any> = {},
+  params: Record<string, unknown> = {},
   options: {
     cache?: HydrogenCacheStrategy; // Hydrogen cache strategy (CacheLong, CacheShort, etc.)
     tags?: string[];
@@ -247,10 +247,10 @@ export async function sanityServerQuery<T = any>(
  * @param options - Client-side caching options
  * @returns Promise resolving to query result
  */
-export async function sanityClientQuery<T = any>(
+export async function sanityClientQuery<T = unknown>(
   client: SanityClient,
   query: string,
-  params: Record<string, any> = {},
+  params: Record<string, unknown> = {},
   options: {
     useCache?: boolean;
     cacheKey?: string;
@@ -285,8 +285,11 @@ export async function sanityClientQuery<T = any>(
               'data' in parsedCache &&
               'timestamp' in parsedCache
             ) {
-              const data = (parsedCache as any).data;
-              const timestamp = (parsedCache as any).timestamp;
+              const data = (parsedCache as {data: unknown; timestamp: unknown})
+                .data;
+              const timestamp = (
+                parsedCache as {data: unknown; timestamp: unknown}
+              ).timestamp;
 
               if (typeof timestamp === 'number') {
                 const isExpired = Date.now() - timestamp > cacheDuration;
@@ -590,7 +593,8 @@ export function getSanityImageUrl(
           ? process.env
           : {}
         : window.ENV || {};
-    projectId = (env as any).PUBLIC_SANITY_PROJECT_ID;
+    projectId = (env as Record<string, string | undefined>)
+      .PUBLIC_SANITY_PROJECT_ID;
   }
 
   if (!dataset) {
@@ -600,7 +604,7 @@ export function getSanityImageUrl(
           ? process.env
           : {}
         : window.ENV || {};
-    dataset = (env as any).PUBLIC_SANITY_DATASET;
+    dataset = (env as Record<string, string | undefined>).PUBLIC_SANITY_DATASET;
     // Fallback to production if still not found
     dataset = dataset || 'production';
   }
@@ -731,11 +735,11 @@ export function isPreviewMode(request: Request, env: SanityEnv): boolean {
  * @param options - Query options
  * @returns Promise resolving to query result
  */
-export async function sanityQuery<T = any>(
+export async function sanityQuery<T = unknown>(
   request: Request,
   env: SanityEnv,
   query: string,
-  params: Record<string, any> = {},
+  params: Record<string, unknown> = {},
   options: {
     cache?: HydrogenCacheStrategy;
     tags?: string[];
@@ -767,9 +771,9 @@ export async function sanityQuery<T = any>(
  * @param enabled - Whether live updates are enabled
  * @returns Live query data structure
  */
-export function createLiveQueryData<T = any>(
+export function createLiveQueryData<T = unknown>(
   query: string,
-  params: Record<string, any>,
+  params: Record<string, unknown>,
   initial: T,
   enabled: boolean = false,
 ) {
@@ -807,7 +811,10 @@ export function generatePreviewUrl(
           // Safe server-side environment variable access
           const serverEnv =
             typeof process !== 'undefined' && process.env ? process.env : {};
-          return (serverEnv as any).PUBLIC_BASE_URL || 'http://localhost:3000';
+          return (
+            (serverEnv as Record<string, string | undefined>).PUBLIC_BASE_URL ||
+            'http://localhost:3000'
+          );
         })();
 
   // Use provided secret or get from environment with safe access
@@ -821,7 +828,8 @@ export function generatePreviewUrl(
             ? process.env
             : {}
           : window.ENV || {};
-      return (envVars as any).SANITY_PREVIEW_SECRET;
+      return (envVars as Record<string, string | undefined>)
+        .SANITY_PREVIEW_SECRET;
     })();
 
   const previewUrl = new URL(`/${type}/${slug}`, baseUrl);
