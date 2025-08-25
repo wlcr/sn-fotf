@@ -14,6 +14,7 @@ A **members-only** Hydrogen-powered headless commerce storefront for Sierra Neva
 - **Icons**: SVG-Go via vite-plugin-svgr
 - **State**: React Query + React hooks
 - **Security**: Pre-configured CSP with Klaviyo integration
+- **Quality**: Automated TypeScript checks, ESLint, Prettier, and Husky pre-commit hooks
 
 ## Automatic Deployments with Hydrogen and Oxygen
 
@@ -44,6 +45,8 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 - SVG support with vite-plugin-svgr
 - AI assistant configuration files
 - Comprehensive CSP security configuration
+- Automated quality checks with Husky pre-commit hooks
+- Sanity CMS integration with live preview
 - Minimal setup of components and routes
 
 ## Getting started
@@ -77,6 +80,44 @@ npx shopify hydrogen link --storefront "SN - Friends of the Family"
 ```
 
 [Linking your project](https://shopify.dev/docs/custom-storefronts/hydrogen/cli#link) automatically keeps your local environment variables in sync with Oxygen, allows you to query your store data, and lets you create deployments from the command line at any time. Check the complete [list of Hydrogen CLI](https://shopify.dev/docs/custom-storefronts/hydrogen/cli) for a complete list of features.
+
+## Quality Framework
+
+This project includes a comprehensive quality framework with automated checks:
+
+```bash
+npm run quality-check    # Runs TypeScript checks + ESLint
+npm run type-check      # TypeScript compilation check
+npm run lint            # ESLint with auto-fix
+npm run lint:fix        # ESLint with auto-fix
+```
+
+### Pre-commit Hooks
+
+Husky automatically runs quality checks before each commit:
+- ✅ **TypeScript compilation**: Ensures no type errors
+- ✅ **ESLint**: Code quality and style consistency  
+- ✅ **Prettier**: Code formatting (via lint-staged)
+
+**Bypassing Pre-commit Hooks (Use Sparingly)**:
+
+If you need to commit with known TypeScript errors (e.g., during incremental fixes):
+
+```bash
+git commit --no-verify -m "your commit message"
+```
+
+⚠️ **Important**: Only use `--no-verify` when:
+- TypeScript errors are unrelated to your changes
+- You're making incremental progress on large refactoring
+- Document the remaining errors in your commit message
+
+### Documentation
+
+Comprehensive documentation is available in the `/docs` folder:
+
+- **[Sanity CMS Developer Guide](./docs/SANITY_DEVELOPER_GUIDE.md)** - Complete integration guide
+- **[GitHub Copilot Instructions](./.github/copilot-instructions.md)** - AI assistant configuration
 
 ## GraphQL & Type Safety
 
