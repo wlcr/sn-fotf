@@ -18,7 +18,30 @@
     "resolveJsonModule": true,
     "module": "ES2022",
     "target": "ES2022",
+    
+    // Strict type checking (catches AI-generated issues)
     "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    
+    // Additional quality checks (gradually enable)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": false,
+    
+    // Import/Export checks (gradually enable)
+    "verbatimModuleSyntax": false,
+    "allowSyntheticDefaultImports": true,
+    
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
