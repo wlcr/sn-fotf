@@ -207,7 +207,12 @@ export function PreviewScripts() {
 export function PreviewStatusIndicator() {
   const isPreview = usePreviewMode();
   
-  if (process.env.NODE_ENV === 'production') return null;
+  // Only show in development - we'll rely on the build process to set this
+  const IS_PRODUCTION = typeof window !== 'undefined' 
+    ? window.ENV?.NODE_ENV === 'production'
+    : false;
+  
+  if (IS_PRODUCTION) return null;
   
   return (
     <div className="fixed bottom-4 right-4 z-40">

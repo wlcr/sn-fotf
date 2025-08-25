@@ -8,9 +8,9 @@
  * https://your-site.com/api/preview/enter?secret=YOUR_SECRET&slug=page-slug&type=page
  */
 
-import type { ActionFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 
-export async function loader({ request }: ActionFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const secret = url.searchParams.get('secret');
   const slug = url.searchParams.get('slug');

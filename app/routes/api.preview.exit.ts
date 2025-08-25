@@ -5,9 +5,9 @@
  * redirecting back to the normal site view.
  */
 
-import type { ActionFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 
-export async function loader({ request }: ActionFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const redirect = url.searchParams.get('redirect') || '/';
   

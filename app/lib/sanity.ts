@@ -16,7 +16,9 @@ import type { SanityClient, ClientConfig } from '@sanity/client';
 import { defineLive } from '@sanity/preview-kit';
 import type { LiveQueryStore } from '@sanity/preview-kit';
 
-// Re-export live preview utilities
+// Re-export live preview utilities to enable consumers of this module to implement
+// real-time Sanity content previews in Hydrogen/React Router v7 apps. This exposes
+// the necessary helpers for integrating live query and preview functionality.
 export { defineLive } from '@sanity/preview-kit';
 export type { LiveQueryStore } from '@sanity/preview-kit';
 
@@ -29,6 +31,7 @@ interface SanityEnv {
   SANITY_USE_CDN?: string;
   SANITY_PREVIEW_SECRET?: string;
   SANITY_REVALIDATE_SECRET?: string;
+  NODE_ENV?: string;
 }
 
 /**
@@ -46,7 +49,7 @@ export function createSanityClient(
     projectId: env.SANITY_PROJECT_ID,
     dataset: env.SANITY_DATASET || 'production',
     apiVersion: env.SANITY_API_VERSION || '2025-01-01',
-    useCdn: env.SANITY_USE_CDN === 'true' || process.env.NODE_ENV === 'production',
+    useCdn: env.SANITY_USE_CDN === 'true' || env.NODE_ENV === 'production',
     token: env.SANITY_API_TOKEN,
     ...options,
   });
@@ -369,9 +372,20 @@ export const SANITY_QUERIES = {
  * Utility for generating optimized Sanity image URLs
  * 
  * @param image - Sanity image object
- * @param options - Image optimization options
- * @param config - Sanity project configuration
+ * @param options - Image optimization options  
+ * @param config - Sanity project configuration (recommended for consistent behavior)
  * @returns Optimized image URL string
+ * 
+ * @example
+ * // Recommended: Pass config explicitly
+ * const imageUrl = getSanityImageUrl(
+ *   image, 
+ *   { width: 800, quality: 80 }, 
+ *   { projectId: 'your-project-id', dataset: 'production' }
+ * );
+ * 
+ * // Fallback: Uses environment variables (less reliable across environments)
+ * const imageUrl = getSanityImageUrl(image, { width: 800 });
  */
 export function getSanityImageUrl(
   image: any,
@@ -412,22 +426,34 @@ export function getSanityImageUrl(
   const [, assetId, dimensions, format_] = refParts;
   const [w, h] = dimensions.split('x');
   
-  // Build Sanity CDN URL - use provided config or fallback to environment
-  const projectId = config?.projectId ||
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_PROJECT_ID : '') ||
-    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_PROJECT_ID) ||
-    '';
+  // Build Sanity CDN URL - prefer explicit config over environment variables
+  // This approach works consistently across server and client environments
+  let projectId = config?.projectId;
+  let dataset = config?.dataset;
+  
+  // Fallback to environment variables if config not provided
+  if (!projectId) {
+    if (typeof process !== 'undefined' && process.env) {
+      projectId = process.env.PUBLIC_SANITY_PROJECT_ID;
+    }
+    if (!projectId && typeof window !== 'undefined') {
+      projectId = window.ENV?.PUBLIC_SANITY_PROJECT_ID;
+    }
+  }
+  
+  if (!dataset) {
+    if (typeof process !== 'undefined' && process.env) {
+      dataset = process.env.PUBLIC_SANITY_DATASET;
+    }
+    if (!dataset && typeof window !== 'undefined') {
+      dataset = window.ENV?.PUBLIC_SANITY_DATASET;
+    }
+    // Fallback to production if still not found
+    dataset = dataset || 'production';
+  }
+  
   if (!projectId) {
     console.error('Sanity projectId is missing. Please set PUBLIC_SANITY_PROJECT_ID in your environment or pass it via config parameter.');
-    return '';
-  }
-
-  const dataset = config?.dataset ||
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_DATASET : '') ||
-    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_DATASET) ||
-    '';
-  if (!dataset) {
-    console.error('Sanity dataset is missing. Please set PUBLIC_SANITY_DATASET in your environment or pass it via config parameter.');
     return '';
   }
   
