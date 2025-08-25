@@ -335,6 +335,7 @@ export const SANITY_QUERIES = {
  * 
  * @param image - Sanity image object
  * @param options - Image optimization options
+ * @param config - Sanity project configuration
  * @returns Optimized image URL string
  */
 export function getSanityImageUrl(
@@ -346,7 +347,11 @@ export function getSanityImageUrl(
     format?: 'webp' | 'jpg' | 'png' | 'auto';
     fit?: 'clip' | 'crop' | 'fill' | 'fillmax' | 'max' | 'scale' | 'min';
     crop?: 'top' | 'bottom' | 'left' | 'right' | 'center' | 'focalpoint';
-  } = {}
+  } = {},
+  config?: {
+    projectId?: string;
+    dataset?: string;
+  }
 ): string {
   if (!image?.asset?._ref) {
     console.warn('Invalid Sanity image object provided');
@@ -372,9 +377,16 @@ export function getSanityImageUrl(
   const [, assetId, dimensions, format_] = refParts;
   const [w, h] = dimensions.split('x');
   
-  // Build Sanity CDN URL
-  const projectId = process.env.PUBLIC_SANITY_PROJECT_ID || 'your-project-id';
-  const dataset = process.env.PUBLIC_SANITY_DATASET || 'production';
+  // Build Sanity CDN URL - use provided config or fallback to environment/defaults
+  const projectId = config?.projectId || 
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_PROJECT_ID : '') || 
+    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_PROJECT_ID) || 
+    'your-project-id';
+    
+  const dataset = config?.dataset || 
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_DATASET : '') || 
+    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_DATASET) || 
+    'production';
   
   let url = `https://cdn.sanity.io/images/${projectId}/${dataset}/${assetId}-${dimensions}.${format_}`;
   

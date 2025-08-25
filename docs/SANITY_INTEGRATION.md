@@ -176,7 +176,7 @@ We'll follow the same pattern for Sanity:
 
 ```tsx
 // app/routes/about.tsx
-export async function loader(): Route.LoaderArgs {
+export async function loader({ params }: Route.LoaderArgs) {
   const [page, settings] = await Promise.all([
     sanityServerQuery<Page>(client, QUERIES.ABOUT_PAGE),
     sanityServerQuery<SiteSettings>(client, QUERIES.SITE_SETTINGS)
@@ -192,7 +192,7 @@ export async function loader(): Route.LoaderArgs {
 
 ```tsx
 // app/routes/members.dashboard.tsx
-export async function loader(): Route.LoaderArgs {
+export async function loader({ context }: Route.LoaderArgs) {
   // Public member content for SEO
   const memberContent = await sanityServerQuery<MemberContent>(
     client, 
@@ -227,7 +227,7 @@ clientLoader.hydrate = true;
 
 ```tsx
 // app/routes/live.updates.tsx
-export async function clientLoader(): Route.ClientLoaderArgs {
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const updates = await sanityClientQuery<LiveUpdate[]>(
     client,
     QUERIES.LIVE_UPDATES,

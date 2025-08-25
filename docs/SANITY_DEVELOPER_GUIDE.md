@@ -43,9 +43,9 @@ PUBLIC_SANITY_DATASET=production
 
 ```typescript path=null start=null
 import { createSanityClient, sanityServerQuery, SANITY_QUERIES } from '~/lib/sanity';
-import type { LoaderFunctionArgs } from 'react-router';
+import type { Route } from './+types/route';
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   const siteSettings = await sanityServerQuery(
@@ -101,7 +101,7 @@ Use `sanityServerQuery` in React Router `loader` functions for server-side data 
 import type { LoaderFunctionArgs } from 'react-router';
 import { createSanityClient, sanityServerQuery, SANITY_QUERIES } from '~/lib/sanity';
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   try {
@@ -133,10 +133,10 @@ Use `sanityClientQuery` in `clientLoader` functions for browser-side data fetchi
 
 ```typescript path=null start=null
 // routes/dashboard.tsx
-import type { ClientLoaderFunctionArgs } from 'react-router';
+import type { Route } from './+types/route';
 import { createSanityClient, sanityClientQuery, SANITY_QUERIES } from '~/lib/sanity';
 
-export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
   // Get static data from server
   const serverData = await serverLoader();
   
@@ -176,7 +176,7 @@ For pages that need both static and dynamic data:
 
 ```typescript path=null start=null
 // routes/events.tsx
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   // Load static event data on server
@@ -190,7 +190,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   return { events };
 }
 
-export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
   const { events } = await serverLoader();
   
   // Add user-specific registration status on client
@@ -591,7 +591,7 @@ Use the helper functions for member-only content:
 ```typescript path=null start=null
 import { isContentAvailable, filterActiveAnnouncements } from '~/lib/sanity';
 
-export async function loader({ context, request }: LoaderFunctionArgs) {
+export async function loader({ context, request }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   const isMember = await checkMembershipStatus(request);
   
@@ -615,7 +615,7 @@ Structure your routes to work without JavaScript:
 
 ```typescript path=null start=null
 // routes/events.tsx
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   // Essential data loaded on server
   const client = createSanityClient(context.env);
   const events = await sanityServerQuery(client, SANITY_QUERIES.UPCOMING_EVENTS);
@@ -623,7 +623,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
   return { events };
 }
 
-export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
   const { events } = await serverLoader();
   
   // Enhanced data loaded on client
@@ -669,7 +669,7 @@ const { page, settings, navigation } = await sanityServerQuery(client, query, { 
 Always use generated types for better development experience:
 
 ```typescript path=null start=null
-import type { LoaderFunctionArgs } from 'react-router';
+import type { Route } from './+types/route';
 import type { Page, SiteSettings } from '~/types/sanity.generated';
 
 interface RouteData {
@@ -677,7 +677,7 @@ interface RouteData {
   settings: SiteSettings;
 }
 
-export async function loader({ params, context }: LoaderFunctionArgs): Promise<RouteData> {
+export async function loader({ params, context }: Route.LoaderArgs): Promise<RouteData> {
   // Type-safe implementation
 }
 ```
@@ -710,7 +710,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 ```typescript path=null start=null
 // routes/blog.$slug.tsx
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   const post = await sanityServerQuery(
@@ -744,7 +744,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 
 ```typescript path=null start=null
 // routes/search.tsx
-export async function loader({ request, context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const query = url.searchParams.get('q') || '';
   const category = url.searchParams.get('category') || '';
