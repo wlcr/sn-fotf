@@ -102,9 +102,10 @@ export async function sanityServerQuery<T = any>(
     cache?: any; // Hydrogen cache strategy (CacheLong, CacheShort, etc.)
     tags?: string[];
     displayName?: string; // For debugging in Hydrogen's subrequest profiler
+    env?: SanityEnv; // Environment variables for safe cross-environment access
   } = {}
 ): Promise<T> {
-  const { cache, tags, displayName } = options;
+  const { cache, tags, displayName, env } = options;
   
   try {
     // For server-side caching, we'll rely on Sanity's built-in CDN caching
@@ -113,8 +114,8 @@ export async function sanityServerQuery<T = any>(
     
     const result = await client.fetch<T>(query, params);
     
-    // Log for debugging if displayName is provided
-    if (displayName && process.env.NODE_ENV === 'development') {
+    // Log for debugging if displayName is provided and in development
+    if (displayName && env?.NODE_ENV === 'development') {
       console.log(`[Sanity Query] ${displayName}: ${query}`);
     }
     
@@ -577,7 +578,7 @@ export async function sanityQuery<T = any>(
   } else {
     // Use regular client with caching
     const client = createSanityClient(env);
-    return await sanityServerQuery<T>(client, query, params, options);
+    return await sanityServerQuery<T>(client, query, params, { ...options, env });
   }
 }
 
@@ -613,19 +614,32 @@ export function createLiveQueryData<T = any>(
  * 
  * @param slug - Document slug
  * @param type - Document type
- * @param secret - Preview secret
+ * @param env - Environment variables (optional, will use safe detection if not provided)
+ * @param secret - Preview secret override
  * @returns Preview URL object
  */
 export function generatePreviewUrl(
   slug: string,
   type: string,
+  env?: SanityEnv,
   secret?: string
 ): { preview: string; exit: string } {
+  // Safe cross-environment base URL detection
   const baseUrl = typeof window !== 'undefined' 
     ? window.location.origin 
-    : process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+    : (() => {
+        // Safe server-side environment variable access
+        const serverEnv = typeof process !== 'undefined' ? process.env : {};
+        return serverEnv.PUBLIC_BASE_URL || 'http://localhost:3000';
+      })();
     
-  const previewSecret = secret || process.env.SANITY_PREVIEW_SECRET;
+  // Use provided secret or get from environment with safe access
+  const previewSecret = secret || env?.SANITY_PREVIEW_SECRET || (() => {
+    const envVars = typeof window === 'undefined' 
+      ? (typeof process !== 'undefined' ? process.env : {}) 
+      : (window.ENV || {});
+    return envVars.SANITY_PREVIEW_SECRET;
+  })();
   
   const previewUrl = new URL(`/${type}/${slug}`, baseUrl);
   if (previewSecret) {
