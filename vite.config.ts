@@ -7,9 +7,9 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [
-    hydrogen(), 
-    oxygen(), 
-    reactRouter(), 
+    hydrogen(),
+    oxygen(),
+    reactRouter(),
     tsconfigPaths(),
     svgr({
       // SVG-Go configuration for React components
@@ -39,7 +39,7 @@ export default defineConfig({
        * Include 'example-dep' in the array below.
        * @see https://vitejs.dev/config/dep-optimization-options
        */
-      include: [],
+      include: ['rxjs', 'hydrogen-sanity'],
     },
   },
 });
