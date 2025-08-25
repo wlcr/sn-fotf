@@ -10,6 +10,14 @@
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 
+/**
+ * Helper function to create secure cookie strings based on the request protocol
+ */
+function createSecureCookie(name: string, value: string, maxAge: number, isHttps: boolean): string {
+  const secureFlag = isHttps ? '; Secure' : '';
+  return `${name}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secureFlag}`;
+}
+
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const secret = url.searchParams.get('secret');
@@ -37,13 +45,16 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
   
   // Set preview cookie and redirect
+  const isHttps = url.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+  const maxAge = 60 * 60 * 24; // 24 hours
+  
   const response = new Response(null, {
     status: 302,
     headers: {
       'Location': previewPath,
       'Set-Cookie': [
-        `sanity-preview=true; Path=/; HttpOnly; SameSite=Strict; Max-Age=${60 * 60 * 24}`, // 24 hours
-        `sanity-preview-secret=${secret}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${60 * 60 * 24}`
+        createSecureCookie('sanity-preview', 'true', maxAge, isHttps),
+        createSecureCookie('sanity-preview-secret', secret, maxAge, isHttps)
       ].join(', ')
     }
   });
@@ -77,6 +88,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
       const basePath = typeToPath[type] || `/${type}`;
       const previewUrl = slug ? `${basePath}/${slug}` : '/';
       
+      const isHttps = new URL(request.url).protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+      const maxAge = 60 * 60 * 24; // 24 hours
+      
       return new Response(JSON.stringify({ 
         url: previewUrl,
         success: true 
@@ -85,8 +99,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
         headers: { 
           'Content-Type': 'application/json',
           'Set-Cookie': [
-            `sanity-preview=true; Path=/; HttpOnly; SameSite=Strict; Max-Age=${60 * 60 * 24}`,
-            `sanity-preview-secret=${secret}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${60 * 60 * 24}`
+            createSecureCookie('sanity-preview', 'true', maxAge, isHttps),
+            createSecureCookie('sanity-preview-secret', secret, maxAge, isHttps)
           ].join(', ')
         }
       });

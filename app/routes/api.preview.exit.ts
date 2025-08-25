@@ -7,18 +7,28 @@
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 
+/**
+ * Helper function to create secure cookie strings for clearing based on the request protocol
+ */
+function createClearCookie(name: string, isHttps: boolean): string {
+  const secureFlag = isHttps ? '; Secure' : '';
+  return `${name}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0${secureFlag}`;
+}
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const redirect = url.searchParams.get('redirect') || '/';
   
   // Clear preview cookies and redirect
+  const isHttps = url.protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+  
   const response = new Response(null, {
     status: 302,
     headers: {
       'Location': redirect,
       'Set-Cookie': [
-        'sanity-preview=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
-        'sanity-preview-secret=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'
+        createClearCookie('sanity-preview', isHttps),
+        createClearCookie('sanity-preview-secret', isHttps)
       ].join(', ')
     }
   });
@@ -32,6 +42,8 @@ export async function action({ request }: ActionFunctionArgs) {
       const body = await request.json();
       const redirect = body.redirect || '/';
       
+      const isHttps = new URL(request.url).protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
+      
       return new Response(JSON.stringify({ 
         success: true,
         redirect 
@@ -40,8 +52,8 @@ export async function action({ request }: ActionFunctionArgs) {
         headers: {
           'Content-Type': 'application/json',
           'Set-Cookie': [
-            'sanity-preview=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
-            'sanity-preview-secret=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'
+            createClearCookie('sanity-preview', isHttps),
+            createClearCookie('sanity-preview-secret', isHttps)
           ].join(', ')
         }
       });
