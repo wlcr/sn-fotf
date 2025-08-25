@@ -105,7 +105,7 @@ Use `sanityServerQuery` in React Router `loader` functions for server-side data 
 
 ```typescript path=null start=null
 // routes/pages.$slug.tsx
-import type { LoaderFunctionArgs } from 'react-router';
+import type { Route } from './+types/pages.$slug';
 import { createSanityClient, sanityServerQuery, SANITY_QUERIES } from '~/lib/sanity';
 
 export async function loader({ params, context }: Route.LoaderArgs) {
@@ -266,7 +266,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
 import type { Page, SiteSettings, Event } from '~/types/sanity.generated';
 import { createSanityClient, sanityServerQuery, SANITY_QUERIES } from '~/lib/sanity';
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   // Fully type-safe queries
@@ -974,7 +974,7 @@ export async function loader({ params, context }: Route.LoaderArgs): Promise<Rou
 
 ```typescript path=null start=null
 // routes/_layout.tsx
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   
   const [settings, navigation] = await Promise.all([

@@ -412,16 +412,24 @@ export function getSanityImageUrl(
   const [, assetId, dimensions, format_] = refParts;
   const [w, h] = dimensions.split('x');
   
-  // Build Sanity CDN URL - use provided config or fallback to environment/defaults
-  const projectId = config?.projectId || 
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_PROJECT_ID : '') || 
-    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_PROJECT_ID) || 
-    'your-project-id';
-    
-  const dataset = config?.dataset || 
-    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_DATASET : '') || 
-    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_DATASET) || 
-    'production';
+  // Build Sanity CDN URL - use provided config or fallback to environment
+  const projectId = config?.projectId ||
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_PROJECT_ID : '') ||
+    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_PROJECT_ID) ||
+    '';
+  if (!projectId) {
+    console.error('Sanity projectId is missing. Please set PUBLIC_SANITY_PROJECT_ID in your environment or pass it via config parameter.');
+    return '';
+  }
+
+  const dataset = config?.dataset ||
+    (typeof process !== 'undefined' ? process.env.PUBLIC_SANITY_DATASET : '') ||
+    (typeof window !== 'undefined' && window.ENV?.PUBLIC_SANITY_DATASET) ||
+    '';
+  if (!dataset) {
+    console.error('Sanity dataset is missing. Please set PUBLIC_SANITY_DATASET in your environment or pass it via config parameter.');
+    return '';
+  }
   
   let url = `https://cdn.sanity.io/images/${projectId}/${dataset}/${assetId}-${dimensions}.${format_}`;
   

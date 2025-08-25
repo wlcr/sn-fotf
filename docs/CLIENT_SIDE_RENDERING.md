@@ -327,11 +327,10 @@ This example shows how to combine Shopify product data with real-time inventory 
 
 ```tsx
 // app/routes/products.$handle.inventory.tsx
-import { json, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { useLoaderData } from '@remix-run/react';
+import type { Route } from './+types/products.$handle.inventory';
 import { PRODUCT_QUERY } from '~/graphql/queries';
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, context }: Route.LoaderArgs) {
   const { storefront } = context;
   
   const { product } = await storefront.query(PRODUCT_QUERY, {
@@ -342,7 +341,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     throw new Response('Product not found', { status: 404 });
   }
   
-  return json({ product });
+  return { product };
 }
 
 export async function clientLoader({ 

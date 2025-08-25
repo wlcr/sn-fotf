@@ -27,6 +27,7 @@ The official [`hydrogen-sanity`](https://github.com/sanity-io/hydrogen-sanity/) 
 ### Example of Incompatible Code:
 ```tsx
 // ❌ hydrogen-sanity approach (doesn't work with React Router v7)
+// Note: Uses old LoaderFunctionArgs type instead of Route.LoaderArgs
 export async function loader({ context, params }: LoaderFunctionArgs) {
   const query = `*[_type == "page" && _id == $id][0]`
   const initial = await context.sanity.loadQuery(query, params)
