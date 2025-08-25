@@ -49,30 +49,14 @@ export function useSanityLiveQuery<T = any>(
   initial: T,
   options: UseSanityLiveQueryOptions
 ): T {
-  const [data, setData] = useState<T>(initial);
-  const [client, setClient] = useState<any>(null);
   const isPreview = usePreviewMode();
   
-  useEffect(() => {
-    if (!isPreview || !options.enabled || !options.token) {
-      setData(initial);
-      return;
-    }
-    
-    // Create preview client for live queries
-    const previewClient = createSanityPreviewClient({
-      SANITY_PROJECT_ID: options.projectId,
-      SANITY_DATASET: options.dataset || 'production',
-      SANITY_API_TOKEN: options.token
-    });
-    
-    setClient(previewClient);
-  }, [isPreview, options.enabled, options.projectId, options.dataset, options.token, initial]);
+  // Use Sanity's live query hook - it returns [data, loading, enabled]
+  const [liveData, loading, enabled] = useLiveQuery<T>(initial, query, params);
   
-  // Use Sanity's live query hook when in preview mode
-  const liveData = useLiveQuery(initial, query, params, { client });
-  
-  return isPreview && options.enabled && client ? liveData : data;
+  // Return live data only if preview mode is enabled and the query is enabled
+  // Otherwise return initial data
+  return isPreview && options.enabled && enabled ? liveData : initial;
 }
 
 /**

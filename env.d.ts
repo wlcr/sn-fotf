@@ -18,8 +18,33 @@ declare global {
    */
   const process: {env: {NODE_ENV: 'production' | 'development'}};
 
+  /**
+   * Window ENV object for client-side environment variables
+   * Populated by server-side rendering in root.tsx
+   */
+  interface Window {
+    ENV: {
+      NODE_ENV?: string;
+      MODE?: string;
+      PUBLIC_SANITY_PROJECT_ID?: string;
+      PUBLIC_SANITY_DATASET?: string;
+      SANITY_PREVIEW_SECRET?: string;
+      SANITY_API_READ_TOKEN?: string;
+      SANITY_API_WRITE_TOKEN?: string;
+      PUBLIC_BASE_URL?: string;
+      VERCEL_ENV?: string;
+      [key: string]: string | undefined;
+    };
+  }
+
   interface Env extends HydrogenEnv {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
+    SANITY_PREVIEW_SECRET?: string;
+    SANITY_API_READ_TOKEN?: string;
+    SANITY_API_WRITE_TOKEN?: string;
+    PUBLIC_SANITY_PROJECT_ID?: string;
+    PUBLIC_SANITY_DATASET?: string;
+    PUBLIC_BASE_URL?: string;
   }
 }
 

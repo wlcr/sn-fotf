@@ -36,11 +36,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return response;
 }
 
+// Type definitions for request body
+interface PreviewExitBody {
+  redirect?: string;
+}
+
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method === 'POST') {
     try {
-      const body = await request.json();
-      const redirect = body.redirect || '/';
+      const body: unknown = await request.json();
+      
+      // Type guard to ensure body is an object
+      const bodyData = (body && typeof body === 'object' ? body : {}) as PreviewExitBody;
+      const redirect = bodyData.redirect || '/';
       
       const isHttps = new URL(request.url).protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';
       

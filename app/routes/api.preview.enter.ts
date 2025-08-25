@@ -62,12 +62,25 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   return response;
 }
 
+// Type definitions for request body
+interface PreviewEnterBody {
+  secret: string;
+  slug?: string;
+  type?: string;
+}
+
 // Also handle POST requests for more complex preview scenarios
 export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method === 'POST') {
     try {
-      const body = await request.json();
-      const { secret, slug, type } = body;
+      const body: unknown = await request.json();
+      
+      // Type guard to ensure body has required structure
+      if (!body || typeof body !== 'object') {
+        throw new Error('Invalid request body structure');
+      }
+      
+      const { secret, slug, type } = body as PreviewEnterBody;
       
       // Validate secret
       if (!secret || secret !== context.env.SANITY_PREVIEW_SECRET) {
@@ -85,7 +98,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         'announcement': '/announcements'
       };
       
-      const basePath = typeToPath[type] || `/${type}`;
+      const basePath = typeToPath[type || 'page'] || `/${type || 'page'}`;
       const previewUrl = slug ? `${basePath}/${slug}` : '/';
       
       const isHttps = new URL(request.url).protocol === 'https:' || request.headers.get('x-forwarded-proto') === 'https';

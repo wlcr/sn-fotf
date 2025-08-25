@@ -13,14 +13,12 @@
 
 import { createClient } from '@sanity/client';
 import type { SanityClient, ClientConfig } from '@sanity/client';
-import { defineLive } from '@sanity/preview-kit';
-import type { LiveQueryStore } from '@sanity/preview-kit';
+import { useLiveQuery, LiveQueryProvider } from '@sanity/preview-kit';
 
 // Re-export live preview utilities to enable consumers of this module to implement
 // real-time Sanity content previews in Hydrogen/React Router v7 apps. This exposes
 // the necessary helpers for integrating live query and preview functionality.
-export { defineLive } from '@sanity/preview-kit';
-export type { LiveQueryStore } from '@sanity/preview-kit';
+export { useLiveQuery, LiveQueryProvider } from '@sanity/preview-kit';
 
 // Environment variables interface
 interface SanityEnv {
@@ -109,8 +107,9 @@ function clearOldSanityCacheEntries(): void {
         try {
           const value = sessionStorage.getItem(key);
           if (value) {
-            const parsed = JSON.parse(value);
-            if (parsed.timestamp && parsed.timestamp < oneHourAgo) {
+            const parsed: unknown = JSON.parse(value);
+            if (parsed && typeof parsed === 'object' && 'timestamp' in parsed && 
+                typeof parsed.timestamp === 'number' && parsed.timestamp < oneHourAgo) {
               keysToRemove.push(key);
             }
           }
@@ -270,11 +269,15 @@ export async function sanityClientQuery<T = any>(
           try {
             const parsedCache = JSON.parse(cached);
             if (parsedCache && typeof parsedCache === 'object' && 'data' in parsedCache && 'timestamp' in parsedCache) {
-              const { data, timestamp } = parsedCache;
-              const isExpired = Date.now() - timestamp > cacheDuration;
+              const data = (parsedCache as any).data;
+              const timestamp = (parsedCache as any).timestamp;
               
-              if (!isExpired) {
-                return data;
+              if (typeof timestamp === 'number') {
+                const isExpired = Date.now() - timestamp > cacheDuration;
+                
+                if (!isExpired) {
+                  return data as T;
+                }
               }
             }
           } catch (parseError) {
@@ -540,6 +543,12 @@ export function getSanityImageUrl(
   }
   
   const [, assetId, dimensions, format_] = refParts;
+  
+  if (!dimensions) {
+    console.error('Missing dimensions in Sanity image reference:', image.asset._ref);
+    return '';
+  }
+  
   const [w, h] = dimensions.split('x');
   
   // Build Sanity CDN URL - prefer explicit config over environment variables
@@ -551,16 +560,16 @@ export function getSanityImageUrl(
   // Use safe cross-environment access pattern to avoid runtime errors
   if (!projectId) {
     const env = typeof window === 'undefined' 
-      ? (typeof process !== 'undefined' ? process.env : {}) 
+      ? (typeof process !== 'undefined' && process.env ? process.env : {}) 
       : (window.ENV || {});
-    projectId = env.PUBLIC_SANITY_PROJECT_ID;
+    projectId = (env as any).PUBLIC_SANITY_PROJECT_ID;
   }
   
   if (!dataset) {
     const env = typeof window === 'undefined' 
-      ? (typeof process !== 'undefined' ? process.env : {}) 
+      ? (typeof process !== 'undefined' && process.env ? process.env : {}) 
       : (window.ENV || {});
-    dataset = env.PUBLIC_SANITY_DATASET;
+    dataset = (env as any).PUBLIC_SANITY_DATASET;
     // Fallback to production if still not found
     dataset = dataset || 'production';
   }
@@ -759,16 +768,16 @@ export function generatePreviewUrl(
     ? window.location.origin 
     : (() => {
         // Safe server-side environment variable access
-        const serverEnv = typeof process !== 'undefined' ? process.env : {};
-        return serverEnv.PUBLIC_BASE_URL || 'http://localhost:3000';
+        const serverEnv = typeof process !== 'undefined' && process.env ? process.env : {};
+        return (serverEnv as any).PUBLIC_BASE_URL || 'http://localhost:3000';
       })();
     
   // Use provided secret or get from environment with safe access
   const previewSecret = secret || env?.SANITY_PREVIEW_SECRET || (() => {
     const envVars = typeof window === 'undefined' 
-      ? (typeof process !== 'undefined' ? process.env : {}) 
+      ? (typeof process !== 'undefined' && process.env ? process.env : {}) 
       : (window.ENV || {});
-    return envVars.SANITY_PREVIEW_SECRET;
+    return (envVars as any).SANITY_PREVIEW_SECRET;
   })();
   
   const previewUrl = new URL(`/${type}/${slug}`, baseUrl);
