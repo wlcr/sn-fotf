@@ -352,23 +352,24 @@ export const SANITY_QUERIES = {
     _updatedAt
   }`,
   
-  // Main navigation structure
+  // Main navigation structure with conditional reference resolution
   NAVIGATION: `*[_type == "navigation"][0]{
     _id,
     mainNavigation[] {
       title,
       url,
-      // Conditional reference resolution: if item is a reference, resolve it and build URL
-      // The @-> syntax dereferences the referenced document and accesses its fields
+      // GROQ conditional syntax: _type == "reference" => @->{...}
+      // This means: IF the item is a reference type, THEN resolve it (@->) and return these fields
+      // The @-> operator follows the reference link and accesses the referenced document
       _type == "reference" => @->{
         title,
-        "url": "/pages/" + slug.current
+        "url": "/pages/" + slug.current  // Build URL from referenced page's slug
       }
     },
     memberNavigation[] {
       title,
       url,
-      // Same pattern: resolve references to page documents and construct URLs
+      // Same conditional reference pattern: resolve page references to build navigation URLs
       _type == "reference" => @->{
         title,
         "url": "/pages/" + slug.current
@@ -377,7 +378,7 @@ export const SANITY_QUERIES = {
     footerNavigation[] {
       title,
       url,
-      // Consistent reference resolution pattern across all navigation arrays
+      // Consistent pattern: handle both direct URLs and page references in navigation
       _type == "reference" => @->{
         title,
         "url": "/pages/" + slug.current
