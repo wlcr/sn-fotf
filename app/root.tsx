@@ -15,6 +15,7 @@ import favicon from '~/assets/favicon.svg?url';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+// import '@radix-ui/themes/styles.css';
 import {PageLayout} from './components/PageLayout';
 
 export type RootLoader = typeof loader;

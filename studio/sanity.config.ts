@@ -9,6 +9,8 @@ export default defineConfig({
 
   projectId: 'rimuhevv',
   dataset: 'production',
+  apiVersion: '2024-10-28',
+  studioUrl: 'http://localhost:3333',
 
   plugins: [structureTool(), visionTool()],
 

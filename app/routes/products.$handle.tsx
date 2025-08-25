@@ -12,6 +12,9 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import type {SanityDocument} from '@sanity/client';
+import {productDecoratorQuery} from 'studio/queries';
+import PageBuilder from '~/components/sanity/PageBuilder';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -43,18 +46,21 @@ async function loadCriticalData({
   request,
 }: LoaderFunctionArgs) {
   const {handle} = params;
-  const {storefront} = context;
+  const {storefront, sanity} = context;
 
   if (!handle) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  const [{product}, {data: decorator}] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
+    sanity.loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
   ]);
+
+  console.log('decorator', decorator);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
@@ -65,6 +71,7 @@ async function loadCriticalData({
 
   return {
     product,
+    decorator,
   };
 }
 
@@ -81,7 +88,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, decorator} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -102,44 +109,50 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
+    <>
+      <div className="product">
+        <ProductImage image={selectedVariant?.image} />
+        <div className="product-main">
+          <h1>{decorator?.nameOverride ? decorator.nameOverride : title}</h1>
+          <ProductPrice
+            price={selectedVariant?.price}
+            compareAtPrice={selectedVariant?.compareAtPrice}
+          />
+          <br />
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+          />
+          <br />
+          <br />
+          <p>
+            <strong>Description</strong>
+          </p>
+          <br />
+          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+          <br />
+        </div>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
         />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
       </div>
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
-              variantId: selectedVariant?.id || '',
-              variantTitle: selectedVariant?.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
+      <PageBuilder
+        parent={{_id: decorator._id, _type: decorator._type}}
+        pageBuilder={decorator.pageBuilder}
       />
-    </div>
+    </>
   );
 }
 

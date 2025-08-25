@@ -1,0 +1,38 @@
+.drawerOverlay {
+  position: fixed;
+  z-index: 9;
+  inset: 0;
+  background-color: var(--gray-a10);
+  backdrop-filter: blur(2px);
+}
+
+.drawerContent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90vw;
+  max-width: 450px;
+  height: 100%;
+  background: var(--gray-3);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    left: 0;
+  }
+
+  & .drawerBody {
+    position: relative;
+    padding: var(--space-5);
+    /* height: 100%; */
+  }
+
+  & .drawerClose {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    cursor: pointer;
+  }
+}

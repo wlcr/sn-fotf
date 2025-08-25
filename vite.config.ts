@@ -26,6 +26,9 @@ export default defineConfig({
     // Allow a strict Content-Security-Policy
     // withtout inlining assets as base64:
     assetsInlineLimit: 0,
+    rollupOptions: {
+      external: ['styled-components'],
+    },
   },
   ssr: {
     optimizeDeps: {
@@ -39,7 +42,9 @@ export default defineConfig({
        * Include 'example-dep' in the array below.
        * @see https://vitejs.dev/config/dep-optimization-options
        */
-      include: ['rxjs', 'hydrogen-sanity'],
+      include: ['rxjs', 'hydrogen-sanity', '@sanity/visual-editing'],
     },
+    noExternal: [/^@radix-ui\/.*/],
+    external: ['styled-components'],
   },
 });

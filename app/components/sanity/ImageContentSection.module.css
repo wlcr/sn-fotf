@@ -1,0 +1,34 @@
+.layoutBlock {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--space-5);
+
+  @media (min-width: 1024px) {
+    &.imageLeft {
+      flex-flow: row nowrap;
+    }
+    &.imageRight {
+      flex-flow: row-reverse nowrap;
+    }
+    &.imageAbove {
+      flex-flow: column nowrap;
+    }
+  }
+
+  & .imageSide,
+  & .contentSide {
+    flex: 1 1 100%;
+
+    @media (min-width: 1024px) {
+      flex: 1 1 50%;
+    }
+  }
+
+  & .contentSide {
+    padding: var(--space-5);
+
+    @media (min-width: 1024px) {
+      padding: var(--space-7);
+    }
+  }
+}
