@@ -34,6 +34,106 @@ interface SanityEnv {
   NODE_ENV?: string;
 }
 
+// Sanity image object interface for type safety
+interface SanityImageAsset {
+  _ref: string;
+  _type: 'reference';
+}
+
+interface SanityImage {
+  asset?: SanityImageAsset;
+  hotspot?: {
+    x: number;
+    y: number;
+  };
+  crop?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
+}
+
+// Content object interface for member access control
+interface ContentWithAccess {
+  membersOnly?: boolean;
+  [key: string]: unknown;
+}
+
+// Announcement interface for filtering
+interface Announcement {
+  membersOnly?: boolean;
+  expiresAt?: string | null;
+  publishedAt?: string | null;
+  [key: string]: unknown;
+}
+
+// Hydrogen cache strategy interface (placeholder for better type safety)
+interface HydrogenCacheStrategy {
+  [key: string]: unknown;
+}
+
+/**
+ * Check if sessionStorage is available and accessible
+ * 
+ * @returns Whether sessionStorage is available
+ */
+function isSessionStorageAvailable(): boolean {
+  try {
+    if (typeof window === 'undefined' || !window.sessionStorage) {
+      return false;
+    }
+    // Test if we can actually use sessionStorage
+    const testKey = '__sanity_storage_test__';
+    sessionStorage.setItem(testKey, 'test');
+    sessionStorage.removeItem(testKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Clear old Sanity cache entries from sessionStorage to make room for new ones
+ * Only removes entries that are older than 1 hour
+ */
+function clearOldSanityCacheEntries(): void {
+  try {
+    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+    const keysToRemove: string[] = [];
+    
+    // Find old sanity cache entries
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (key && key.startsWith('sanity_cache:')) {
+        try {
+          const value = sessionStorage.getItem(key);
+          if (value) {
+            const parsed = JSON.parse(value);
+            if (parsed.timestamp && parsed.timestamp < oneHourAgo) {
+              keysToRemove.push(key);
+            }
+          }
+        } catch {
+          // Invalid entry, mark for removal
+          keysToRemove.push(key);
+        }
+      }
+    }
+    
+    // Remove old entries
+    keysToRemove.forEach(key => {
+      try {
+        sessionStorage.removeItem(key);
+      } catch {
+        // Ignore removal errors
+      }
+    });
+  } catch (error) {
+    console.warn('Failed to clear old cache entries:', error);
+  }
+}
+
 /**
  * Create a Sanity client instance
  * 
@@ -99,7 +199,7 @@ export async function sanityServerQuery<T = any>(
   query: string,
   params: Record<string, any> = {},
   options: {
-    cache?: any; // Hydrogen cache strategy (CacheLong, CacheShort, etc.)
+    cache?: HydrogenCacheStrategy; // Hydrogen cache strategy (CacheLong, CacheShort, etc.)
     tags?: string[];
     displayName?: string; // For debugging in Hydrogen's subrequest profiler
     env?: SanityEnv; // Environment variables for safe cross-environment access
@@ -160,23 +260,35 @@ export async function sanityClientQuery<T = any>(
   
   try {
     // Client-side caching using sessionStorage
-    if (useCache && typeof window !== 'undefined') {
+    if (useCache && typeof window !== 'undefined' && isSessionStorageAvailable()) {
       const key = cacheKey || `sanity_cache:${btoa(query + JSON.stringify(params))}`;
       
       // Check cache first
       try {
         const cached = sessionStorage.getItem(key);
         if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          const isExpired = Date.now() - timestamp > cacheDuration;
-          
-          if (!isExpired) {
-            return data;
+          try {
+            const parsedCache = JSON.parse(cached);
+            if (parsedCache && typeof parsedCache === 'object' && 'data' in parsedCache && 'timestamp' in parsedCache) {
+              const { data, timestamp } = parsedCache;
+              const isExpired = Date.now() - timestamp > cacheDuration;
+              
+              if (!isExpired) {
+                return data;
+              }
+            }
+          } catch (parseError) {
+            // Invalid JSON in cache, clear it
+            try {
+              sessionStorage.removeItem(key);
+            } catch (removeError) {
+              // Ignore removal errors
+            }
           }
         }
       } catch (cacheError) {
         // Cache read failed, continue with fresh fetch
-        console.warn('Cache read failed:', cacheError);
+        console.warn('SessionStorage read failed:', cacheError);
       }
       
       // Fetch fresh data
@@ -184,13 +296,26 @@ export async function sanityClientQuery<T = any>(
       
       // Cache the result
       try {
-        sessionStorage.setItem(key, JSON.stringify({
+        const cacheData = JSON.stringify({
           data: result,
           timestamp: Date.now()
-        }));
+        });
+        sessionStorage.setItem(key, cacheData);
       } catch (cacheError) {
-        // Cache write failed, but we have the data
-        console.warn('Cache write failed:', cacheError);
+        // Cache write failed (quota exceeded or other error), but we have the data
+        if (cacheError instanceof DOMException && cacheError.code === 22) {
+          console.warn('SessionStorage quota exceeded, clearing old entries');
+          try {
+            // Clear old sanity cache entries
+            clearOldSanityCacheEntries();
+            // Retry once
+            sessionStorage.setItem(key, JSON.stringify({ data: result, timestamp: Date.now() }));
+          } catch (retryError) {
+            console.warn('SessionStorage write failed after cleanup:', retryError);
+          }
+        } else {
+          console.warn('SessionStorage write failed:', cacheError);
+        }
       }
       
       return result;
@@ -374,7 +499,7 @@ export const SANITY_QUERIES = {
  * const imageUrl = getSanityImageUrl(image, { width: 800 });
  */
 export function getSanityImageUrl(
-  image: any,
+  image: SanityImage,
   options: {
     width?: number;
     height?: number;
@@ -486,7 +611,7 @@ export class SanityError extends Error {
  * @returns Whether the content should be displayed
  */
 export function isContentAvailable(
-  content: { membersOnly?: boolean },
+  content: ContentWithAccess,
   isMember: boolean = false
 ): boolean {
   if (!content.membersOnly) return true;
@@ -501,9 +626,9 @@ export function isContentAvailable(
  * @returns Filtered announcements
  */
 export function filterActiveAnnouncements(
-  announcements: any[],
+  announcements: Announcement[],
   isMember: boolean = false
-): any[] {
+): Announcement[] {
   const now = new Date();
   
   return announcements.filter(announcement => {
@@ -563,7 +688,7 @@ export async function sanityQuery<T = any>(
   query: string,
   params: Record<string, any> = {},
   options: {
-    cache?: any;
+    cache?: HydrogenCacheStrategy;
     tags?: string[];
     displayName?: string;
   } = {}
