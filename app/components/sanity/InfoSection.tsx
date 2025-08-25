@@ -1,15 +1,15 @@
-import { type PortableTextBlock } from 'next-sanity';
+import {type PortableTextBlock} from '@portabletext/react';
 
-import PortableText from '@/components/PortableText';
-import { InfoSection } from '@/sanity.types';
-import { Box, Flex, Heading, Text } from '@radix-ui/themes';
+import PortableText from './PortableText';
+import {InfoSection} from 'studio/sanity.types';
+import {Box, Flex, Heading, Text} from '@radix-ui/themes';
 
 type InfoProps = {
   block: InfoSection;
   index: number;
 };
 
-export default function CTA({ block }: InfoProps) {
+export default function CTA({block}: InfoProps) {
   return (
     <Box>
       <Flex direction="column" gap="5">

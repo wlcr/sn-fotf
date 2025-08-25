@@ -57,7 +57,12 @@ export default function ImageContentSectionBlock({
             align={{initial: 'left', md: textAlign}}
             size={typeSize.toString() as TextProps['size']}
           >
-            <PortableText value={block.content} />
+            <PortableText
+              value={block.content?.map((blockItem) => ({
+                ...blockItem,
+                children: blockItem.children ?? [],
+              }))}
+            />
           </Text>
         )}
         {block?.button && block.button.link && block.button.buttonText && (

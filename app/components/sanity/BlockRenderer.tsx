@@ -29,11 +29,11 @@ type BlockProps = {
 
 const Blocks: BlocksType = {
   callToAction: JsonBlock,
-  faqSection: JsonBlock,
+  faqSection: FaqSectionBlock,
   infoSection: JsonBlock,
   imageSection: JsonBlock,
   contentSection: JsonBlock,
-  imageContentSection: JsonBlock,
+  imageContentSection: ImageContentSection,
 };
 
 /**

@@ -1,11 +1,11 @@
-import { Hash } from 'lucide-react';
-import { PortableTextBlock } from 'next-sanity';
+import {Hash} from 'lucide-react';
+import {PortableTextBlock} from '@portabletext/react';
 
 interface AnchorLinkProps {
   value: PortableTextBlock;
 }
 
-export const AnchorLink = ({ value }: AnchorLinkProps) => {
+export const AnchorLink = ({value}: AnchorLinkProps) => {
   return (
     <a href={`#${value?._key}`} className="anchor-link">
       <Hash size="24" />

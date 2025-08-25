@@ -2,18 +2,13 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  Box,
-  Flex,
-  IconButton,
-  Text,
-} from '@radix-ui/themes';
-import { AudioWaveform, Calendar } from 'lucide-react';
-import { clsx } from 'clsx';
-import { LogoLink } from './LogoLink';
-import { useDrawer } from './Drawer.provider';
+import {Box, Flex, IconButton, Text} from '@radix-ui/themes';
+import {AudioWaveform, Calendar} from 'lucide-react';
+import {clsx} from 'clsx';
+import {LogoLink} from './LogoLink';
+import {useDrawer} from './Drawer.provider';
 import Drawer from './Drawer';
-import { Link as LinkType, Menu } from '@/sanity.types';
+import {Link as LinkType, Menu} from 'studio/sanity.types';
 import ResolvedLink from './ResolvedLink';
 
 interface HeaderProps {
@@ -25,11 +20,8 @@ interface HeaderProps {
   };
 }
 
-export function Header({
-  menu,
-  announcementBar,
-}: HeaderProps) {
-  const { openDrawer } = useDrawer();
+export function Header({menu, announcementBar}: HeaderProps) {
+  const {openDrawer} = useDrawer();
   const handleOpenDrawer = () => {
     openDrawer(<NavMenu menu={menu} />);
   };
@@ -49,10 +41,7 @@ export function Header({
       )}
       <header className={clsx(['header', 'container'])}>
         <Flex justify="between" align="center">
-          <IconButton
-            variant="ghost"
-            onClick={handleOpenDrawer}
-          >
+          <IconButton variant="ghost" onClick={handleOpenDrawer}>
             <AudioWaveform size={32} />
           </IconButton>
 
@@ -74,7 +63,7 @@ type NavMenuProps = {
   menu?: Menu;
 };
 
-const NavMenu = ({ menu }: NavMenuProps) => {
+const NavMenu = ({menu}: NavMenuProps) => {
   return (
     <Flex direction="column" gap="3" py="5" asChild>
       <Text as="div" size="7" asChild>
@@ -83,10 +72,7 @@ const NavMenu = ({ menu }: NavMenuProps) => {
           <Link href="/events">All Events</Link>
           {menu &&
             menu.map((item) => (
-              <ResolvedLink
-                link={item.link}
-                key={item._key}
-              >
+              <ResolvedLink link={item.link} key={item._key}>
                 {item.title}
               </ResolvedLink>
             ))}

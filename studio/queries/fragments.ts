@@ -1,4 +1,4 @@
-import {groq} from 'hydrogen-sanity/groq'
+import groq from 'groq'
 
 export const linkReference = groq`
   _type == "link" => {

@@ -1,4 +1,4 @@
-import {groq} from 'hydrogen-sanity/groq'
+import groq from 'groq'
 import {linkFields, linkReference, pageBuilder} from './fragments'
 
 export const settingsQuery = groq`*[_type == "settings"][0]`

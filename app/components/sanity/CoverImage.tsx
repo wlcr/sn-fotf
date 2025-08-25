@@ -1,7 +1,6 @@
-import { stegaClean } from '@sanity/client/stega';
-import { Image } from 'next-sanity/image';
-import { getImageDimensions } from '@sanity/asset-utils';
-import { urlForImage } from '@/sanity/lib/utils';
+import {stegaClean} from '@sanity/client/stega';
+import {getImageDimensions} from '@sanity/asset-utils';
+import SanityImage from './SanityImage';
 
 interface CoverImageProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,15 +9,14 @@ interface CoverImageProps {
 }
 
 export default function CoverImage(props: CoverImageProps) {
-  const { image: source, priority } = props;
+  const {image: source, priority} = props;
   const image = source?.asset?._ref ? (
-    <Image
-      className="object-cover"
+    <SanityImage
+      image={source}
       width={getImageDimensions(source).width}
       height={getImageDimensions(source).height}
+      aspectRatio={getImageDimensions(source).aspectRatio}
       alt={stegaClean(source?.alt) || ''}
-      src={urlForImage(source)?.url() as string}
-      priority={priority}
     />
   ) : null;
 

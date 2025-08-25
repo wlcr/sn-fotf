@@ -15,6 +15,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import type {SanityDocument} from '@sanity/client';
 import {productDecoratorQuery} from 'studio/queries';
 import PageBuilder from '~/components/sanity/PageBuilder';
+import {loadQuery} from '~/lib/sanity/sanity.loader.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -57,7 +58,7 @@ async function loadCriticalData({
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
-    sanity.loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
+    loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
   ]);
 
   console.log('decorator', decorator);
