@@ -13,6 +13,12 @@
 
 import { createClient } from '@sanity/client';
 import type { SanityClient, ClientConfig } from '@sanity/client';
+import { defineLive } from '@sanity/preview-kit';
+import type { LiveQueryStore } from '@sanity/preview-kit';
+
+// Re-export live preview utilities
+export { defineLive } from '@sanity/preview-kit';
+export type { LiveQueryStore } from '@sanity/preview-kit';
 
 // Environment variables interface
 interface SanityEnv {
@@ -21,6 +27,8 @@ interface SanityEnv {
   SANITY_API_VERSION?: string;
   SANITY_API_TOKEN?: string;
   SANITY_USE_CDN?: string;
+  SANITY_PREVIEW_SECRET?: string;
+  SANITY_REVALIDATE_SECRET?: string;
 }
 
 /**
@@ -40,6 +48,33 @@ export function createSanityClient(
     apiVersion: env.SANITY_API_VERSION || '2025-01-01',
     useCdn: env.SANITY_USE_CDN === 'true' || process.env.NODE_ENV === 'production',
     token: env.SANITY_API_TOKEN,
+    ...options,
+  });
+}
+
+/**
+ * Create a Sanity client for live preview mode
+ * Always uses a read token and disables CDN for real-time updates
+ * 
+ * @param env - Environment variables from Hydrogen context
+ * @param options - Additional client configuration options
+ * @returns Configured Sanity client for preview
+ */
+export function createSanityPreviewClient(
+  env: SanityEnv,
+  options: Partial<ClientConfig> = {}
+): SanityClient {
+  if (!env.SANITY_API_TOKEN) {
+    throw new Error('SANITY_API_TOKEN is required for preview mode');
+  }
+
+  return createClient({
+    projectId: env.SANITY_PROJECT_ID,
+    dataset: env.SANITY_DATASET || 'production',
+    apiVersion: env.SANITY_API_VERSION || '2025-01-01',
+    useCdn: false, // Always disable CDN for preview
+    token: env.SANITY_API_TOKEN,
+    perspective: 'previewDrafts', // Include draft content
     ...options,
   });
 }
@@ -466,4 +501,125 @@ export function filterActiveAnnouncements(
     
     return true;
   });
+}
+
+/**
+ * Check if preview mode is enabled based on request parameters or cookies
+ * 
+ * @param request - Request object with URL and headers
+ * @param env - Environment variables
+ * @returns Whether preview mode is active
+ */
+export function isPreviewMode(request: Request, env: SanityEnv): boolean {
+  const url = new URL(request.url);
+  
+  // Check for preview query parameter with secret
+  const previewParam = url.searchParams.get('preview');
+  if (previewParam === env.SANITY_PREVIEW_SECRET) {
+    return true;
+  }
+  
+  // Check for preview cookie (set by preview API route)
+  const cookies = request.headers.get('Cookie') || '';
+  const previewCookie = cookies
+    .split(';')
+    .find(cookie => cookie.trim().startsWith('sanity-preview='))
+    ?.split('=')?.[1];
+    
+  return previewCookie === 'true';
+}
+
+/**
+ * Smart query function that automatically chooses between regular and preview client
+ * based on preview mode detection
+ * 
+ * @param request - Request object
+ * @param env - Environment variables
+ * @param query - GROQ query string
+ * @param params - Query parameters
+ * @param options - Query options
+ * @returns Promise resolving to query result
+ */
+export async function sanityQuery<T = any>(
+  request: Request,
+  env: SanityEnv,
+  query: string,
+  params: Record<string, any> = {},
+  options: {
+    cache?: any;
+    tags?: string[];
+    displayName?: string;
+  } = {}
+): Promise<T> {
+  const inPreviewMode = isPreviewMode(request, env);
+  
+  if (inPreviewMode) {
+    // Use preview client and disable caching
+    const previewClient = createSanityPreviewClient(env);
+    console.log(`[Sanity Preview] Fetching: ${options.displayName || 'query'}`);
+    return await previewClient.fetch<T>(query, params);
+  } else {
+    // Use regular client with caching
+    const client = createSanityClient(env);
+    return await sanityServerQuery<T>(client, query, params, options);
+  }
+}
+
+/**
+ * Live query hook data for React components
+ * Returns both initial data and live query setup
+ * 
+ * @param query - GROQ query string
+ * @param params - Query parameters
+ * @param initial - Initial data from server
+ * @param enabled - Whether live updates are enabled
+ * @returns Live query data structure
+ */
+export function createLiveQueryData<T = any>(
+  query: string,
+  params: Record<string, any>,
+  initial: T,
+  enabled: boolean = false
+) {
+  return {
+    query,
+    params,
+    initial,
+    enabled,
+    // These will be used by the client-side live query hook
+    key: `${query}-${JSON.stringify(params)}`,
+    timestamp: Date.now()
+  };
+}
+
+/**
+ * Generate preview URLs for Sanity Studio
+ * 
+ * @param slug - Document slug
+ * @param type - Document type
+ * @param secret - Preview secret
+ * @returns Preview URL object
+ */
+export function generatePreviewUrl(
+  slug: string,
+  type: string,
+  secret?: string
+): { preview: string; exit: string } {
+  const baseUrl = typeof window !== 'undefined' 
+    ? window.location.origin 
+    : process.env.PUBLIC_BASE_URL || 'http://localhost:3000';
+    
+  const previewSecret = secret || process.env.SANITY_PREVIEW_SECRET;
+  
+  const previewUrl = new URL(`/${type}/${slug}`, baseUrl);
+  if (previewSecret) {
+    previewUrl.searchParams.set('preview', previewSecret);
+  }
+  
+  const exitUrl = new URL('/api/preview/exit', baseUrl);
+  
+  return {
+    preview: previewUrl.toString(),
+    exit: exitUrl.toString()
+  };
 }

@@ -11,17 +11,18 @@ This guide provides comprehensive documentation for developers working with Sani
 4. [Type Safety & Code Generation](#type-safety--code-generation)
 5. [Caching Strategies](#caching-strategies)
 6. [Content Types & Queries](#content-types--queries)
-7. [Image Optimization](#image-optimization)
-8. [Error Handling](#error-handling)
-9. [Best Practices](#best-practices)
-10. [Common Patterns](#common-patterns)
+7. [Live Preview Integration](#live-preview-integration)
+8. [Image Optimization](#image-optimization)
+9. [Error Handling](#error-handling)
+10. [Best Practices](#best-practices)
+11. [Common Patterns](#common-patterns)
 
 ## Quick Start
 
 ### 1. Install Dependencies
 
 ```bash
-npm install @sanity/client @sanity/codegen
+npm install @sanity/client @sanity/codegen @sanity/preview-kit
 ```
 
 ### 2. Configure Environment Variables
@@ -37,6 +38,10 @@ SANITY_USE_CDN=true
 # Public variables for client-side usage
 PUBLIC_SANITY_PROJECT_ID=your-project-id
 PUBLIC_SANITY_DATASET=production
+
+# Preview mode configuration
+SANITY_PREVIEW_SECRET=your-preview-secret
+SANITY_REVALIDATE_SECRET=your-revalidate-secret
 ```
 
 ### 3. Basic Usage
@@ -73,6 +78,8 @@ export async function loader({ context }: Route.LoaderArgs) {
 | `SANITY_API_VERSION` | API version date | ❌ | `2025-01-01` |
 | `SANITY_API_TOKEN` | Read token (for private content) | ❌ | - |
 | `SANITY_USE_CDN` | Enable CDN for production | ❌ | `true` in prod |
+| `SANITY_PREVIEW_SECRET` | Secret for enabling preview mode | ❌ | - |
+| `SANITY_REVALIDATE_SECRET` | Secret for content revalidation | ❌ | - |
 
 ### Hydrogen Context Integration
 
@@ -434,6 +441,285 @@ const products = await sanityServerQuery(
   { category: 'electronics' }
 );
 ```
+
+## Live Preview Integration
+
+Sanity's live preview allows content editors to see changes in real-time as they edit content in Sanity Studio. Our integration supports both simple preview mode and full live queries.
+
+### Setup Live Preview
+
+1. **Install preview dependencies:**
+   ```bash
+   npm install @sanity/preview-kit
+   ```
+
+2. **Configure environment variables:**
+   ```bash
+   SANITY_PREVIEW_SECRET=your-secret-key
+   SANITY_REVALIDATE_SECRET=your-revalidate-secret
+   SANITY_API_TOKEN=your-read-write-token  # Required for preview
+   ```
+
+3. **Set up preview API routes:**
+   The integration includes API routes at:
+   - `/api/preview/enter` - Enable preview mode
+   - `/api/preview/exit` - Disable preview mode
+
+### Preview Mode Detection
+
+Use the smart query function that automatically detects preview mode:
+
+```typescript path=null start=null
+// routes/pages.$slug.tsx
+import { sanityQuery, SANITY_QUERIES, createLiveQueryData } from '~/lib/sanity';
+import type { Route } from './+types/pages.$slug';
+
+export async function loader({ params, context, request }: Route.LoaderArgs) {
+  // This automatically detects preview mode and uses appropriate client
+  const page = await sanityQuery(
+    request,
+    context.env,
+    SANITY_QUERIES.PAGE_BY_SLUG,
+    { slug: params.slug },
+    {
+      cache: context.storefront.CacheLong(),
+      displayName: `Page: ${params.slug}`
+    }
+  );
+  
+  if (!page) {
+    throw new Response('Page not found', { status: 404 });
+  }
+  
+  return { page };
+}
+```
+
+### Live Queries with React Components
+
+For real-time updates in preview mode, use the live query components:
+
+```tsx path=null start=null
+// routes/pages.$slug.tsx
+import { LiveContent, PreviewModeBanner } from '~/components/SanityLivePreview';
+
+export default function PageRoute({ loaderData }: Route.ComponentProps) {
+  const { page } = loaderData;
+  
+  return (
+    <>
+      <PreviewModeBanner />
+      <LiveContent
+        query={SANITY_QUERIES.PAGE_BY_SLUG}
+        params={{ slug: page.slug.current }}
+        initial={page}
+        projectId={window.ENV.PUBLIC_SANITY_PROJECT_ID}
+        dataset={window.ENV.PUBLIC_SANITY_DATASET}
+        token={window.ENV.SANITY_API_TOKEN}
+      >
+        {(liveData) => (
+          <div>
+            <h1>{liveData.title}</h1>
+            <div>{liveData.content}</div>
+          </div>
+        )}
+      </LiveContent>
+    </>
+  );
+}
+```
+
+### Manual Live Query Hook
+
+For more control, use the live query hook directly:
+
+```tsx path=null start=null
+import { useSanityLiveQuery } from '~/components/SanityLivePreview';
+
+export default function PageRoute({ loaderData }: Route.ComponentProps) {
+  const { page } = loaderData;
+  
+  // This hook automatically handles preview mode detection
+  const liveData = useSanityLiveQuery(
+    SANITY_QUERIES.PAGE_BY_SLUG,
+    { slug: page.slug.current },
+    page, // Initial data from server
+    {
+      enabled: true,
+      projectId: window.ENV.PUBLIC_SANITY_PROJECT_ID,
+      dataset: window.ENV.PUBLIC_SANITY_DATASET,
+      token: window.ENV.SANITY_API_TOKEN
+    }
+  );
+  
+  return (
+    <div>
+      <h1>{liveData.title}</h1>
+      <div>{liveData.content}</div>
+    </div>
+  );
+}
+```
+
+### Preview Mode Components
+
+Include preview components in your layout:
+
+```tsx path=null start=null
+// app/root.tsx
+import { 
+  PreviewModeBanner, 
+  PreviewScripts, 
+  PreviewStatusIndicator 
+} from '~/components/SanityLivePreview';
+
+export default function App() {
+  return (
+    <html>
+      <head>{/* ... */}</head>
+      <body>
+        <PreviewModeBanner />
+        <Outlet />
+        <PreviewStatusIndicator />
+        <PreviewScripts />
+      </body>
+    </html>
+  );
+}
+```
+
+### Configuring Sanity Studio
+
+In your Sanity Studio, configure preview URLs:
+
+```typescript path=null start=null
+// sanity.config.ts
+import { defineConfig } from 'sanity';
+
+export default defineConfig({
+  // ... other config
+  
+  document: {
+    productionUrl: async (prev, { document }) => {
+      const baseUrl = 'https://your-site.com';
+      const previewSecret = 'your-preview-secret';
+      
+      if (document._type === 'page') {
+        return `${baseUrl}/api/preview/enter?secret=${previewSecret}&slug=${document.slug?.current}&type=page`;
+      }
+      
+      if (document._type === 'post') {
+        return `${baseUrl}/api/preview/enter?secret=${previewSecret}&slug=${document.slug?.current}&type=post`;
+      }
+      
+      return prev;
+    }
+  }
+});
+```
+
+### Preview URL Generation
+
+Generate preview URLs programmatically:
+
+```typescript path=null start=null
+import { generatePreviewUrl } from '~/lib/sanity';
+
+// Generate preview URLs for different content types
+const pagePreview = generatePreviewUrl('about-us', 'page');
+const postPreview = generatePreviewUrl('latest-news', 'post');
+
+console.log(pagePreview);
+// {
+//   preview: 'https://your-site.com/pages/about-us?preview=secret',
+//   exit: 'https://your-site.com/api/preview/exit'
+// }
+```
+
+### Caching Considerations
+
+**Preview mode automatically:**
+- ✅ **Disables server-side caching** to show latest content
+- ✅ **Uses preview client** with `perspective: 'previewDrafts'`
+- ✅ **Includes draft content** not visible in production
+- ✅ **Shows real-time updates** as editors make changes
+
+```typescript path=null start=null
+// The smart query function handles this automatically
+export async function loader({ request, context }: Route.LoaderArgs) {
+  // In preview mode: no cache, includes drafts
+  // In production mode: full caching, published content only
+  const data = await sanityQuery(
+    request,
+    context.env,
+    query,
+    params,
+    { cache: context.storefront.CacheLong() } // Ignored in preview mode
+  );
+  
+  return { data };
+}
+```
+
+### Preview Security
+
+**Important security considerations:**
+
+1. **Use strong preview secrets** and rotate them regularly
+2. **Restrict preview access** to content editors only
+3. **Don't expose preview tokens** in client-side code
+4. **Use environment-specific secrets** for different deployments
+
+```typescript path=null start=null
+// Example: Role-based preview access
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const isPreview = isPreviewMode(request, context.env);
+  
+  if (isPreview) {
+    // Verify user has permission to view preview
+    const user = await getAuthenticatedUser(request);
+    if (!user || !user.roles.includes('editor')) {
+      throw new Response('Unauthorized preview access', { status: 403 });
+    }
+  }
+  
+  // ... rest of loader
+}
+```
+
+### Development Workflow
+
+1. **Start your development server**
+2. **Open Sanity Studio**
+3. **Edit content and click "Preview"**
+4. **See changes in real-time** on your site
+5. **Exit preview mode** when done
+
+### Troubleshooting Preview Mode
+
+**Common issues and solutions:**
+
+```typescript path=null start=null
+// Debug preview mode detection
+import { isPreviewMode } from '~/lib/sanity';
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const inPreview = isPreviewMode(request, context.env);
+  
+  console.log('Preview mode:', inPreview);
+  console.log('Preview secret:', context.env.SANITY_PREVIEW_SECRET);
+  console.log('Has API token:', Boolean(context.env.SANITY_API_TOKEN));
+  
+  // ... rest of loader
+}
+```
+
+**Checklist for preview issues:**
+- ✅ `SANITY_API_TOKEN` is set and has read permissions
+- ✅ `SANITY_PREVIEW_SECRET` matches Studio configuration
+- ✅ Preview API routes are deployed and accessible
+- ✅ Browser cookies are enabled
+- ✅ Content has been published or saved as draft
 
 ## Image Optimization
 
