@@ -24,7 +24,7 @@ export default {
        * Hydrogen's Storefront client to the loader context.
        */
       const handleRequest = createRequestHandler({
-        // @ts-expect-error - Virtual module handled by Vite at build time.
+        // Virtual module handled by Vite at build time.
         // See: https://vitejs.dev/guide/api-plugin.html#virtual-modules and
         // https://github.com/remix-run/react-router/discussions/9946 for details on this pattern.
         // eslint-disable-next-line import/no-unresolved

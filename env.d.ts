@@ -39,11 +39,20 @@ declare global {
 
   interface Env extends HydrogenEnv {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
-    SANITY_PREVIEW_SECRET?: string;
-    SANITY_API_READ_TOKEN?: string;
-    SANITY_API_WRITE_TOKEN?: string;
+
+    // Sanity CMS environment variables
+    // PUBLIC_ prefix variables are accessible on both server and client
     PUBLIC_SANITY_PROJECT_ID?: string;
     PUBLIC_SANITY_DATASET?: string;
+
+    // Server-only Sanity variables (no PUBLIC_ prefix)
+    SANITY_API_VERSION?: string;
+    SANITY_API_TOKEN?: string;
+    SANITY_USE_CDN?: string;
+    SANITY_PREVIEW_SECRET?: string;
+    SANITY_REVALIDATE_SECRET?: string;
+
+    // Other environment variables
     PUBLIC_BASE_URL?: string;
   }
 }
@@ -54,7 +63,7 @@ declare module 'react-router' {
     // to change context type, change the return of createAppLoadContext() instead
   }
 
-  // TODO: remove this once we've migrated our loaders to `Route.LoaderArgs` 
+  // TODO: remove this once we've migrated our loaders to `Route.LoaderArgs`
   interface LoaderFunctionArgs {
     context: AppLoadContext;
   }

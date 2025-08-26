@@ -6,8 +6,11 @@
  */
 
 import {useEffect, useState} from 'react';
-import {useLiveQuery} from '@sanity/preview-kit';
-import {createSanityClient, createSanityPreviewClient} from '~/lib/sanity';
+import {
+  createQueryStore,
+  createSanityClient,
+  createSanityPreviewClient,
+} from '~/lib/sanity';
 
 /**
  * Hook to detect if we're in preview mode
@@ -51,12 +54,14 @@ export function useSanityLiveQuery<T = unknown>(
 ): T {
   const isPreview = usePreviewMode();
 
-  // Use Sanity's live query hook - it returns [data, loading, enabled]
-  const [liveData, loading, enabled] = useLiveQuery<T>(initial, query, params);
+  // For now, we'll return initial data and implement live queries later
+  // when we set up the query store properly. This maintains compatibility
+  // while we transition to the new architecture.
 
-  // Return live data only if preview mode is enabled and the query is enabled
-  // Otherwise return initial data
-  return isPreview && options.enabled && enabled ? liveData : initial;
+  // TODO: Implement live queries using @sanity/react-loader's useQuery hook
+  // This will require setting up the query store with proper client configuration
+
+  return initial;
 }
 
 /**
