@@ -22,10 +22,10 @@ This project uses GitHub Actions to automatically deploy your Hydrogen app each 
 
 **Deployment Environment Mapping:**
 
-| Git branch | Environment | URL |
-|------------|-------------|-----|
-| `main` | Production | [sn---friends-of-the-family-1f7cae97e15848f44e86.o2.myshopify.dev](https://sn---friends-of-the-family-1f7cae97e15848f44e86.o2.myshopify.dev) |
-| (All other branches) | Preview | `{hash}.myshopify.dev` |
+| Git branch           | Environment | URL                                                                                                                                          |
+| -------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main`               | Production  | [sn---friends-of-the-family-1f7cae97e15848f44e86.o2.myshopify.dev](https://sn---friends-of-the-family-1f7cae97e15848f44e86.o2.myshopify.dev) |
+| (All other branches) | Preview     | `{hash}.myshopify.dev`                                                                                                                       |
 
 You can also create your own [custom environments](https://shopify.dev/docs/custom-storefronts/hydrogen/environments#managing-environments) (like "Staging" or "QA") and assign them to your own [custom domains](https://shopify.dev/docs/custom-storefronts/hydrogen/migrate/redirect-traffic#step-1-set-up-the-domains).
 
@@ -67,17 +67,63 @@ npm run build
 
 ## Local development
 
-After you've cloned your project, install the dependencies and run the local development server:
+After you've cloned your project, install the dependencies:
 
 ```bash
-npm install && npm run dev
+npm install
 ```
 
-Link your local development environment to your Shopify store to render your product inventory data:
+### Environment Variables Setup
+
+**Environment variables are handled automatically by the Shopify CLI!** You don't need to create a `.env` file manually.
+
+#### First-time setup on a new machine:
+
+1. **Link your project to the Hydrogen storefront**:
 
 ```bash
 npx shopify hydrogen link --storefront "SN - Friends of the Family"
 ```
+
+2. **Pull environment variables**:
+
+```bash
+npx shopify hydrogen env pull
+```
+
+3. **Start development server**:
+
+```bash
+npm run dev
+```
+
+#### Managing Environment Variables
+
+- **View current variables**: `shopify hydrogen env list`
+- **Pull latest from Oxygen**: `shopify hydrogen env pull`
+- **Push local changes**: `shopify hydrogen env push`
+- **Admin Interface**: [Manage in Shopify Admin](https://admin.shopify.com/store/sierra-nevada-brewing/hydrogen/1000045394/settings/environments)
+
+**Important**: The `.env` file is automatically generated and contains secrets. It's excluded from git (`.gitignore`) for security.
+
+#### Available Environment Variables
+
+The following variables are automatically configured:
+
+**Shopify Variables** (Auto-managed):
+
+- `PUBLIC_STORE_DOMAIN` - Your Shopify store domain
+- `PUBLIC_STOREFRONT_API_TOKEN` - Storefront API access
+- `SESSION_SECRET` - Session encryption key
+- Customer Account API configuration
+
+**Sanity CMS Variables** (Pre-configured):
+
+- `PUBLIC_SANITY_PROJECT_ID` - Sanity project identifier
+- `PUBLIC_SANITY_DATASET` - Dataset (usually 'production')
+- `SANITY_API_TOKEN` - API access token for preview mode
+- `SANITY_PREVIEW_SECRET` - Preview mode authentication
+- `SANITY_REVALIDATE_SECRET` - Webhook validation
 
 [Linking your project](https://shopify.dev/docs/custom-storefronts/hydrogen/cli#link) automatically keeps your local environment variables in sync with Oxygen, allows you to query your store data, and lets you create deployments from the command line at any time. Check the complete [list of Hydrogen CLI](https://shopify.dev/docs/custom-storefronts/hydrogen/cli) for a complete list of features.
 
@@ -95,8 +141,9 @@ npm run lint:fix        # ESLint with auto-fix
 ### Pre-commit Hooks
 
 Husky automatically runs quality checks before each commit:
+
 - ✅ **TypeScript compilation**: Ensures no type errors
-- ✅ **ESLint**: Code quality and style consistency  
+- ✅ **ESLint**: Code quality and style consistency
 - ✅ **Prettier**: Code formatting (via lint-staged)
 
 **Bypassing Pre-commit Hooks (Use Sparingly)**:
@@ -108,6 +155,7 @@ git commit --no-verify -m "your commit message"
 ```
 
 ⚠️ **Important**: Only use `--no-verify` when:
+
 - TypeScript errors are unrelated to your changes
 - You're making incremental progress on large refactoring
 - Document the remaining errors in your commit message
@@ -128,6 +176,7 @@ npm run codegen      # Generates TypeScript types from GraphQL schemas
 ```
 
 This ensures:
+
 - ✅ **Type accuracy**: Types match Shopify's actual GraphQL schema
 - ✅ **Auto-updates**: Types stay in sync when Shopify updates their API
 - ✅ **IntelliSense**: Full autocompletion for Shopify queries and mutations
