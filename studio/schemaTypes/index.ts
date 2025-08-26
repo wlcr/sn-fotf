@@ -16,6 +16,7 @@ import faqSection from './objects/faqSection'
 import {productDecorator} from './documents/productDecorator'
 import {sideBySideCta} from './objects/sideBySideCTA'
 import {homepage} from './singletons/homepage'
+import {productPage} from './documents/productPage'
 
 export const schemaTypes = [
   // Singletons
@@ -25,6 +26,7 @@ export const schemaTypes = [
   settings,
   // Documents
   page,
+  productPage,
   productDecorator,
   // Objects
   blockContent,

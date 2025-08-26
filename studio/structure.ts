@@ -32,6 +32,17 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
             ),
         ),
       S.listItem()
+        .title('Product Pages')
+        .child(
+          S.list()
+            .title('Product Pages')
+            .items(
+              S.documentTypeListItems()
+                .filter((listItem: any) => listItem.getSchemaType()?.name === 'productPage')
+                .map((listItem) => listItem.title(pluralize(listItem.getTitle() as string))),
+            ),
+        ),
+      S.listItem()
         .title('Product Decorators')
         .child(
           S.list()

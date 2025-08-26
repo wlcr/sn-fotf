@@ -46,6 +46,12 @@ export const homeQuery = groq`
   }
 `
 
+export const productPageQuery = groq`
+  *[_type == "productPage" && slug.current == $handle][0]{
+    ...,
+    ${pageBuilder}
+  }`
+
 export const getPageQuery = groq`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,

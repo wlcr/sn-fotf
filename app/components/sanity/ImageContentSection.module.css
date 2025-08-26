@@ -8,6 +8,16 @@
     flex-flow: var(--flexFlow);
     justify-content: stretch;
     align-items: center;
+
+    &.imageLeft {
+      flex-flow: row nowrap;
+    }
+    &.imageRight {
+      flex-flow: row-reverse nowrap;
+    }
+    &.imageAbove {
+      flex-flow: column nowrap;
+    }
   }
 
   & .imageSide,
@@ -16,6 +26,7 @@
     flex: 1 1 100%;
 
     @media (min-width: 1024px) {
+      width: 50%;
       flex: 1 1 50%;
     }
   }
