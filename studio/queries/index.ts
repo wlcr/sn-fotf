@@ -36,14 +36,12 @@ export const productDecoratorQuery = groq`
     ${pageBuilder}
   }`
 
-groq`
-  *[_type == 'page' && slug.current == $slug][0]{
+export const homeQuery = groq`
+  *[_type == 'homepage'][0]{
     _id,
     _type,
     name,
-    slug,
-    heading,
-    subheading,
+    heroVideo,
     ${pageBuilder}
   }
 `

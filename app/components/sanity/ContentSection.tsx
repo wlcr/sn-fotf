@@ -2,12 +2,11 @@ import {type PortableTextBlock} from '@portabletext/react';
 
 import PortableText from './PortableText';
 import {ContentSection} from 'studio/sanity.types';
-import {Box, Button, Flex, Text} from '@radix-ui/themes';
+import {Box, Button, Flex, Text, TextProps} from '@radix-ui/themes';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import styles from './ImageContentSection.module.css';
-import clsx from 'clsx';
-import {TextProps} from '@radix-ui/themes';
+import {clsx} from 'clsx';
 
 type ContentSectionProps = {
   block: ContentSection;

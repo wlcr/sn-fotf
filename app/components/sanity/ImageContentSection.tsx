@@ -4,7 +4,7 @@ import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';
 import styles from './ImageContentSection.module.css';
-import clsx from 'clsx';
+import {clsx} from 'clsx';
 import PortableText from './PortableText';
 
 type ImageContentSectionProps = {

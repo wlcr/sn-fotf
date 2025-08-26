@@ -59,6 +59,16 @@ export const pageBuilder = groq`
         answer,
         hidden
       }
+    },
+    _type == "sideBySideCta" => {
+      sideA{
+        ...,
+        ${linkFields}
+      },
+      sideB{
+        ...,
+        ${linkFields}
+      }
     }
   }
 `

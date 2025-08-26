@@ -14,11 +14,14 @@ import {footer} from './singletons/footer'
 import {menu} from './objects/menu'
 import faqSection from './objects/faqSection'
 import {productDecorator} from './documents/productDecorator'
+import {sideBySideCta} from './objects/sideBySideCTA'
+import {homepage} from './singletons/homepage'
 
 export const schemaTypes = [
   // Singletons
   footer,
   header,
+  homepage,
   settings,
   // Documents
   page,
@@ -30,6 +33,7 @@ export const schemaTypes = [
   linkButton,
   mediaImage,
   menu,
+  sideBySideCta,
   // Sections
   contentSection,
   faqSection,

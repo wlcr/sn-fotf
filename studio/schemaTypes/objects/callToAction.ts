@@ -28,9 +28,9 @@ export const callToAction = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'text',
-      title: 'Text',
-      type: 'text',
+      name: 'content',
+      title: 'Content',
+      type: 'blockContent',
     }),
     defineField({
       name: 'buttonText',
@@ -41,6 +41,12 @@ export const callToAction = defineType({
       name: 'link',
       title: 'Button link',
       type: 'link',
+    }),
+    defineField({
+      name: 'backgroundImage',
+      title: 'Background Image',
+      description: 'An optional background image that will be displayed behind the content',
+      type: 'image',
     }),
   ],
   preview: {

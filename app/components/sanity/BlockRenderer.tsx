@@ -1,13 +1,10 @@
 import React, {createElement} from 'react';
 
-import Cta from './Cta';
-import Info from './InfoSection';
-import {Badge, Box} from '@radix-ui/themes';
 import ContentSection from './ContentSection';
 import ImageContentSection from './ImageContentSection';
 import ImageSection from './ImageSection';
 import FaqSectionBlock from './FaqSection';
-import {dataAttr} from '~/lib/sanity/utils';
+import SideBySideCtaSection from './SideBySideCtaSection';
 import JsonBlock from './JsonBlock';
 
 type BlocksType = {
@@ -28,12 +25,11 @@ type BlockProps = {
 };
 
 const Blocks: BlocksType = {
-  callToAction: JsonBlock,
   faqSection: FaqSectionBlock,
-  infoSection: JsonBlock,
-  imageSection: JsonBlock,
-  contentSection: JsonBlock,
+  imageSection: ImageSection,
+  contentSection: ContentSection,
   imageContentSection: ImageContentSection,
+  sideBySideCta: SideBySideCtaSection,
 };
 
 /**

@@ -14,8 +14,8 @@ import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import type {SanityDocument} from '@sanity/client';
 import {productDecoratorQuery} from 'studio/queries';
-import PageBuilder from '~/components/sanity/PageBuilder';
 import {loadQuery} from '~/lib/sanity/sanity.loader.server';
+import PageBuilder from '~/components/sanity/PageBuilder';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -26,6 +26,8 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     },
   ];
 };
+
+/** SANITY: include these queries in loadCriticalData() */
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -47,7 +49,7 @@ async function loadCriticalData({
   request,
 }: LoaderFunctionArgs) {
   const {handle} = params;
-  const {storefront, sanity} = context;
+  const {storefront} = context;
 
   if (!handle) {
     throw new Error('Expected product handle to be defined');
@@ -60,8 +62,6 @@ async function loadCriticalData({
     // Add other queries here, so that they are loaded in parallel
     loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
   ]);
-
-  console.log('decorator', decorator);
 
   if (!product?.id) {
     throw new Response(null, {status: 404});
@@ -89,6 +89,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
+  // TODO: implement useQuery for live Sanity content updates
   const {product, decorator} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
