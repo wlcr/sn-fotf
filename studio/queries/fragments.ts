@@ -14,22 +14,26 @@ export const linkFields = groq`
   }
 `
 
+export const portableText = groq`
+  {
+    ...,
+    markDefs[]{
+      ...,
+      ${linkReference}
+    }
+  }
+`
+
 export const pageBuilder = groq`
   pageBuilder[]{
     ...,
     _type == "imageContentSection" => {
-      button{
+      image{
         ...,
         ${linkFields}
       },
-      content[]{
-        ...,
-        markDefs[]{
-          ...,
-          ${linkReference}
-        }
-      },
-      image{
+      content[]${portableText},
+      button{
         ...,
         ${linkFields}
       }
@@ -41,32 +45,27 @@ export const pageBuilder = groq`
       }
     },
     _type == "contentSection" => {
+      content[]${portableText},
       button{
         ...,
         ${linkFields}
-      },
-      content[]{
-        ...,
-        markDefs[]{
-          ...,
-          ${linkReference}
-        }
       }
     },
     _type == "faqSection" => {
       faqItems[]{
-        question,
-        answer,
-        hidden
+        ...,
+        answer[]${portableText}
       }
     },
     _type == "sideBySideCta" => {
       sideA{
         ...,
+        content[]${portableText},
         ${linkFields}
       },
       sideB{
         ...,
+        content[]${portableText},
         ${linkFields}
       }
     }

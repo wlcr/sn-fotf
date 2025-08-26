@@ -2,7 +2,6 @@ import {Suspense} from 'react';
 
 import ResolvedLink from './ResolvedLink';
 import {CallToAction} from 'studio/sanity.types';
-import {Box, Button, Card, Flex, Heading, Text} from '@radix-ui/themes';
 import {PortableText} from '@portabletext/react';
 import {urlForImage} from '~/lib/sanity/urlForImage';
 
@@ -19,7 +18,7 @@ export default function CTA({block}: CtaProps) {
     .url();
 
   return (
-    <Box
+    <div
       style={
         {
           '--backgroundImage': `url(${backgroundImageUrl})`,
@@ -31,23 +30,21 @@ export default function CTA({block}: CtaProps) {
         } as React.CSSProperties
       }
     >
-      <Flex direction="column" gap="5" align="start">
-        <Heading as="h2" size="8">
-          {block.heading}
-        </Heading>
+      <div className="flex">
+        <h2 className="h2">{block.heading}</h2>
 
         {block.content && (
-          <Text as="div" size="5">
+          <div className="text" style={{fontSize: 'var(--text-size-5)'}}>
             <PortableText value={block.content} />
-          </Text>
+          </div>
         )}
 
         <Suspense fallback={null}>
-          <Button variant="solid" size="4" asChild>
-            <ResolvedLink link={block.link}>{block.buttonText}</ResolvedLink>
-          </Button>
+          <ResolvedLink className="button" link={block.link}>
+            {block.buttonText}
+          </ResolvedLink>
         </Suspense>
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 }

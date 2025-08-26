@@ -16,7 +16,6 @@ import {
 
 import ResolvedLink from './ResolvedLink';
 import {AnchorLink} from './AnchorLink';
-import {Heading, Text} from '@radix-ui/themes';
 
 export default function CustomPortableText({
   className,
@@ -30,27 +29,27 @@ export default function CustomPortableText({
   const components: PortableTextComponents = {
     block: {
       h1: ({children, value}) => (
-        <Heading as="h1">
+        <h1 className="h1">
           {children}
           {!!autoAnchors && <AnchorLink value={value} />}
-        </Heading>
+        </h1>
       ),
       h2: ({children, value}) => (
-        <Heading as="h2">
+        <h2 className="h2">
           {children}
           {!!autoAnchors && <AnchorLink value={value} />}
-        </Heading>
+        </h2>
       ),
       h3: ({children, value}) => (
-        <Heading as="h3">
+        <h3 className="h3">
           {children}
           {!!autoAnchors && <AnchorLink value={value} />}
-        </Heading>
+        </h3>
       ),
-      h4: ({children}) => <Heading as="h4">{children}</Heading>,
-      h5: ({children}) => <Heading as="h5">{children}</Heading>,
-      h6: ({children}) => <Heading as="h6">{children}</Heading>,
-      p: ({children}) => <Text as="p">{children}</Text>,
+      h4: ({children}) => <h4 className="h4">{children}</h4>,
+      h5: ({children}) => <h5 className="h5">{children}</h5>,
+      h6: ({children}) => <h6 className="h6">{children}</h6>,
+      p: ({children}) => <p className="p">{children}</p>,
     },
     marks: {
       link: ({children, value: link}) => {

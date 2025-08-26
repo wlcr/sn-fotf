@@ -15,9 +15,7 @@ import favicon from '~/assets/favicon.svg?url';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
-import '@radix-ui/themes/styles.css';
 import {PageLayout} from './components/PageLayout';
-import {Theme} from '@radix-ui/themes';
 
 export type RootLoader = typeof loader;
 
@@ -158,19 +156,17 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        <Theme accentColor="amber" radius="large">
-          {data ? (
-            <Analytics.Provider
-              cart={data.cart}
-              shop={data.shop}
-              consent={data.consent}
-            >
-              <PageLayout {...data}>{children}</PageLayout>
-            </Analytics.Provider>
-          ) : (
-            children
-          )}
-        </Theme>
+        {data ? (
+          <Analytics.Provider
+            cart={data.cart}
+            shop={data.shop}
+            consent={data.consent}
+          >
+            <PageLayout {...data}>{children}</PageLayout>
+          </Analytics.Provider>
+        ) : (
+          children
+        )}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

@@ -2,7 +2,6 @@ import {type PortableTextBlock} from '@portabletext/react';
 
 import PortableText from './PortableText';
 import {InfoSection} from 'studio/sanity.types';
-import {Box, Flex, Heading, Text} from '@radix-ui/themes';
 
 type InfoProps = {
   block: InfoSection;
@@ -11,27 +10,17 @@ type InfoProps = {
 
 export default function CTA({block}: InfoProps) {
   return (
-    <Box>
-      <Flex direction="column" gap="5">
-        <div>
-          {block?.heading && (
-            <Heading as="h2" size="7">
-              {block.heading}
-            </Heading>
-          )}
-          {block?.subheading && (
-            <Text as="p" size="5">
-              {block.subheading}
-            </Text>
-          )}
-        </div>
-        {block?.content?.length && (
-          <PortableText
-            className=""
-            value={block.content as PortableTextBlock[]}
-          />
-        )}
-      </Flex>
-    </Box>
+    <>
+      <div>
+        {block?.heading && <h2 className="h2">{block.heading}</h2>}
+        {block?.subheading && <p className="p">{block.subheading}</p>}
+      </div>
+      {block?.content?.length && (
+        <PortableText
+          className=""
+          value={block.content as PortableTextBlock[]}
+        />
+      )}
+    </>
   );
 }

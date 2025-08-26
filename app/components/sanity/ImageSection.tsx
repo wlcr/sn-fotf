@@ -1,5 +1,4 @@
 import {ImageSection} from 'studio/sanity.types';
-import {Box} from '@radix-ui/themes';
 import CoverImage from './CoverImage';
 
 type ImageSectionProps = {
@@ -9,8 +8,8 @@ type ImageSectionProps = {
 
 export default function ImageSectionBlock({block}: ImageSectionProps) {
   return (
-    <Box className={'image-side'}>
+    <div className={'image-side'}>
       {block?.image && <CoverImage image={block.image} priority />}
-    </Box>
+    </div>
   );
 }
