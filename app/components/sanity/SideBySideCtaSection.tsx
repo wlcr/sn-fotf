@@ -1,15 +1,13 @@
-import {ImageContentSection} from 'studio/sanity.types';
+import {ImageContentSection, SideBySideCta} from 'studio/sanity.types';
 import {Box, Flex, Grid} from '@radix-ui/themes';
 import Cta from './Cta';
 
 type SideBySideCtaBlockProps = {
-  block: ImageContentSection;
+  block: SideBySideCta;
   index: number;
 };
 
 export default function SideBySideCtaBlock({block}: SideBySideCtaBlockProps) {
-  console.log('BLOCK a!!', block.sideA);
-  console.log('BLOCK b!!', block.sideB);
   return (
     <Box>
       <Grid columns={{initial: '1', md: '2'}} justify="center" align="center">

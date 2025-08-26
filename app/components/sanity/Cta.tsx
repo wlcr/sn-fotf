@@ -27,7 +27,7 @@ export default function CTA({block}: CtaProps) {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           backgroundSize: 'cover',
-          padding: 'var(--space-4)',
+          padding: 'var(--spacer-4)',
         } as React.CSSProperties
       }
     >
@@ -36,9 +36,11 @@ export default function CTA({block}: CtaProps) {
           {block.heading}
         </Heading>
 
-        <Text as="div" size="5">
-          <PortableText value={block.content} />
-        </Text>
+        {block.content && (
+          <Text as="div" size="5">
+            <PortableText value={block.content} />
+          </Text>
+        )}
 
         <Suspense fallback={null}>
           <Button variant="solid" size="4" asChild>

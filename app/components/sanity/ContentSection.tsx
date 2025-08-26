@@ -1,11 +1,8 @@
-import {type PortableTextBlock} from '@portabletext/react';
-
 import PortableText from './PortableText';
 import {ContentSection} from 'studio/sanity.types';
-import {Box, Button, Flex, Text, TextProps} from '@radix-ui/themes';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
-import styles from './ImageContentSection.module.css';
+import styles from './ContentSection.module.css';
 import {clsx} from 'clsx';
 
 type ContentSectionProps = {
@@ -14,54 +11,52 @@ type ContentSectionProps = {
 };
 
 export default function ContentSectionBlock({block}: ContentSectionProps) {
-  const typeSize = block.typeSize ? block.typeSize : 3;
-  const buttonSize = typeSize >= 5 ? '3' : '2';
-  const buttonTextSize = typeSize >= 5 ? '4' : typeSize.toString();
-
   const textAlign =
     block.contentAlign === 'alignCenter'
       ? 'center'
       : block.contentAlign === 'alignRight'
         ? 'right'
         : 'left';
+  console.log('textAlign', textAlign);
 
   const flexAlign =
     block.contentAlign === 'alignCenter'
       ? 'center'
       : block.contentAlign === 'alignRight'
-        ? 'end'
-        : 'start';
+        ? 'flex-end'
+        : 'flex-start';
+  console.log('flexAlign', flexAlign);
 
   return (
-    <Box className={styles.layoutBlock}>
-      <Flex
-        direction="column"
-        justify={{initial: 'start', md: 'center'}}
-        align={{initial: 'start', md: flexAlign}}
-        gap={{initial: '5', md: '7'}}
-        className={clsx(styles.contentSide)}
+    <div className={styles.layoutBlock}>
+      <div
+        className={styles.contentSide}
+        style={{'--flexAlign': flexAlign} as React.CSSProperties}
       >
         {block?.content?.length && (
-          <Text
-            as="div"
-            align={{initial: 'left', md: textAlign}}
-            size={typeSize.toString() as TextProps['size']}
+          <div
+            className={styles.contentContainer}
+            style={{'--textAlign': textAlign} as React.CSSProperties}
           >
-            <PortableText value={block.content as PortableTextBlock[]} />
-          </Text>
+            <PortableText
+              value={block.content?.map((blockItem) => ({
+                ...blockItem,
+                children: blockItem.children ?? [],
+              }))}
+            />
+          </div>
         )}
         {block?.button && block.button.link && block.button.buttonText && (
           <Suspense fallback={null}>
-            <Button variant="solid" size={buttonSize} asChild>
-              <ResolvedLink link={block.button.link}>
-                <Text size={buttonTextSize as TextProps['size']}>
-                  {block.button.buttonText}
-                </Text>
-              </ResolvedLink>
-            </Button>
+            <ResolvedLink
+              link={block.button.link}
+              className={clsx('button', styles.button)}
+            >
+              <span>{block.button.buttonText}</span>
+            </ResolvedLink>
           </Suspense>
         )}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 }

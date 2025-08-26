@@ -25,14 +25,14 @@
 
   & .drawerBody {
     position: relative;
-    padding: var(--space-5);
+    padding: var(--spacer-5);
     /* height: 100%; */
   }
 
   & .drawerClose {
     position: absolute;
-    top: var(--space-5);
-    right: var(--space-5);
+    top: var(--spacer-5);
+    right: var(--spacer-5);
     cursor: pointer;
   }
 }

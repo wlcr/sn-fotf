@@ -179,6 +179,12 @@ export type ContentSection = {
   typeSize?: 2 | 3 | 5 | 7
 }
 
+export type SideBySideCta = {
+  _type: 'sideBySideCta'
+  sideA: CallToAction
+  sideB: CallToAction
+}
+
 export type Menu = Array<{
   title?: string
   link?: Link
@@ -195,9 +201,46 @@ export type LinkButton = {
 export type CallToAction = {
   _type: 'callToAction'
   heading: string
-  text?: string
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+    listItem?: 'bullet' | 'number'
+    markDefs?: Array<{
+      linkType?: 'href' | 'page'
+      href?: string
+      page?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'page'
+      }
+      openInNewTab?: boolean
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
   buttonText?: string
   link?: Link
+  backgroundImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
 }
 
 export type BlockContent = Array<{
@@ -248,6 +291,59 @@ export type ProductDecorator = {
     | ({
         _key: string
       } & ImageSection)
+  >
+}
+
+export type Settings = {
+  _id: string
+  _type: 'settings'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  venueName: string
+  address?: string
+  phone?: string
+  email?: string
+  googleMapLink?: string
+  title: string
+  description?: string
+  ogImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    metadataBase?: string
+    _type: 'image'
+  }
+}
+
+export type Homepage = {
+  _id: string
+  _type: 'homepage'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  heroVideo?: string
+  pageBuilder?: Array<
+    | ({
+        _key: string
+      } & ContentSection)
+    | ({
+        _key: string
+      } & ImageContentSection)
+    | ({
+        _key: string
+      } & ImageSection)
+    | ({
+        _key: string
+      } & SideBySideCta)
   >
 }
 
@@ -308,35 +404,6 @@ export type MediaImage = {
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   alt?: string
-}
-
-export type Settings = {
-  _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  venueName: string
-  address?: string
-  phone?: string
-  email?: string
-  googleMapLink?: string
-  title: string
-  description?: string
-  ogImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    metadataBase?: string
-    _type: 'image'
-  }
 }
 
 export type Header = {
@@ -503,14 +570,16 @@ export type AllSanitySchemaTypes =
   | ImageSection
   | FaqSection
   | ContentSection
+  | SideBySideCta
   | Menu
   | LinkButton
   | CallToAction
   | BlockContent
   | ProductDecorator
+  | Settings
+  | Homepage
   | Page
   | MediaImage
-  | Settings
   | Header
   | Footer
   | Link

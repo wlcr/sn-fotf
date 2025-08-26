@@ -1,11 +1,10 @@
+import {clsx} from 'clsx';
 import {ImageContentSection} from 'studio/sanity.types';
-import {Box, Button, Flex, Text, TextProps} from '@radix-ui/themes';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';
-import styles from './ImageContentSection.module.css';
-import {clsx} from 'clsx';
 import PortableText from './PortableText';
+import styles from './ImageContentSection.module.css';
 
 type ImageContentSectionProps = {
   block: ImageContentSection;
@@ -15,9 +14,12 @@ type ImageContentSectionProps = {
 export default function ImageContentSectionBlock({
   block,
 }: ImageContentSectionProps) {
-  const typeSize = block.typeSize ? block.typeSize : 3;
-  const buttonSize = typeSize >= 5 ? '3' : '2';
-  const buttonTextSize = typeSize >= 5 ? '4' : typeSize.toString();
+  // these sub classes below never seem to get appended to the DOM
+  // const LayoutClasses = clsx(styles.layoutBlock, {
+  //   [styles.imageLeft]: block.sectionLayout === 'imageLeft',
+  //   [styles.imageRight]: block.sectionLayout === 'imageRight',
+  //   [styles.imageAbove]: block.sectionLayout === 'imageAbove',
+  // });
 
   const textAlign =
     block.contentAlign === 'alignCenter'
@@ -25,58 +27,52 @@ export default function ImageContentSectionBlock({
       : block.contentAlign === 'alignRight'
         ? 'right'
         : 'left';
+  console.log('textAlign IC', textAlign);
 
   const flexAlign =
     block.contentAlign === 'alignCenter'
       ? 'center'
       : block.contentAlign === 'alignRight'
-        ? 'end'
-        : 'start';
+        ? 'flex-end'
+        : 'flex-start';
+  console.log('flexAlign IC', flexAlign);
 
-  const LayoutClasses = clsx(styles.layoutBlock, {
-    [styles.imageLeft]: block.sectionLayout === 'imageLeft',
-    [styles.imageRight]: block.sectionLayout === 'imageRight',
-    [styles.imageAbove]: block.sectionLayout === 'imageAbove',
-  });
+  // however, relying on CSS props does seem to work reliably
+  const flexFlow =
+    block.sectionLayout === 'imageAbove'
+      ? 'column wrap'
+      : block.sectionLayout === 'imageLeft'
+        ? 'row nowrap'
+        : 'row-reverse nowrap';
+  console.log('flexFlow IC', flexFlow);
 
   return (
-    <Box className={LayoutClasses}>
-      <Box className={styles.imageSide}>
+    <div className={styles.layoutBlock}>
+      <div className={styles.imageSide}>
         {block?.image && <CoverImage image={block.image} priority />}
-      </Box>
-      <Flex
-        direction="column"
-        justify={{initial: 'start', md: 'center'}}
-        align={{initial: 'start', md: flexAlign}}
-        gap={{initial: '5', md: '7'}}
-        className={clsx(styles.contentSide)}
-      >
+      </div>
+      <div className={styles.contentSide}>
         {block?.content?.length && (
-          <Text
-            as="div"
-            align={{initial: 'left', md: textAlign}}
-            size={typeSize.toString() as TextProps['size']}
-          >
+          <div className={styles.contentContainer}>
             <PortableText
               value={block.content?.map((blockItem) => ({
                 ...blockItem,
                 children: blockItem.children ?? [],
               }))}
             />
-          </Text>
+          </div>
         )}
         {block?.button && block.button.link && block.button.buttonText && (
           <Suspense fallback={null}>
-            <Button variant="solid" size={buttonSize} asChild>
-              <ResolvedLink link={block.button.link}>
-                <Text size={buttonTextSize as TextProps['size']}>
-                  {block.button.buttonText}
-                </Text>
-              </ResolvedLink>
-            </Button>
+            <ResolvedLink
+              link={block.button.link}
+              className={clsx('button', styles.button)}
+            >
+              <span>{block.button.buttonText}</span>
+            </ResolvedLink>
           </Suspense>
         )}
-      </Flex>
-    </Box>
+      </div>
+    </div>
   );
 }
