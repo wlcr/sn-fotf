@@ -1,0 +1,44 @@
+.layoutBlock {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--spacer-5);
+
+  @media (min-width: 1024px) {
+    flex-flow: var(--flexFlow);
+    justify-content: stretch;
+    align-items: center;
+  }
+
+  & .imageSide,
+  & .contentSide {
+    flex: 1 1 100%;
+
+    @media (min-width: 1024px) {
+      flex: 1 1 50%;
+    }
+  }
+
+  & .contentSide {
+    padding: var(--spacer-5);
+    direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: var(--spacer-5);
+
+    @media (min-width: 1024px) {
+      padding: 56px;
+      justify-content: center;
+      align-items: var(--flexAlign);
+    }
+
+    & .contentContainer {
+      text-align: var(--textAlign);
+    }
+  }
+
+  & .button {
+    background: #000;
+    color: #fff;
+    padding: var(--spacer-3) var(--spacer-5);
+  }
+}

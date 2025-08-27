@@ -50,6 +50,32 @@ function isValidSanityEnv(env: Partial<SanityEnv>): env is SanityEnv {
   return !!env.PUBLIC_SANITY_PROJECT_ID;
 }
 
+/**
+ * Convert and validate Env to SanityEnv
+ *
+ * @param env - Environment variables from context
+ * @returns Validated SanityEnv
+ * @throws Error if required variables are missing
+ */
+export function validateSanityEnv(env: Partial<SanityEnv>): SanityEnv {
+  if (!env.PUBLIC_SANITY_PROJECT_ID) {
+    throw new Error(
+      'PUBLIC_SANITY_PROJECT_ID is required for Sanity integration. Please check your environment variables.',
+    );
+  }
+
+  return {
+    PUBLIC_SANITY_PROJECT_ID: env.PUBLIC_SANITY_PROJECT_ID,
+    PUBLIC_SANITY_DATASET: env.PUBLIC_SANITY_DATASET,
+    SANITY_API_VERSION: env.SANITY_API_VERSION,
+    SANITY_API_TOKEN: env.SANITY_API_TOKEN,
+    SANITY_USE_CDN: env.SANITY_USE_CDN,
+    SANITY_PREVIEW_SECRET: env.SANITY_PREVIEW_SECRET,
+    SANITY_REVALIDATE_SECRET: env.SANITY_REVALIDATE_SECRET,
+    NODE_ENV: env.NODE_ENV,
+  };
+}
+
 // Sanity image object interface for type safety
 interface SanityImageAsset {
   _ref: string;
@@ -387,159 +413,60 @@ export async function sanityClientQuery<T = unknown>(
 }
 
 /**
- * GROQ query fragments for Friends of the Family project content types
+ * Sanity Configuration
  *
- * These queries are designed to work with generated Sanity types.
- * Run `npm run sanity:codegen` to generate TypeScript types from your schema.
+ * Server-safe configuration that doesn't import studio config to avoid
+ * browser-specific modules being loaded in the server environment.
  */
-export const SANITY_QUERIES = {
-  // Site-wide settings and configuration
-  SITE_SETTINGS: `*[_type == "siteSettings"][0]{
-    _id,
-    title,
-    description,
-    logo,
-    favicon,
-    socialMedia,
-    membershipInfo {
-      title,
-      description,
-      benefits[]
-    },
-    _updatedAt
-  }`,
 
-  // Main navigation structure with conditional reference resolution
-  NAVIGATION: `*[_type == "navigation"][0]{
-    _id,
-    mainNavigation[] {
-      title,
-      url,
-      // GROQ conditional syntax: _type == "reference" => @->{...}
-      // This means: IF the item is a reference type, THEN resolve it (@->) and return these fields
-      // The @-> operator follows the reference link and accesses the referenced document
-      _type == "reference" => @->{
-        title,
-        "url": "/pages/" + slug.current  // Build URL from referenced page's slug
-      }
-    },
-    memberNavigation[] {
-      title,
-      url,
-      // Same conditional reference pattern: resolve page references to build navigation URLs
-      _type == "reference" => @->{
-        title,
-        "url": "/pages/" + slug.current
-      }
-    },
-    footerNavigation[] {
-      title,
-      url,
-      // Consistent pattern: handle both direct URLs and page references in navigation
-      _type == "reference" => @->{
-        title,
-        "url": "/pages/" + slug.current
-      }
-    }
-  }`,
+// Server-safe config using constants
+// Note: Project IDs are not sensitive information - they're visible in API URLs and client requests
+// Sensitive information (API tokens, secrets) are handled separately via environment variables
+export const sanityConfig = {
+  projectId: 'rimuhevv', // Not sensitive - visible in API URLs
+  dataset: 'production',
+  apiVersion: '2025-01-01',
+  studioUrl: 'http://localhost:3333',
+};
 
-  // Individual page content by slug
-  PAGE_BY_SLUG: `*[_type == "page" && slug.current == $slug][0]{
-    _id,
-    title,
-    slug,
-    content,
-    hero {
-      title,
-      subtitle,
-      image,
-      ctaText,
-      ctaUrl
-    },
-    seo {
-      title,
-      description,
-      ogImage
-    },
-    membersOnly,
-    _updatedAt
-  }`,
+/**
+ * Simple wrapper function for compatibility with PR components
+ * Uses our robust getSanityImageUrlWithEnv under the hood
+ */
+export function urlForImage(source: any) {
+  if (!source?.asset?._ref) {
+    return undefined;
+  }
 
-  // All pages for sitemap generation
-  ALL_PAGES: `*[_type == "page"] {
-    _id,
-    title,
-    slug,
-    _updatedAt,
-    membersOnly
-  }`,
-
-  // Member-specific content and benefits
-  MEMBER_CONTENT: `*[_type == "memberContent"][0]{
-    _id,
-    welcome {
-      title,
-      message,
-      image
-    },
-    benefits[] {
-      title,
-      description,
-      icon,
-      features[]
-    },
-    exclusiveContent[] {
-      title,
-      description,
-      content,
-      availableFrom,
-      availableUntil
-    },
-    _updatedAt
-  }`,
-
-  // Events and activities for members
-  UPCOMING_EVENTS: `*[_type == "event" && date > now()] | order(date asc) {
-    _id,
-    title,
-    description,
-    date,
-    location,
-    image,
-    membersOnly,
-    registrationRequired,
-    maxCapacity,
-    _updatedAt
-  }`,
-
-  // Announcements and updates
-  ANNOUNCEMENTS: `*[_type == "announcement"] | order(_createdAt desc) [0...5] {
-    _id,
-    title,
-    content,
-    priority,
-    membersOnly,
-    publishedAt,
-    expiresAt,
-    _createdAt
-  }`,
-
-  // Product spotlights and features
-  PRODUCT_SPOTLIGHTS: `*[_type == "productSpotlight"] | order(_createdAt desc) {
-    _id,
-    title,
-    description,
-    shopifyProduct {
-      handle,
-      title,
-      featuredImage
-    },
-    memberDiscount,
-    availableFrom,
-    availableUntil,
-    _createdAt
-  }`,
-} as const;
+  // Return a builder-like object that matches the PR's usage pattern
+  return {
+    width: (w: number) => ({
+      height: (h: number) => ({
+        auto: (format: string) => ({
+          url: () =>
+            getSanityImageUrlWithEnv(source, {
+              width: w,
+              height: h,
+              format: 'auto',
+            }),
+        }),
+      }),
+      auto: (format: string) => ({
+        url: () => getSanityImageUrlWithEnv(source, {width: w, format: 'auto'}),
+      }),
+    }),
+    height: (h: number) => ({
+      auto: (format: string) => ({
+        url: () =>
+          getSanityImageUrlWithEnv(source, {height: h, format: 'auto'}),
+      }),
+    }),
+    auto: (format: string) => ({
+      url: () => getSanityImageUrlWithEnv(source, {format: 'auto'}),
+    }),
+    url: () => getSanityImageUrlWithEnv(source),
+  };
+}
 
 /**
  * Create an image URL builder instance for Sanity images
@@ -644,8 +571,8 @@ export function getSanityImageUrlWithEnv(
   } = {},
   env?: Partial<SanityEnv>,
 ): string {
-  // Safe cross-environment project config detection
-  // Follow Hydrogen 2025.5.0 pattern: PUBLIC_ prefix for client-accessible vars
+  // Safe cross-environment project config detection with hardcoded fallbacks
+  // Use the same values as our sanityConfig constant
   const projectId =
     env?.PUBLIC_SANITY_PROJECT_ID ||
     (() => {
@@ -657,7 +584,8 @@ export function getSanityImageUrlWithEnv(
           : window.ENV || {};
       return (envVars as Record<string, string | undefined>)
         .PUBLIC_SANITY_PROJECT_ID;
-    })();
+    })() ||
+    sanityConfig.projectId; // Use hardcoded fallback
 
   const dataset =
     env?.PUBLIC_SANITY_DATASET ||
@@ -671,7 +599,7 @@ export function getSanityImageUrlWithEnv(
       return (envVars as Record<string, string | undefined>)
         .PUBLIC_SANITY_DATASET;
     })() ||
-    'production';
+    sanityConfig.dataset; // Use hardcoded fallback
 
   if (!projectId) {
     console.warn(

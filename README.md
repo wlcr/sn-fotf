@@ -160,6 +160,76 @@ git commit --no-verify -m "your commit message"
 - You're making incremental progress on large refactoring
 - Document the remaining errors in your commit message
 
+## Sanity Studio (Content Management)
+
+This project uses Sanity CMS for content management. The Sanity Studio provides an intuitive interface for managing content that feeds into your Hydrogen storefront.
+
+### Running Sanity Studio Locally
+
+**Start the Studio development server**:
+
+```bash
+npm run studio:dev
+```
+
+The Studio will be available at: **http://localhost:3333/**
+
+**Development Workflow** (run both simultaneously):
+
+```bash
+# Terminal 1: Your Hydrogen app
+npm run dev
+
+# Terminal 2: Sanity Studio
+npm run studio:dev
+```
+
+- **Hydrogen app**: http://localhost:3000/
+- **Sanity Studio**: http://localhost:3333/
+
+### Sanity Studio Access
+
+#### Local Development
+
+- **URL**: http://localhost:3333/
+- **Authentication**: Sign in with your Sanity account
+- **Project**: Sierra Nevada - Friends of the Family
+- **Dataset**: `production`
+
+#### Production Studio
+
+- **URL**: https://[your-project-id].sanity.studio/
+- **Authentication**: Same Sanity account credentials
+- **Live editing**: Changes are immediately available to the live site
+
+### Studio Features
+
+- **Content Editor**: Rich text editing with Portable Text
+- **Media Management**: Image uploads with automatic optimization
+- **Schema Validation**: Type-safe content structure
+- **Preview Mode**: See changes in your Hydrogen app before publishing
+- **Version Control**: Content versioning and revision history
+- **Vision Tool**: GROQ query testing and debugging
+
+### Content Schema
+
+The Studio uses schema definitions located in `studio/schemaTypes/`:
+
+- **Documents**: Pages, products, announcements
+- **Objects**: Reusable content blocks, links, images
+- **Singletons**: Site settings, navigation, footer
+
+### Sanity Commands
+
+```bash
+# Development
+npm run studio:dev          # Start Studio dev server
+npm run studio:build        # Build Studio for production
+
+# Code Generation
+npm run sanity:codegen      # Generate TypeScript types from schema
+```
+
 ### Documentation
 
 Comprehensive documentation is available in the `/docs` folder:

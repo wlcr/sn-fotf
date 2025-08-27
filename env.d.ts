@@ -42,7 +42,7 @@ declare global {
 
     // Sanity CMS environment variables
     // PUBLIC_ prefix variables are accessible on both server and client
-    PUBLIC_SANITY_PROJECT_ID?: string;
+    PUBLIC_SANITY_PROJECT_ID: string; // Required for Sanity to work
     PUBLIC_SANITY_DATASET?: string;
 
     // Server-only Sanity variables (no PUBLIC_ prefix)

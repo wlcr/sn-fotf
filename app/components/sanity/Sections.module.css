@@ -1,0 +1,21 @@
+/** Common section styles **/
+:root {
+  --section-gap: 1rem;
+  --section-padding: 1rem;
+}
+
+.section {
+  padding: var(--section-padding);
+}
+
+.sectionGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-content: center;
+  gap: var(--section-gap);
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

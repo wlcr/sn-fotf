@@ -1,0 +1,87 @@
+.accordion {
+  width: 100%;
+  overflow: hidden;
+}
+
+.accordionItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordionItem:last-child {
+  border-bottom: none;
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.accordionHeader:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.accordionTitle {
+  flex: 1;
+  text-align: left;
+}
+
+.accordionIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  margin-left: 1rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon lines for plus/X animation */
+.iconLine {
+  position: absolute;
+  background-color: currentColor;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.iconLineHorizontal {
+  width: 16px;
+  height: 2px;
+  transform: rotate(0deg);
+}
+
+.iconLineVertical {
+  width: 16px;
+  height: 2px;
+  transform: rotate(90deg);
+}
+
+/* X state (when open) */
+.open .iconLineHorizontal {
+  transform: rotate(45deg);
+}
+
+.open .iconLineVertical {
+  transform: rotate(-45deg);
+}
+
+.accordionContent {
+  overflow: hidden;
+}
+
+.accordionContentInner {
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
