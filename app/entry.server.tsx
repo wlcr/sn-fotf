@@ -19,28 +19,21 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     // External services that Hydrogen doesn't automatically include
-    connectSrc: [
-      'https://www.klaviyo.com',
-      'https://*.klaviyo.com',
-    ],
-    scriptSrc: [
-      'https://www.klaviyo.com', 
-      'https://*.klaviyo.com',
-    ],
+    connectSrc: ['https://www.klaviyo.com', 'https://*.klaviyo.com'],
+    scriptSrc: ['https://www.klaviyo.com', 'https://*.klaviyo.com'],
     // Comprehensive img-src support (Hydrogen doesn't reliably auto-generate this)
     imgSrc: [
+      'https://cdn.sanity.io',
       'https://www.klaviyo.com',
       'https://*.klaviyo.com',
       "'self'",
       'https://cdn.shopify.com',
-      'https://shopify.com', 
+      'https://shopify.com',
       'http://localhost:*',
       'data:',
     ],
     // Required for Shopify store video content
-    mediaSrc: [
-      `https://${context.env.PUBLIC_STORE_DOMAIN}`,
-    ],
+    mediaSrc: [`https://${context.env.PUBLIC_STORE_DOMAIN}`],
     // Required for React Router v7 module scripts and Shopify tracking
     scriptSrcElem: [
       'https://www.klaviyo.com',
@@ -75,12 +68,12 @@ export default async function handleRequest(
   }
 
   responseHeaders.set('Content-Type', 'text/html');
-  
+
   // Add data: URI support to font-src for inline fonts
-  const modifiedHeader = header.includes('font-src') 
-    ? header.replace(/font-src ([^;]+)/, "font-src $1 data:")
+  const modifiedHeader = header.includes('font-src')
+    ? header.replace(/font-src ([^;]+)/, 'font-src $1 data:')
     : header + "; font-src 'self' data:";
-  
+
   responseHeaders.set('Content-Security-Policy', modifiedHeader);
 
   return new Response(body, {

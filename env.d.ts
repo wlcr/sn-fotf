@@ -16,10 +16,24 @@ declare global {
   /**
    * A global `process` object is only available during build to access NODE_ENV.
    */
-  const process: {env: {NODE_ENV: 'production' | 'development'}};
+  const process: {
+    env: {
+      NODE_ENV: 'production' | 'development';
+      SANITY_PROJECT_ID: string;
+      SANITY_DATASET: string;
+      SANITY_API_VERSION: string;
+      SANITY_API_TOKEN: string;
+      SANITY_STUDIO_URL: string;
+    };
+  };
 
   interface Env extends HydrogenEnv {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
+    SANITY_PROJECT_ID: string;
+    SANITY_DATASET: string;
+    SANITY_API_VERSION: string;
+    SANITY_API_TOKEN: string;
+    SANITY_STUDIO_URL: string;
   }
 }
 
@@ -29,7 +43,7 @@ declare module 'react-router' {
     // to change context type, change the return of createAppLoadContext() instead
   }
 
-  // TODO: remove this once we've migrated our loaders to `Route.LoaderArgs` 
+  // TODO: remove this once we've migrated our loaders to `Route.LoaderArgs`
   interface LoaderFunctionArgs {
     context: AppLoadContext;
   }

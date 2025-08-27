@@ -13,9 +13,10 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import type {SanityDocument} from '@sanity/client';
-import {productDecoratorQuery} from 'studio/queries';
+import {productDecoratorQuery, productPageQuery} from 'studio/queries';
 import {loadQuery} from '~/lib/sanity/sanity.loader.server';
 import PageBuilder from '~/components/sanity/PageBuilder';
+import {bigTrimmer} from '~/lib/bigTrimmer';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -55,24 +56,33 @@ async function loadCriticalData({
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}, {data: decorator}] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
-      variables: {handle, selectedOptions: getSelectedProductOptions(request)},
-    }),
-    // Add other queries here, so that they are loaded in parallel
-    loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
-  ]);
+  // Step 1: Fetch productPage from Sanity
+  const sanityRes = await loadQuery<SanityDocument>(productPageQuery, {handle});
+  const productPage = sanityRes.data;
+  if (!productPage) {
+    throw new Response('Not Found', {status: 404});
+  }
 
+  // Step 2: Extract productHandle and fetch Shopify product
+  const productHandle = bigTrimmer(productPage.productHandle);
+  if (!productHandle) {
+    throw new Error('No product handle found in Sanity response');
+  }
+
+  const shopifyRes = await storefront.query(PRODUCT_QUERY, {
+    variables: {
+      handle: productHandle,
+      selectedOptions: getSelectedProductOptions(request),
+    },
+  });
+  const product = shopifyRes.product;
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
-  // The API handle might be localized, so redirect to the localized handle
-  redirectIfHandleIsLocalized(request, {handle, data: product});
-
   return {
     product,
-    decorator,
+    productPage,
   };
 }
 
@@ -90,7 +100,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 
 export default function Product() {
   // TODO: implement useQuery for live Sanity content updates
-  const {product, decorator} = useLoaderData<typeof loader>();
+  const {product, productPage} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -115,7 +125,9 @@ export default function Product() {
       <div className="product">
         <ProductImage image={selectedVariant?.image} />
         <div className="product-main">
-          <h1>{decorator?.nameOverride ? decorator.nameOverride : title}</h1>
+          <h1>
+            {productPage?.nameOverride ? productPage.nameOverride : title}
+          </h1>
           <ProductPrice
             price={selectedVariant?.price}
             compareAtPrice={selectedVariant?.compareAtPrice}
@@ -150,10 +162,10 @@ export default function Product() {
           }}
         />
       </div>
-      {decorator && (
+      {productPage.pageBuilder.length > 0 && (
         <PageBuilder
-          parent={{_id: decorator._id, _type: decorator._type}}
-          pageBuilder={decorator.pageBuilder}
+          parent={{_id: productPage._id, _type: productPage._type}}
+          pageBuilder={productPage.pageBuilder}
         />
       )}
     </>
