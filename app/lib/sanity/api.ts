@@ -15,36 +15,19 @@ const SANITY_CONFIG = {
 };
 
 /**
- * Get Sanity configuration from environment with fallbacks
+ * Get Sanity configuration (hardcoded values with optional studio URL override)
  *
- * @param env - Environment variables object (optional)
+ * @param env - Environment variables object (optional, only for studio URL)
  * @returns Sanity configuration object
  */
 export function getSanityConfig(env?: Record<string, string | undefined>) {
-  // Use our centralized sanity config as fallback, but allow env override
-  const projectId =
-    env?.PUBLIC_SANITY_PROJECT_ID ||
-    (typeof window === 'undefined'
-      ? env?.SANITY_PROJECT_ID
-      : window.ENV?.PUBLIC_SANITY_PROJECT_ID) ||
-    SANITY_CONFIG.projectId ||
-    '';
+  // Project ID, dataset, and API version are hardcoded (not sensitive)
+  const projectId = SANITY_CONFIG.projectId;
+  const dataset = SANITY_CONFIG.dataset;
+  const apiVersion = SANITY_CONFIG.apiVersion;
 
-  const dataset =
-    env?.PUBLIC_SANITY_DATASET ||
-    (typeof window === 'undefined'
-      ? env?.SANITY_DATASET
-      : window.ENV?.PUBLIC_SANITY_DATASET) ||
-    SANITY_CONFIG.dataset ||
-    'production';
-
-  const apiVersion =
-    env?.SANITY_API_VERSION || SANITY_CONFIG.apiVersion || '2025-01-01';
-
-  const studioUrl =
-    env?.SANITY_STUDIO_URL ||
-    SANITY_CONFIG.studioUrl ||
-    'http://localhost:3333';
+  // Only studio URL can be overridden via environment variable
+  const studioUrl = env?.SANITY_STUDIO_URL || SANITY_CONFIG.studioUrl;
 
   return {
     projectId,
@@ -66,7 +49,7 @@ export function assertSanityConfig(env?: Record<string, string | undefined>) {
 
   if (!config.projectId) {
     throw new Error(
-      'Missing Sanity project ID. Please set PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID in your environment variables.',
+      'Missing Sanity project ID. This should be hardcoded in the configuration.',
     );
   }
 

@@ -1,17 +1,11 @@
 import {defineCliConfig} from 'sanity/cli';
 
+// Hardcoded Sanity CLI configuration
+// Project IDs are not sensitive information - they're visible in API URLs
 export default defineCliConfig({
   api: {
-    projectId:
-      (process.env as Record<string, string | undefined>)
-        .PUBLIC_SANITY_PROJECT_ID ||
-      (process.env as Record<string, string | undefined>).SANITY_PROJECT_ID ||
-      'your-project-id',
-    dataset:
-      (process.env as Record<string, string | undefined>)
-        .PUBLIC_SANITY_DATASET ||
-      (process.env as Record<string, string | undefined>).SANITY_DATASET ||
-      'production',
+    projectId: 'rimuhevv', // Not sensitive - hardcoded for stability
+    dataset: 'production',
   },
   studioHost: 'localhost',
 });

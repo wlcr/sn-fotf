@@ -22,56 +22,53 @@ import type {SanityImageSource} from '@sanity/image-url/lib/types/types';
 // @sanity/react-loader provides better SSR support and performance than preview-kit
 export {createQueryStore} from '@sanity/react-loader';
 
-// Environment variables interface for server-side Sanity operations
-// Follows Hydrogen 2025.5.0 patterns: PUBLIC_ prefix for client-accessible vars
-// Separates public (client-safe) from private (server-only) environment variables
-interface SanityEnv {
-  // Public variables - safe to expose to client-side
-  PUBLIC_SANITY_PROJECT_ID: string;
-  PUBLIC_SANITY_DATASET?: string;
+/**
+ * Sanity Configuration
+ *
+ * Server-safe configuration that doesn't import studio config to avoid
+ * browser-specific modules being loaded in the server environment.
+ */
 
+// Server-safe config using constants
+// Note: Project IDs are not sensitive information - they're visible in API URLs and client requests
+// Sensitive information (API tokens, secrets) are handled separately via environment variables
+export const sanityConfig = {
+  projectId: 'rimuhevv', // Not sensitive - visible in API URLs
+  dataset: 'production',
+  apiVersion: '2025-01-01',
+  studioUrl: 'http://localhost:3333',
+};
+
+// Environment variables interface for server-side Sanity operations
+// Only contains sensitive variables - project ID, dataset, API version are hardcoded
+interface SanityEnv {
   // Private variables - server-only, never expose to client
-  SANITY_API_VERSION?: string;
-  SANITY_API_TOKEN?: string; // Server-only secret
-  SANITY_USE_CDN?: string; // Server-only configuration
-  SANITY_PREVIEW_SECRET?: string; // Server-only secret
-  SANITY_REVALIDATE_SECRET?: string; // Server-only secret
+  SANITY_API_TOKEN?: string; // Server-only secret for preview mode
+  SANITY_PREVIEW_SECRET?: string; // Server-only secret for preview
+  SANITY_REVALIDATE_SECRET?: string; // Server-only secret for webhooks
+  SANITY_STUDIO_URL?: string; // Development URL override
   NODE_ENV?: string;
 }
 
-// Client-safe environment variables interface
-interface SanityClientEnv {
-  PUBLIC_SANITY_PROJECT_ID: string;
-  PUBLIC_SANITY_DATASET?: string;
-}
-
-// Type guard to check if environment has required Sanity configuration
+// Type guard to check if environment has valid Sanity configuration
+// Since we hardcode project ID, we just check that env is a valid object
 function isValidSanityEnv(env: Partial<SanityEnv>): env is SanityEnv {
-  return !!env.PUBLIC_SANITY_PROJECT_ID;
+  return typeof env === 'object' && env !== null;
 }
 
 /**
  * Convert and validate Env to SanityEnv
+ * Since project config is hardcoded, this mainly passes through the env variables
  *
  * @param env - Environment variables from context
  * @returns Validated SanityEnv
- * @throws Error if required variables are missing
  */
 export function validateSanityEnv(env: Partial<SanityEnv>): SanityEnv {
-  if (!env.PUBLIC_SANITY_PROJECT_ID) {
-    throw new Error(
-      'PUBLIC_SANITY_PROJECT_ID is required for Sanity integration. Please check your environment variables.',
-    );
-  }
-
   return {
-    PUBLIC_SANITY_PROJECT_ID: env.PUBLIC_SANITY_PROJECT_ID,
-    PUBLIC_SANITY_DATASET: env.PUBLIC_SANITY_DATASET,
-    SANITY_API_VERSION: env.SANITY_API_VERSION,
     SANITY_API_TOKEN: env.SANITY_API_TOKEN,
-    SANITY_USE_CDN: env.SANITY_USE_CDN,
     SANITY_PREVIEW_SECRET: env.SANITY_PREVIEW_SECRET,
     SANITY_REVALIDATE_SECRET: env.SANITY_REVALIDATE_SECRET,
+    SANITY_STUDIO_URL: env.SANITY_STUDIO_URL,
     NODE_ENV: env.NODE_ENV,
   };
 }
@@ -183,9 +180,9 @@ function clearOldSanityCacheEntries(): void {
 }
 
 /**
- * Create a Sanity client instance
+ * Create a Sanity client instance using hardcoded config + environment secrets
  *
- * @param env - Environment variables from Hydrogen context
+ * @param env - Environment variables from Hydrogen context (only for secrets)
  * @param options - Additional client configuration options
  * @returns Configured Sanity client
  */
@@ -194,20 +191,20 @@ export function createSanityClient(
   options: Partial<ClientConfig> = {},
 ): SanityClient {
   return createClient({
-    projectId: env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: env.PUBLIC_SANITY_DATASET || 'production',
-    apiVersion: env.SANITY_API_VERSION || '2025-01-01',
-    useCdn: env.SANITY_USE_CDN === 'true' || env.NODE_ENV === 'production',
-    token: env.SANITY_API_TOKEN,
+    projectId: sanityConfig.projectId, // Hardcoded
+    dataset: sanityConfig.dataset, // Hardcoded
+    apiVersion: sanityConfig.apiVersion, // Hardcoded
+    useCdn: env.NODE_ENV === 'production', // CDN only in production
+    token: env.SANITY_API_TOKEN, // Secret from environment
     ...options,
   });
 }
 
 /**
- * Create a Sanity client for live preview mode
+ * Create a Sanity client for live preview mode using hardcoded config + environment secrets
  * Always uses a read token and disables CDN for real-time updates
  *
- * @param env - Environment variables from Hydrogen context
+ * @param env - Environment variables from Hydrogen context (only for secrets)
  * @param options - Additional client configuration options
  * @returns Configured Sanity client for preview
  */
@@ -220,11 +217,11 @@ export function createSanityPreviewClient(
   }
 
   return createClient({
-    projectId: env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: env.PUBLIC_SANITY_DATASET || 'production',
-    apiVersion: env.SANITY_API_VERSION || '2025-01-01',
+    projectId: sanityConfig.projectId, // Hardcoded
+    dataset: sanityConfig.dataset, // Hardcoded
+    apiVersion: sanityConfig.apiVersion, // Hardcoded
     useCdn: false, // Always disable CDN for preview
-    token: env.SANITY_API_TOKEN,
+    token: env.SANITY_API_TOKEN, // Secret from environment
     perspective: 'previewDrafts', // Include draft content
     ...options,
   });
@@ -413,23 +410,6 @@ export async function sanityClientQuery<T = unknown>(
 }
 
 /**
- * Sanity Configuration
- *
- * Server-safe configuration that doesn't import studio config to avoid
- * browser-specific modules being loaded in the server environment.
- */
-
-// Server-safe config using constants
-// Note: Project IDs are not sensitive information - they're visible in API URLs and client requests
-// Sensitive information (API tokens, secrets) are handled separately via environment variables
-export const sanityConfig = {
-  projectId: 'rimuhevv', // Not sensitive - visible in API URLs
-  dataset: 'production',
-  apiVersion: '2025-01-01',
-  studioUrl: 'http://localhost:3333',
-};
-
-/**
  * Simple wrapper function for compatibility with PR components
  * Uses our robust getSanityImageUrlWithEnv under the hood
  */
@@ -571,35 +551,9 @@ export function getSanityImageUrlWithEnv(
   } = {},
   env?: Partial<SanityEnv>,
 ): string {
-  // Safe cross-environment project config detection with hardcoded fallbacks
-  // Use the same values as our sanityConfig constant
-  const projectId =
-    env?.PUBLIC_SANITY_PROJECT_ID ||
-    (() => {
-      const envVars =
-        typeof window === 'undefined'
-          ? typeof process !== 'undefined' && process.env
-            ? process.env
-            : {}
-          : window.ENV || {};
-      return (envVars as Record<string, string | undefined>)
-        .PUBLIC_SANITY_PROJECT_ID;
-    })() ||
-    sanityConfig.projectId; // Use hardcoded fallback
-
-  const dataset =
-    env?.PUBLIC_SANITY_DATASET ||
-    (() => {
-      const envVars =
-        typeof window === 'undefined'
-          ? typeof process !== 'undefined' && process.env
-            ? process.env
-            : {}
-          : window.ENV || {};
-      return (envVars as Record<string, string | undefined>)
-        .PUBLIC_SANITY_DATASET;
-    })() ||
-    sanityConfig.dataset; // Use hardcoded fallback
+  // Use hardcoded configuration values since they're not sensitive
+  const projectId = sanityConfig.projectId;
+  const dataset = sanityConfig.dataset;
 
   if (!projectId) {
     console.warn(

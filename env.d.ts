@@ -21,16 +21,13 @@ declare global {
   /**
    * Window ENV object for client-side environment variables
    * Populated by server-side rendering in root.tsx
+   *
+   * Note: Sanity project ID and dataset are hardcoded in the app, not passed as env vars
    */
   interface Window {
     ENV: {
       NODE_ENV?: string;
       MODE?: string;
-      PUBLIC_SANITY_PROJECT_ID?: string;
-      PUBLIC_SANITY_DATASET?: string;
-      SANITY_PREVIEW_SECRET?: string;
-      SANITY_API_READ_TOKEN?: string;
-      SANITY_API_WRITE_TOKEN?: string;
       PUBLIC_BASE_URL?: string;
       VERCEL_ENV?: string;
       [key: string]: string | undefined;
@@ -40,17 +37,12 @@ declare global {
   interface Env extends HydrogenEnv {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
 
-    // Sanity CMS environment variables
-    // PUBLIC_ prefix variables are accessible on both server and client
-    PUBLIC_SANITY_PROJECT_ID: string; // Required for Sanity to work
-    PUBLIC_SANITY_DATASET?: string;
-
-    // Server-only Sanity variables (no PUBLIC_ prefix)
-    SANITY_API_VERSION?: string;
-    SANITY_API_TOKEN?: string;
-    SANITY_USE_CDN?: string;
-    SANITY_PREVIEW_SECRET?: string;
-    SANITY_REVALIDATE_SECRET?: string;
+    // Sanity CMS environment variables (only secrets need to be env vars)
+    // Project ID, dataset, and API version are hardcoded in app/lib/sanity.ts
+    SANITY_API_TOKEN?: string; // For preview mode
+    SANITY_PREVIEW_SECRET?: string; // For preview authentication
+    SANITY_REVALIDATE_SECRET?: string; // For webhook validation
+    SANITY_STUDIO_URL?: string; // For development
 
     // Other environment variables
     PUBLIC_BASE_URL?: string;
