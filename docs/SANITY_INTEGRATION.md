@@ -26,21 +26,22 @@ The official [`hydrogen-sanity`](https://github.com/sanity-io/hydrogen-sanity/) 
 5. **Framework Lock-in**: Tightly coupled to old Hydrogen patterns
 
 ### Example of Incompatible Code:
+
 ```tsx
 // ❌ hydrogen-sanity approach (doesn't work with React Router v7)
 // Note: Uses old LoaderFunctionArgs type instead of Route.LoaderArgs
-export async function loader({ context, params }: LoaderFunctionArgs) {
-  const query = `*[_type == "page" && _id == $id][0]`
-  const initial = await context.sanity.loadQuery(query, params)
-  return json({ initial })
+export async function loader({context, params}: LoaderFunctionArgs) {
+  const query = `*[_type == "page" && _id == $id][0]`;
+  const initial = await context.sanity.loadQuery(query, params);
+  return json({initial});
 }
 ```
 
 ```tsx
 // ✅ Our React Router v7 approach
-export async function loader({ params }: Route.LoaderArgs) {
-  const page = await sanityServerQuery(client, query, params)
-  return { page }
+export async function loader({params}: Route.LoaderArgs) {
+  const page = await sanityServerQuery(client, query, params);
+  return {page};
 }
 ```
 
@@ -49,6 +50,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 ### ✅ Use `@sanity/client` + Custom Utilities
 
 **Benefits:**
+
 1. **Framework Agnostic**: Works with any React setup
 2. **Full Control**: Complete control over caching and data loading
 3. **React Router v7 Compatible**: Integrates perfectly with our data loading patterns
@@ -59,63 +61,63 @@ export async function loader({ params }: Route.LoaderArgs) {
 ## Integration Strategy
 
 ### 1. **Server-Side Data Loading**
+
 Use React Router v7 `loader` functions with Sanity's built-in CDN caching:
 
 ```tsx
 // app/routes/pages.$slug.tsx
-export async function loader({ params, context }: Route.LoaderArgs) {
+export async function loader({params, context}: Route.LoaderArgs) {
   const page = await sanityServerQuery(
     context.sanity, // Sanity client from Hydrogen context
     SANITY_QUERIES.PAGE_BY_SLUG,
-    { slug: params.slug },
-    { displayName: 'Page by slug' } // For debugging
+    {slug: params.slug},
+    {displayName: 'Page by slug'}, // For debugging
   );
-  return { page };
+  return {page};
 }
 ```
 
 ### 2. **Client-Side Data Loading**
+
 Use React Router v7 `clientLoader` for browser-side fetching:
 
 ```tsx
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function clientLoader({params}: Route.ClientLoaderArgs) {
   const page = await sanityClientQuery(
     sanityClient,
     SANITY_QUERIES.PAGE_BY_SLUG,
-    { slug: params.slug },
-    { useCache: true } // Client-side caching
+    {slug: params.slug},
+    {useCache: true}, // Client-side caching
   );
-  return { page };
+  return {page};
 }
 clientLoader.hydrate = true;
 ```
 
 ### 3. **Combined Server + Client Pattern**
+
 Perfect for personalized content:
 
 ```tsx
-export async function loader({ params, context }: Route.LoaderArgs) {
+export async function loader({params, context}: Route.LoaderArgs) {
   // Server: Get public content for SEO with CDN caching
-  const page = await sanityServerQuery(
-    context.sanity,
-    query, 
-    params,
-    { displayName: 'Page content' }
-  );
-  return { page };
+  const page = await sanityServerQuery(context.sanity, query, params, {
+    displayName: 'Page content',
+  });
+  return {page};
 }
 
-export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+export async function clientLoader({serverLoader}: Route.ClientLoaderArgs) {
   // Client: Add user-specific data
   const [serverData, userPrefs] = await Promise.all([
     serverLoader(),
-    getUserPreferences()
+    getUserPreferences(),
   ]);
-  
+
   return {
     ...serverData,
     personalized: true,
-    userPreferences: userPrefs
+    userPreferences: userPrefs,
   };
 }
 ```
@@ -129,11 +131,13 @@ Yes! Sanity has excellent type generation tools. We'll use [`@sanity/codegen`](h
 #### Setup Process:
 
 1. **Install Sanity CodeGen**:
+
 ```bash
 npm install @sanity/codegen --save-dev
 ```
 
 2. **Configure Type Generation** in `package.json`:
+
 ```json
 {
   "scripts": {
@@ -143,23 +147,25 @@ npm install @sanity/codegen --save-dev
 ```
 
 3. **Use Generated Types**:
+
 ```tsx
 // Generated types from Sanity schema
-import type { Page, SiteSettings } from './sanity.types';
+import type {Page, SiteSettings} from './sanity.types';
 
 // Type-safe queries
-export async function loader({ params, context }: Route.LoaderArgs) {
+export async function loader({params, context}: Route.LoaderArgs) {
   const page = await sanityServerQuery<Page>(
     context.sanity,
     SANITY_QUERIES.PAGE_BY_SLUG,
-    { slug: params.slug },
-    { displayName: 'Typed page query' }
+    {slug: params.slug},
+    {displayName: 'Typed page query'},
   );
-  return { page }; // page is fully typed!
+  return {page}; // page is fully typed!
 }
 ```
 
 #### Benefits of Type Generation:
+
 - ✅ **Auto-sync**: Types update when Sanity schema changes
 - ✅ **IntelliSense**: Full autocompletion for content fields
 - ✅ **Error Prevention**: Compile-time checks for field access
@@ -172,91 +178,95 @@ This aligns perfectly with our existing approach mentioned in the README:
 > **Important**: Always use Shopify's built-in codegen for GraphQL types instead of creating custom types manually.
 
 We'll follow the same pattern for Sanity:
+
 - ✅ **Use Sanity's codegen** for CMS types
-- ✅ **Use Shopify's codegen** for commerce types  
+- ✅ **Use Shopify's codegen** for commerce types
 - ❌ **Avoid manual type definitions**
 
 ## Data Loading Patterns
 
 ### Pattern 1: Static Content (Pages, Settings)
+
 **Use Case**: About page, site settings, navigation
 **Pattern**: Server-side with long caching
 
 ```tsx
 // app/routes/about.tsx
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({context}: Route.LoaderArgs) {
   const [page, settings] = await Promise.all([
     sanityServerQuery<Page>(
-      context.sanity, 
+      context.sanity,
       QUERIES.ABOUT_PAGE,
       {},
-      { displayName: 'About page' }
+      {displayName: 'About page'},
     ),
     sanityServerQuery<SiteSettings>(
-      context.sanity, 
+      context.sanity,
       QUERIES.SITE_SETTINGS,
       {},
-      { displayName: 'Site settings' }
-    )
+      {displayName: 'Site settings'},
+    ),
   ]);
-  
-  return { page, settings };
+
+  return {page, settings};
 }
 ```
 
 ### Pattern 2: Dynamic Content (User-Personalized)
+
 **Use Case**: Member-specific content, personalized recommendations
 **Pattern**: Combined server + client loading
 
 ```tsx
 // app/routes/members.dashboard.tsx
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({context}: Route.LoaderArgs) {
   // Public member content for SEO with CDN caching
   const memberContent = await sanityServerQuery<MemberContent>(
-    context.sanity, 
-    QUERIES.MEMBER_CONTENT
+    context.sanity,
+    QUERIES.MEMBER_CONTENT,
   );
-  return { memberContent };
+  return {memberContent};
 }
 
-export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+export async function clientLoader({serverLoader}: Route.ClientLoaderArgs) {
   // Add personalized data
   const [serverData, userProfile] = await Promise.all([
     serverLoader(),
-    getUserProfile() // From localStorage/API
+    getUserProfile(), // From localStorage/API
   ]);
-  
+
   return {
     ...serverData,
     userProfile,
     personalizedContent: await sanityClientQuery<PersonalizedContent>(
       client,
       QUERIES.PERSONALIZED_CONTENT,
-      { userId: userProfile.id }
-    )
+      {userId: userProfile.id},
+    ),
   };
 }
 clientLoader.hydrate = true;
 ```
 
 ### Pattern 3: Real-time Content Updates
+
 **Use Case**: Live member updates, event information
 **Pattern**: Client-side with short caching
 
 ```tsx
 // app/routes/live.updates.tsx
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+export async function clientLoader({request}: Route.ClientLoaderArgs) {
   const updates = await sanityClientQuery<LiveUpdate[]>(
     client,
     QUERIES.LIVE_UPDATES,
     {},
-    { 
+    {
       useCache: true,
-      cacheKey: 'live-updates' // Custom cache key
-    }
+      cacheKey: 'live-updates', // Custom cache key
+    },
   );
-  
-  return { updates };
+
+  return {updates};
 }
 clientLoader.hydrate = true;
 
@@ -274,22 +284,24 @@ export function HydrateFallback() {
 declare global {
   interface Env extends HydrogenEnv {
     // Existing Shopify vars...
-    
-    // Sanity Configuration
-    SANITY_PROJECT_ID: string;
-    SANITY_DATASET?: string;
-    SANITY_API_VERSION?: string;
+
+    // Sanity Configuration (only secrets as env vars)
     SANITY_API_TOKEN?: string;
-    SANITY_USE_CDN?: string;
+    SANITY_PREVIEW_SECRET?: string;
+    SANITY_REVALIDATE_SECRET?: string;
+    SANITY_STUDIO_URL?: string;
   }
 }
+
+// Project ID, dataset, and API version are hardcoded in app/lib/sanity.ts:
+// projectId: 'rimuhevv', dataset: 'production', apiVersion: '2025-01-01'
 ```
 
 ### Hydrogen Context Integration
 
 ```typescript
 // app/lib/context.ts - Add to existing createAppLoadContext
-import { createSanityClient } from '~/lib/sanity';
+import {createSanityClient} from '~/lib/sanity';
 
 export async function createAppLoadContext(
   request: Request,
@@ -297,10 +309,10 @@ export async function createAppLoadContext(
   executionContext: ExecutionContext,
 ) {
   // ... existing Shopify context setup
-  
+
   // Add Sanity client to context
   const sanity = createSanityClient(env);
-  
+
   return {
     ...hydrogenContext,
     sanity, // Make available to all loaders
@@ -312,28 +324,28 @@ export async function createAppLoadContext(
 
 ```tsx
 // app/routes/pages.$slug.tsx
-import type { Route } from './+types/pages.$slug';
-import type { Page } from '~/lib/sanity.types'; // Generated types
-import { sanityServerQuery, SANITY_QUERIES } from '~/lib/sanity';
+import type {Route} from './+types/pages.$slug';
+import type {Page} from '~/lib/sanity.types'; // Generated types
+import {sanityServerQuery, SANITY_QUERIES} from '~/lib/sanity';
 
-export async function loader({ params, context }: Route.LoaderArgs) {
+export async function loader({params, context}: Route.LoaderArgs) {
   const page = await sanityServerQuery<Page>(
     context.sanity,
     SANITY_QUERIES.PAGE_BY_SLUG,
-    { slug: params.slug },
-    { displayName: 'Page by slug' }
+    {slug: params.slug},
+    {displayName: 'Page by slug'},
   );
 
   if (!page) {
-    throw new Response('Page not found', { status: 404 });
+    throw new Response('Page not found', {status: 404});
   }
 
-  return { page };
+  return {page};
 }
 
-export default function PageRoute({ loaderData }: Route.ComponentProps) {
-  const { page } = loaderData;
-  
+export default function PageRoute({loaderData}: Route.ComponentProps) {
+  const {page} = loaderData;
+
   return (
     <div>
       <h1>{page.title}</h1>
@@ -351,10 +363,11 @@ export default function PageRoute({ loaderData }: Route.ComponentProps) {
 Our caching approach is designed to be **simple, reliable, and performant** by leveraging Sanity's built-in capabilities rather than complex custom caching logic.
 
 #### **Server-Side: Sanity CDN Caching**
+
 ```tsx
 // ✅ Recommended: Let Sanity handle caching with CDN
 const sanityClient = createSanityClient(env, {
-  useCdn: env.NODE_ENV === 'production' // CDN in production, fresh data in dev
+  useCdn: env.NODE_ENV === 'production', // CDN in production, fresh data in dev
 });
 
 // This automatically uses Sanity's global CDN for fast responses
@@ -362,32 +375,30 @@ const content = await sanityServerQuery(
   context.sanity,
   query,
   params,
-  { displayName: 'Content query' } // For debugging only
+  {displayName: 'Content query'}, // For debugging only
 );
 ```
 
 **Benefits of Sanity CDN Caching:**
+
 - 🚀 **Sub-100ms responses** from global edge locations
 - 🔄 **Smart invalidation** when content changes in Sanity Studio
 - 🌍 **Global distribution** with 99.9% uptime
 - 🎯 **Query-aware caching** that understands GROQ queries
 
 #### **Client-Side: SessionStorage Caching**
+
 ```tsx
 // ✅ Client-side caching for browser performance
-const clientContent = await sanityClientQuery(
-  client,
-  query,
-  params,
-  {
-    useCache: true, // Enable sessionStorage caching
-    cacheDuration: 5 * 60 * 1000, // 5 minutes (customizable)
-    cacheKey: 'my-content' // Optional custom cache key
-  }
-);
+const clientContent = await sanityClientQuery(client, query, params, {
+  useCache: true, // Enable sessionStorage caching
+  cacheDuration: 5 * 60 * 1000, // 5 minutes (customizable)
+  cacheKey: 'my-content', // Optional custom cache key
+});
 ```
 
 **Benefits of SessionStorage Caching:**
+
 - ⚡ **Instant responses** for repeat queries within session
 - 🔄 **Automatic expiration** based on cacheDuration
 - 💾 **Survives page reloads** within the same browser session
@@ -396,12 +407,14 @@ const clientContent = await sanityClientQuery(
 #### **Why We Don't Use Complex Caching**
 
 We **intentionally avoid** Hydrogen's Web API Cache or custom cache invalidation because:
+
 - ❌ **Complexity**: Hard to debug and maintain
 - ❌ **Reliability**: Cache invalidation is notoriously difficult
 - ❌ **Overkill**: Sanity's CDN already provides excellent caching
 - ❌ **Framework Coupling**: Ties us to specific Hydrogen APIs
 
 Instead, our approach is:
+
 - ✅ **Simple**: Rely on proven Sanity CDN + basic client storage
 - ✅ **Reliable**: Let Sanity handle the hard parts of cache invalidation
 - ✅ **Maintainable**: Easy to understand and debug
@@ -411,15 +424,15 @@ Instead, our approach is:
 
 ```tsx
 // Static content - long CDN cache + client cache
-export async function loader({ context }: Route.LoaderArgs) {
+export async function loader({context}: Route.LoaderArgs) {
   const settings = await sanityServerQuery(
     context.sanity,
     SANITY_QUERIES.SITE_SETTINGS,
     {},
-    { displayName: 'Site settings' }
+    {displayName: 'Site settings'},
   );
   // Sanity CDN will cache this for hours automatically
-  return { settings };
+  return {settings};
 }
 
 // Dynamic content - CDN cache + short client cache
@@ -431,10 +444,10 @@ export async function clientLoader(): Route.ClientLoaderArgs {
     {
       useCache: true,
       cacheDuration: 1 * 60 * 1000, // 1 minute for fresh content
-      cacheKey: 'recent-updates'
-    }
+      cacheKey: 'recent-updates',
+    },
   );
-  return { updates };
+  return {updates};
 }
 
 // Real-time content - no caching
@@ -443,9 +456,9 @@ export async function liveLoader(): Route.ClientLoaderArgs {
     client,
     SANITY_QUERIES.LIVE_DATA,
     {},
-    { useCache: false } // Always fresh
+    {useCache: false}, // Always fresh
   );
-  return { liveData };
+  return {liveData};
 }
 ```
 
@@ -458,17 +471,14 @@ Sanity provides excellent CDN caching by default. Our approach leverages this bu
 
 ```tsx
 // Static content - relies on Sanity CDN caching (fast and reliable)
-const staticContent = await sanityServerQuery(
-  context.sanity, 
-  query, 
-  params, 
-  { displayName: 'Static content query' }
-);
+const staticContent = await sanityServerQuery(context.sanity, query, params, {
+  displayName: 'Static content query',
+});
 
 // For production: useCdn: true enables Sanity's global CDN
 // For development: useCdn: false ensures fresh data
 const sanityClient = createSanityClient(env, {
-  useCdn: env.NODE_ENV === 'production' // Automatic CDN caching in production
+  useCdn: env.NODE_ENV === 'production', // Automatic CDN caching in production
 });
 ```
 
@@ -477,27 +487,20 @@ For browser-side queries, we use sessionStorage caching:
 
 ```tsx
 // Client-side with sessionStorage caching (5 minutes default)
-const clientContent = await sanityClientQuery(
-  client, 
-  query, 
-  params, 
-  { 
-    useCache: true,
-    cacheDuration: 5 * 60 * 1000, // 5 minutes
-    cacheKey: 'custom-cache-key' // Optional custom key
-  }
-);
+const clientContent = await sanityClientQuery(client, query, params, {
+  useCache: true,
+  cacheDuration: 5 * 60 * 1000, // 5 minutes
+  cacheKey: 'custom-cache-key', // Optional custom key
+});
 
 // Real-time content - no client cache
-const liveContent = await sanityClientQuery(
-  client, 
-  query, 
-  params, 
-  { useCache: false }
-);
+const liveContent = await sanityClientQuery(client, query, params, {
+  useCache: false,
+});
 ```
 
 **Why This Approach Works:**
+
 - ✅ **Sanity CDN**: Global edge caching (sub-100ms responses)
 - ✅ **Client Storage**: Browser-level caching for repeat visits
 - ✅ **Environment Aware**: Production uses CDN, development uses fresh data
@@ -506,19 +509,19 @@ const liveContent = await sanityClientQuery(
 ### 2. **Handle Errors Gracefully**
 
 ```tsx
-export async function loader({ params, context }: Route.LoaderArgs) {
+export async function loader({params, context}: Route.LoaderArgs) {
   try {
     const page = await sanityServerQuery<Page>(
       context.sanity,
       SANITY_QUERIES.PAGE_BY_SLUG,
-      { slug: params.slug },
-      { displayName: 'Page by slug loader' }
+      {slug: params.slug},
+      {displayName: 'Page by slug loader'},
     );
-    
-    return { page };
+
+    return {page};
   } catch (error) {
     console.error('Sanity query failed:', error);
-    throw new Response('Content unavailable', { status: 503 });
+    throw new Response('Content unavailable', {status: 503});
   }
 }
 ```
@@ -527,16 +530,16 @@ export async function loader({ params, context }: Route.LoaderArgs) {
 
 ```tsx
 // Use Sanity's image CDN with optimization
-import { getSanityImageUrl } from '~/lib/sanity';
+import {getSanityImageUrl} from '~/lib/sanity';
 
-export default function PageHero({ image }: { image: any }) {
+export default function PageHero({image}: {image: any}) {
   const optimizedUrl = getSanityImageUrl(image, {
     width: 800,
     height: 400,
     format: 'webp',
-    quality: 80
+    quality: 80,
   });
-  
+
   return <img src={optimizedUrl} alt="Hero image" />;
 }
 ```
@@ -563,15 +566,15 @@ export function HydrateFallback() {
 
 ```tsx
 // Use React Router v7's data loading optimization
-export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+export async function clientLoader({serverLoader}: Route.ClientLoaderArgs) {
   // Only fetch additional data on client, reuse server data
   const serverData = await serverLoader();
-  
+
   // Add client-specific enhancements
   return {
     ...serverData,
     enhanced: true,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 ```
@@ -579,6 +582,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
 ## Next Steps
 
 1. **Install Dependencies**:
+
    ```bash
    npm install @sanity/client @sanity/codegen
    ```

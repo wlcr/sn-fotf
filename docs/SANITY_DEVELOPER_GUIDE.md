@@ -31,21 +31,14 @@ npm install @sanity/client @sanity/image-url @sanity/react-loader
 ### 2. Configure Environment Variables
 
 ```bash path=null start=null
-# .env
-SANITY_PROJECT_ID=your-project-id
-SANITY_DATASET=production
-SANITY_API_VERSION=2025-01-01
+# .env - Only sensitive variables are stored here
 SANITY_API_TOKEN=your-api-token
-SANITY_USE_CDN=true
-
-# Public variables for client-side usage
-PUBLIC_SANITY_PROJECT_ID=your-project-id
-PUBLIC_SANITY_DATASET=production
-
-# Preview mode configuration
 SANITY_PREVIEW_SECRET=your-preview-secret
 SANITY_REVALIDATE_SECRET=your-revalidate-secret
+SANITY_STUDIO_URL=http://localhost:3333
 ```
+
+**Note**: The Sanity project ID (`rimuhevv`) and dataset (`production`) are hardcoded in the application code since they're not sensitive information - project IDs are visible in API URLs and client requests.
 
 ### 3. Basic Usage
 
@@ -76,17 +69,24 @@ export async function loader({context}: Route.LoaderArgs) {
 
 ## Environment Setup
 
-### Required Environment Variables
+### Environment Variables
+
+**Required Environment Variables (Secrets):**
 
 | Variable                   | Description                      | Required | Default        |
 | -------------------------- | -------------------------------- | -------- | -------------- |
-| `SANITY_PROJECT_ID`        | Your Sanity project ID           | ✅       | -              |
-| `SANITY_DATASET`           | Dataset name                     | ❌       | `production`   |
-| `SANITY_API_VERSION`       | API version date                 | ❌       | `2025-01-01`   |
-| `SANITY_API_TOKEN`         | Read token (for private content) | ❌       | -              |
-| `SANITY_USE_CDN`           | Enable CDN for production        | ❌       | `true` in prod |
+| `SANITY_API_TOKEN`         | Read token (for preview mode)    | ❌       | -              |
 | `SANITY_PREVIEW_SECRET`    | Secret for enabling preview mode | ❌       | -              |
 | `SANITY_REVALIDATE_SECRET` | Secret for content revalidation  | ❌       | -              |
+| `SANITY_STUDIO_URL`        | Studio development URL           | ❌       | localhost:3333 |
+
+**Hardcoded Configuration (Not Sensitive):**
+
+| Variable     | Value        | Location            | Why Hardcoded                               |
+| ------------ | ------------ | ------------------- | ------------------------------------------- |
+| `projectId`  | `rimuhevv`   | `app/lib/sanity.ts` | Project IDs are visible in API URLs         |
+| `dataset`    | `production` | `app/lib/sanity.ts` | Dataset names are not sensitive information |
+| `apiVersion` | `2025-01-01` | `app/lib/sanity.ts` | API version is not sensitive                |
 
 ### Hydrogen Context Integration
 
@@ -96,12 +96,15 @@ In your `server.ts`, ensure Sanity environment variables are available:
 // server.ts
 const env = {
   // ... other env vars
-  SANITY_PROJECT_ID: process.env.SANITY_PROJECT_ID,
-  SANITY_DATASET: process.env.SANITY_DATASET,
-  SANITY_API_VERSION: process.env.SANITY_API_VERSION,
+  // Only sensitive Sanity variables are needed as env vars
   SANITY_API_TOKEN: process.env.SANITY_API_TOKEN,
-  SANITY_USE_CDN: process.env.SANITY_USE_CDN,
+  SANITY_PREVIEW_SECRET: process.env.SANITY_PREVIEW_SECRET,
+  SANITY_REVALIDATE_SECRET: process.env.SANITY_REVALIDATE_SECRET,
+  SANITY_STUDIO_URL: process.env.SANITY_STUDIO_URL,
 };
+
+// Project config is hardcoded in app/lib/sanity.ts:
+// projectId: 'rimuhevv', dataset: 'production', apiVersion: '2025-01-01'
 ```
 
 ## Data Loading Patterns
