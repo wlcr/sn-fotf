@@ -8,7 +8,7 @@ const client = createClient({
   // useCdn: process.env.NODE_ENV === 'production',
   useCdn: false,
   stega: {
-    enabled: true,
+    enabled: false,
     studioUrl: process.env.SANITY_STUDIO_URL || 'http://localhost:3333',
   },
 });
