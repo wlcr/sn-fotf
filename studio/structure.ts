@@ -1,4 +1,3 @@
-import {CogIcon} from '@sanity/icons'
 import type {StructureBuilder, StructureResolver} from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 
@@ -62,16 +61,13 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
             .items([
               S.listItem()
                 .title('Site Settings')
-                .child(S.document().schemaType('settings').documentId('siteSettings'))
-                .icon(CogIcon),
+                .child(S.document().schemaType('settings').documentId('siteSettings')),
               S.listItem()
                 .title('Header')
-                .child(S.document().schemaType('header').documentId('siteHeader'))
-                .icon(CogIcon),
+                .child(S.document().schemaType('header').documentId('siteHeader')),
               S.listItem()
                 .title('Footer')
-                .child(S.document().schemaType('footer').documentId('siteFooter'))
-                .icon(CogIcon),
+                .child(S.document().schemaType('footer').documentId('siteFooter')),
             ]),
         ),
     ])

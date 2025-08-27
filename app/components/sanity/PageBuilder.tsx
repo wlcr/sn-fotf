@@ -1,7 +1,6 @@
 'use client';
 
 import BlockRenderer from './BlockRenderer';
-import {dataAttr} from '~/lib/sanity/utils';
 import {Page, ProductDecorator} from 'studio/sanity.types';
 
 type PageBuilderProps = {
