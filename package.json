@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "type-check": "tsc --noEmit",
     "codegen": "shopify hydrogen codegen",
-    "sanity:codegen": "sanity schema extract --path=schema.json && sanity typegen generate",
+    "sanity:codegen": "sanity schema extract --path=./studio/schema.json --enforce-required-fields && sanity typegen generate",
     "quality-check": "npm run type-check && npm run lint && npm run sanity:codegen && echo '✅ Quality check passed - ready for PR'",
     "pre-commit": "npm run type-check && lint-staged",
     "ai-review": "npm run quality-check && echo '🤖 AI-generated code review complete'",

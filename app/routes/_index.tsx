@@ -9,9 +9,14 @@ import type {
 import {ProductItem} from '~/components/ProductItem';
 import type {SanityDocument} from '@sanity/client';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
-import {siteSettingsQuery, homeQuery} from '~/studio/queries';
-import type {SiteSettings, Homepage} from '~/studio/sanity.types';
+
+import type {
+  Homepage,
+  SettingsQueryResult,
+  PageBuilderResult,
+} from '~/studio/sanity.types';
 import PageBuilder from '~/components/sanity/PageBuilder';
+import {homeQuery, settingsQuery} from '~/studio/queries/index';
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -37,9 +42,9 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const [{collections}, siteSettings, homepage] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Fetch Sanity site settings for global content
-    sanityServerQuery<SiteSettings | null>(
+    sanityServerQuery<SettingsQueryResult | null>(
       sanityClient,
-      siteSettingsQuery,
+      settingsQuery,
       {},
       {
         displayName: 'Site Settings',
@@ -98,7 +103,7 @@ export default function Homepage() {
       {data.homepage && (
         <PageBuilder
           parent={{_id: data.homepage._id, _type: data.homepage._type}}
-          pageBuilder={data.homepage.pageBuilder}
+          pageBuilder={data.homepage.pageBuilder as PageBuilderResult}
         />
       )}
 
