@@ -12,11 +12,15 @@ import {imageSection} from './objects/imageSection';
 import {header} from './singletons/header';
 import {footer} from './singletons/footer';
 import {menu} from './objects/menu';
-import faqSection from './objects/faqSection';
+import {faqSection} from './objects/faqSection';
 import {productDecorator} from './documents/productDecorator';
 import {sideBySideCta} from './objects/sideBySideCTA';
 import {homepage} from './singletons/homepage';
 import {productPage} from './documents/productPage';
+import {specialComponentSection} from './objects/specialComponentSection';
+import {newsletterSection} from './objects/newsletterSection';
+import {mediaVimeo} from './objects/mediaVimeo';
+import {pageSections} from './objects/pageSections';
 
 export const schemaTypes = [
   // Singletons
@@ -34,12 +38,17 @@ export const schemaTypes = [
   link,
   linkButton,
   mediaImage,
+  mediaVimeo,
   menu,
   sideBySideCta,
+  // Page Sections
+  pageSections,
   // Sections
   contentSection,
   faqSection,
   imageSection,
   imageContentSection,
   infoSection,
+  newsletterSection,
+  specialComponentSection,
 ];

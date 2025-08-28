@@ -13,6 +13,17 @@
  */
 
 // Source: schema.json
+export type SpecialComponentSection = {
+  _type: 'specialComponentSection';
+  specialComponent?: 'labelsComponent' | 'mapComponent' | 'dummyComponent';
+};
+
+export type NewsletterSection = {
+  _type: 'newsletterSection';
+  klaviyoAccountId?: string;
+  klaviyoListId?: string;
+};
+
 export type InfoSection = {
   _type: 'infoSection';
   heading?: string;
@@ -178,6 +189,33 @@ export type ContentSection = {
   contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
   typeSize?: 2 | 3 | 5 | 7;
 };
+
+export type PageSections = Array<{
+  sectionId?: string;
+  sectionClasses?: string;
+  sectionBuilder?: Array<
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & ImageContentSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+    | ({
+        _key: string;
+      } & SideBySideCta)
+    | ({
+        _key: string;
+      } & NewsletterSection)
+    | ({
+        _key: string;
+      } & SpecialComponentSection)
+  >;
+  _type: 'pageSection';
+  _key: string;
+}>;
 
 export type SideBySideCta = {
   _type: 'sideBySideCta';
@@ -355,7 +393,8 @@ export type Homepage = {
   _updatedAt: string;
   _rev: string;
   name?: string;
-  heroVideo?: string;
+  heroVideo?: MediaVimeo;
+  sectionsBuilder?: PageSections;
   pageBuilder?: Array<
     | ({
         _key: string;
@@ -429,6 +468,37 @@ export type MediaImage = {
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   alt?: string;
+};
+
+export type MediaVimeo = {
+  _type: 'mediaVimeo';
+  landscapeVimeoEmbed?: string;
+  landscapePoster?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  };
+  portraitVimeoEmbed?: string;
+  portraitPoster?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  };
+  vimeoDescription?: string;
 };
 
 export type Header = {
@@ -590,11 +660,14 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
+  | SpecialComponentSection
+  | NewsletterSection
   | InfoSection
   | ImageContentSection
   | ImageSection
   | FaqSection
   | ContentSection
+  | PageSections
   | SideBySideCta
   | Menu
   | LinkButton
@@ -606,6 +679,7 @@ export type AllSanitySchemaTypes =
   | Homepage
   | Page
   | MediaImage
+  | MediaVimeo
   | Header
   | Footer
   | Link
@@ -912,7 +986,7 @@ export type HomeQueryResult = {
   _id: string;
   _type: 'homepage';
   name: string | null;
-  heroVideo: string | null;
+  heroVideo: MediaVimeo | null;
   pageBuilder: Array<
     | {
         _key: string;

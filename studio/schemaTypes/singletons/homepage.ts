@@ -22,7 +22,12 @@ export const homepage = defineType({
     defineField({
       name: 'heroVideo',
       title: 'Hero Video Embed',
-      type: 'string',
+      type: 'mediaVimeo',
+    }),
+    defineField({
+      name: 'sectionsBuilder',
+      title: 'Sections Builder',
+      type: 'pageSections',
     }),
     defineField({
       name: 'pageBuilder',
