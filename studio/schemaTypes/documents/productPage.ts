@@ -5,18 +5,30 @@ import {DocumentIcon} from '@sanity/icons';
  * Product Decorator schema.
  */
 
-export const productDecorator = defineType({
-  name: 'productDecorator',
-  title: 'Product Decorator',
+export const productPage = defineType({
+  name: 'productPage',
+  title: 'Product Page',
   type: 'document',
   icon: DocumentIcon,
   fields: [
     defineField({
-      name: 'productSlug',
-      title: 'Product Slug',
+      name: 'productHandle',
+      title: 'Product Handle',
       description:
-        'The slug in the product page URL: e.g. sierra-nevada-mustard-squeeze-bottle',
+        'The SHOPIFY product handle, e.g. sierra-nevada-mustard-squeeze-bottle',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      description:
+        'The slug for this page. Can be the same or different than the product handle.',
       type: 'slug',
+      options: {
+        source: 'productHandle',
+      },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'nameOverride',

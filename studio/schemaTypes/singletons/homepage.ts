@@ -33,7 +33,6 @@ export const homepage = defineType({
         {type: 'imageContentSection'},
         {type: 'imageSection'},
         {type: 'sideBySideCta'},
-        {type: 'faqSection'},
       ],
       options: {
         insertMenu: {
