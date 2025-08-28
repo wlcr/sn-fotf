@@ -11,21 +11,20 @@ type ContentSectionProps = {
 };
 
 export default function ContentSectionBlock({block}: ContentSectionProps) {
+  const contentAlign = block.contentAlign || 'alignLeft';
   const textAlign =
-    block.contentAlign === 'alignCenter'
+    contentAlign === 'alignCenter'
       ? 'center'
-      : block.contentAlign === 'alignRight'
+      : contentAlign === 'alignRight'
         ? 'right'
         : 'left';
-  console.log('textAlign', textAlign);
 
   const flexAlign =
-    block.contentAlign === 'alignCenter'
+    contentAlign === 'alignCenter'
       ? 'center'
-      : block.contentAlign === 'alignRight'
+      : contentAlign === 'alignRight'
         ? 'flex-end'
         : 'flex-start';
-  console.log('flexAlign', flexAlign);
 
   return (
     <div className={styles.layoutBlock}>

@@ -1,4 +1,5 @@
 .layoutBlock {
+  border: 10px solid blue;
   display: flex;
   flex-flow: column nowrap;
   gap: var(--spacer-5);
@@ -7,13 +8,25 @@
     flex-flow: var(--flexFlow);
     justify-content: stretch;
     align-items: center;
+
+    &.imageLeft {
+      flex-flow: row nowrap;
+    }
+    &.imageRight {
+      flex-flow: row-reverse nowrap;
+    }
+    &.imageAbove {
+      flex-flow: column nowrap;
+    }
   }
 
   & .imageSide,
   & .contentSide {
+    border: 5px solid red;
     flex: 1 1 100%;
 
     @media (min-width: 1024px) {
+      width: 50%;
       flex: 1 1 50%;
     }
   }
@@ -32,7 +45,7 @@
     }
 
     & .contentContainer {
-      text-align: var(--textAlign);
+      text-align: left;
     }
   }
 

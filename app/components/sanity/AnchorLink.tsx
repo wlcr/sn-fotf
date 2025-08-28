@@ -7,7 +7,7 @@ interface AnchorLinkProps {
 export const AnchorLink = ({value}: AnchorLinkProps) => {
   return (
     <a href={`#${value?._key}`} className="anchor-link">
-      #
+      <span>#</span>
     </a>
   );
 };

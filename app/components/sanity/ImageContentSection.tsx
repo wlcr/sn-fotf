@@ -14,45 +14,48 @@ type ImageContentSectionProps = {
 export default function ImageContentSectionBlock({
   block,
 }: ImageContentSectionProps) {
+  // these sub classes below never seem to get appended to the DOM
+  const sectionLayout = block.sectionLayout || 'imageLeft';
+  const contentAlign = block.contentAlign || 'alignLeft';
+  console.log('layouts', sectionLayout, contentAlign);
+
+  const LayoutClasses = clsx(
+    styles.layoutBlock,
+    sectionLayout === 'imageLeft' && styles.imageLeft,
+    sectionLayout === 'imageRight' && styles.imageRight,
+    sectionLayout === 'imageAbove' && styles.imageAbove,
+  );
+
   const textAlign =
-    block.contentAlign === 'alignCenter'
+    contentAlign === 'alignCenter'
       ? 'center'
-      : block.contentAlign === 'alignRight'
+      : contentAlign === 'alignRight'
         ? 'right'
         : 'left';
 
   const flexAlign =
-    block.contentAlign === 'alignCenter'
+    contentAlign === 'alignCenter'
       ? 'center'
-      : block.contentAlign === 'alignRight'
+      : contentAlign === 'alignRight'
         ? 'flex-end'
         : 'flex-start';
 
-  // CSS prop for flex flow based on section layout
+  // however, relying on CSS props does seem to work reliably
   const flexFlow =
-    block.sectionLayout === 'imageAbove'
+    sectionLayout === 'imageAbove'
       ? 'column wrap'
-      : block.sectionLayout === 'imageLeft'
+      : sectionLayout === 'imageLeft'
         ? 'row nowrap'
         : 'row-reverse nowrap';
 
   return (
-    <div
-      className={styles.layoutBlock}
-      style={{'--flexFlow': flexFlow} as React.CSSProperties}
-    >
+    <div className={LayoutClasses}>
       <div className={styles.imageSide}>
         {block?.image && <CoverImage image={block.image} priority />}
       </div>
-      <div
-        className={styles.contentSide}
-        style={{'--flexAlign': flexAlign} as React.CSSProperties}
-      >
+      <div className={styles.contentSide}>
         {block?.content?.length && (
-          <div
-            className={styles.contentContainer}
-            style={{'--textAlign': textAlign} as React.CSSProperties}
-          >
+          <div className={styles.contentContainer}>
             <PortableText
               value={block.content?.map((blockItem) => ({
                 ...blockItem,

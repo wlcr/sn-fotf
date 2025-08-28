@@ -33,8 +33,6 @@ const Blocks: BlocksType = {
 
 /**
  * Used by the <PageBuilder>, this component renders a the component that matches the block type.
- *
- * This is adapted for React Router v7 - no 'use client' directive needed.
  */
 export default function BlockRenderer({
   block,
@@ -42,6 +40,12 @@ export default function BlockRenderer({
   pageId,
   pageType,
 }: BlockProps) {
+  // const sanityDataAttr = dataAttr({
+  //   id: pageId,
+  //   type: pageType,
+  //   path: `pageBuilder[_key=="${block._key}"]`,
+  // }).toString();
+
   // Block does exist
   const BlockComponent = Blocks[block._type];
   if (BlockComponent) {
