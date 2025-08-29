@@ -27,12 +27,6 @@ export const footerQuery = groq`
   }
 `;
 
-export const productDecoratorQuery = groq`
-  *[_type == "productDecorator" && productSlug.current == $handle][0]{
-    nameOverride,
-    ${pageBuilder}
-  }`;
-
 export const homeQuery = groq`
   *[_type == 'homepage'][0]{
     ...,

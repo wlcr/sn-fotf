@@ -12,7 +12,6 @@ import {header} from './singletons/header';
 import {footer} from './singletons/footer';
 import {menu} from './objects/menu';
 import {faqBlock} from './objects/faqBlock';
-import {productDecorator} from './documents/productDecorator';
 import {ctaBlock} from './objects/ctaBlock';
 import {homepage} from './singletons/homepage';
 import {productPage} from './documents/productPage';
@@ -30,7 +29,6 @@ export const schemaTypes = [
   // Documents
   page,
   productPage,
-  productDecorator,
   // Objects
   blockContent,
   callToAction,
