@@ -60,4 +60,16 @@ export const productPage = defineType({
       },
     }),
   ],
+  preview: {
+    select: {
+      productHandle: 'productHandle',
+      slug: 'slug.current',
+    },
+    prepare({productHandle, slug}) {
+      return {
+        title: slug,
+        subtitle: 'Shopify product: ' + productHandle,
+      };
+    },
+  },
 });

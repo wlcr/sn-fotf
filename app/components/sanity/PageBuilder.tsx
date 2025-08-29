@@ -1,12 +1,9 @@
 import BlockRenderer, {BlockType} from './BlockRenderer';
-import {Page, PageSection, ProductDecorator} from 'studio/sanity.types';
+import {Page, PageSection} from 'studio/sanity.types';
 
 type PageBuilderProps = {
   parent: {_id: string; _type: string};
-  pageBuilder:
-    | PageSection['sectionBuilder']
-    | ProductDecorator['pageBuilder']
-    | Page['pageBuilder'];
+  pageBuilder: PageSection['sectionBuilder'] | Page['pageBuilder'];
   idName?: string;
   className?: string;
 };
