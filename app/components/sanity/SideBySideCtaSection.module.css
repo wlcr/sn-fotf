@@ -1,0 +1,23 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-content: center;
+  gap: var(--section-gap);
+
+  @media (min-width: 960px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.ctaWrapper {
+  padding: var(--section-padding);
+
+  & .cta {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--section-gap);
+  }
+}

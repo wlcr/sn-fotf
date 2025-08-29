@@ -1,10 +1,9 @@
 .layoutBlock {
-  border: 10px solid blue;
   display: flex;
   flex-flow: column nowrap;
   gap: var(--spacer-5);
 
-  @media (min-width: 1024px) {
+  @media (min-width: 960px) {
     flex-flow: var(--flexFlow);
     justify-content: stretch;
     align-items: center;
@@ -22,10 +21,9 @@
 
   & .imageSide,
   & .contentSide {
-    border: 5px solid red;
     flex: 1 1 100%;
 
-    @media (min-width: 1024px) {
+    @media (min-width: 960px) {
       width: 50%;
       flex: 1 1 50%;
     }
@@ -38,7 +36,7 @@
     align-items: start;
     gap: var(--spacer-5);
 
-    @media (min-width: 1024px) {
+    @media (min-width: 960px) {
       padding: 56px;
       justify-content: center;
       align-items: var(--flexAlign);

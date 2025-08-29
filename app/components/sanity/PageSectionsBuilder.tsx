@@ -1,7 +1,7 @@
-'use client';
-
-import {PageBuilderResult, PageSection} from 'studio/sanity.types';
+import {PageSection} from 'studio/sanity.types';
 import PageBuilder from './PageBuilder';
+import styles from './Sections.module.css';
+import {clsx} from 'clsx';
 
 type SectionsBuilderProps = {
   parent: {_id: string; _type: string};
@@ -17,10 +17,10 @@ function renderSections(
   parent: {_id: string; _type: string},
 ) {
   // TODO: implement a real data attr construction for visual editing
-  const sanityDataAttr = `${parent._id}-${parent._type}-sectionPageBuilder`;
+  const sanityDataAttr = `${parent._id}-${parent._type}-pageBuilder`;
 
   return (
-    <div data-sanity={sanityDataAttr}>
+    <div data-sanity={sanityDataAttr} className={styles.SectionsContainer}>
       {pageBuilder.map((pageSection: PageSection, index) => {
         const parentId = `${parent._id}-section-${index}`;
         return (
@@ -30,6 +30,12 @@ function renderSections(
             pageBuilder={
               pageSection.sectionBuilder as PageSection['sectionBuilder']
             }
+            idName={pageSection.sectionId}
+            className={clsx(
+              styles.Section,
+              styles.fullHeight,
+              pageSection.sectionClasses,
+            )}
           />
         );
       })}
