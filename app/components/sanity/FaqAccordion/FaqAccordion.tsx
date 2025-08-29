@@ -1,6 +1,4 @@
-'use client';
-
-import {useState, useEffect, useRef, useCallback} from 'react';
+import {useState, useCallback} from 'react';
 import {motion, AnimatePresence} from 'motion/react';
 import {clsx} from 'clsx';
 import accordionStyles from './FaqAccordion.module.css';
@@ -60,7 +58,6 @@ export function FaqAccordion({
   allowMultiple = false,
 }: FaqAccordionProps) {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
-  const accordionRef = useRef<HTMLDivElement>(null);
 
   // Memoized helper functions
   const isItemOpen = useCallback(
@@ -91,24 +88,6 @@ export function FaqAccordion({
     [allowMultiple],
   );
 
-  // Close accordion when clicking outside (optional behavior)
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      accordionRef.current &&
-      !accordionRef.current.contains(event.target as Node)
-    ) {
-      setOpenItems(new Set());
-    }
-  }, []);
-
-  useEffect(() => {
-    // Only add listener if we have items
-    if (items?.length === 0) return;
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [handleClickOutside, items?.length]);
-
   // Early return for empty state
   if (!items || items.length === 0) {
     return null;
@@ -116,11 +95,10 @@ export function FaqAccordion({
 
   return (
     <div
-      ref={accordionRef}
       className={clsx(accordionStyles.accordion, className)}
       role="presentation"
     >
-      {items.map((item, index) => {
+      {items.map((item) => {
         const itemId = item._key;
         const isOpen = isItemOpen(itemId);
         const contentId = `accordion-content-${itemId}`;

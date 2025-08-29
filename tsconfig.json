@@ -6,11 +6,7 @@
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -18,20 +14,38 @@
     "resolveJsonModule": true,
     "module": "ES2022",
     "target": "ES2022",
+
+    // Strict type checking (catches AI-generated issues)
     "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+
+    // Additional quality checks (gradually enable)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": false,
+
+    // Import/Export checks (gradually enable)
+    "verbatimModuleSyntax": false,
+    "allowSyntheticDefaultImports": true,
+
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "types": [
-      "@shopify/oxygen-workers-types",
-      "react-router",
-      "vite/client"
-    ],
+    "types": ["@shopify/oxygen-workers-types", "react-router", "vite/client"],
     "paths": {
-      "~/*": [
-        "app/*"
-      ]
+      "~/*": ["app/*"],
+      "~/studio/*": ["studio/*"]
     },
     "noEmit": true,
     "rootDirs": [".", "./.react-router/types"]

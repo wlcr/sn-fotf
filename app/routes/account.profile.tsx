@@ -42,7 +42,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     const customer: CustomerUpdateInput = {};
     const validInputKeys = ['firstName', 'lastName'] as const;
     for (const [key, value] of form.entries()) {
-      if (!validInputKeys.includes(key as any)) {
+      if (!validInputKeys.includes(key as (typeof validInputKeys)[number])) {
         continue;
       }
       if (typeof value === 'string' && value.length) {
@@ -61,7 +61,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     );
 
     if (errors?.length) {
-      throw new Error(errors[0].message);
+      throw new Error(errors[0]?.message || 'Unknown error');
     }
 
     if (!data?.customerUpdate?.customer) {
@@ -72,9 +72,12 @@ export async function action({request, context}: ActionFunctionArgs) {
       error: null,
       customer: data?.customerUpdate?.customer,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return data(
-      {error: error.message, customer: null},
+      {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        customer: null,
+      },
       {
         status: 400,
       },

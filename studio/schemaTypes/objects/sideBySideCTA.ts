@@ -1,5 +1,5 @@
-import {defineField, defineType} from 'sanity'
-import {BulbOutlineIcon} from '@sanity/icons'
+import {defineField, defineType} from 'sanity';
+import {BulbOutlineIcon} from '@sanity/icons';
 
 /**
  * 2-UP Call to Action
@@ -30,12 +30,12 @@ export const sideBySideCta = defineType({
       sideB: 'sideB.heading',
     },
     prepare(selection) {
-      const {sideA, sideB} = selection
+      const {sideA, sideB} = selection;
 
       return {
         title: sideA,
         subtitle: sideB,
-      }
+      };
     },
   },
-})
+});

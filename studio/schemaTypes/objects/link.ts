@@ -1,5 +1,5 @@
-import { defineField, defineType } from 'sanity';
-import { LinkIcon } from '@sanity/icons';
+import {defineField, defineType} from 'sanity';
+import {LinkIcon} from '@sanity/icons';
 
 /**
  * Link schema object. This link object lets the user first select the type of link and then
@@ -20,8 +20,8 @@ export const link = defineType({
       initialValue: 'url',
       options: {
         list: [
-          { title: 'URL', value: 'href' },
-          { title: 'Page', value: 'page' },
+          {title: 'URL', value: 'href'},
+          {title: 'Page', value: 'page'},
         ],
         layout: 'dropdown',
       },
@@ -30,14 +30,11 @@ export const link = defineType({
       name: 'href',
       title: 'URL',
       type: 'url',
-      hidden: ({ parent }) => parent?.linkType !== 'href',
+      hidden: ({parent}) => parent?.linkType !== 'href',
       validation: (Rule) =>
         // Custom validation to ensure URL is provided if the link type is 'href'
         Rule.custom((value, context: any) => {
-          if (
-            context.parent?.linkType === 'href' &&
-            !value
-          ) {
+          if (context.parent?.linkType === 'href' && !value) {
             return 'URL is required when Link Type is URL';
           }
           return true;
@@ -47,15 +44,12 @@ export const link = defineType({
       name: 'page',
       title: 'Page',
       type: 'reference',
-      to: [{ type: 'page' }],
-      hidden: ({ parent }) => parent?.linkType !== 'page',
+      to: [{type: 'page'}],
+      hidden: ({parent}) => parent?.linkType !== 'page',
       validation: (Rule) =>
         // Custom validation to ensure page reference is provided if the link type is 'page'
         Rule.custom((value, context: any) => {
-          if (
-            context.parent?.linkType === 'page' &&
-            !value
-          ) {
+          if (context.parent?.linkType === 'page' && !value) {
             return 'Page reference is required when Link Type is Page';
           }
           return true;
@@ -74,12 +68,10 @@ export const link = defineType({
       href: 'href',
       type: 'linkType',
     },
-    prepare({ type, page, href }) {
+    prepare({type, page, href}) {
       return {
         title:
-          type === 'page'
-            ? page || 'Internal Page'
-            : href || 'External Link',
+          type === 'page' ? page || 'Internal Page' : href || 'External Link',
       };
     },
   },

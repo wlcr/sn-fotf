@@ -1,5 +1,5 @@
-import { DocumentTextIcon } from '@sanity/icons';
-import { defineField, defineType } from 'sanity';
+import {DocumentTextIcon} from '@sanity/icons';
+import {defineField, defineType} from 'sanity';
 
 /**
  * Image and Content schema.  Define and edit the fields for the 'imageAndContent' content type.
@@ -28,9 +28,9 @@ export const contentSection = defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Aligned Left', value: 'alignLeft' },
-          { title: 'Aligned Right', value: 'alignRight' },
-          { title: 'Center Aligned', value: 'alignCenter' },
+          {title: 'Aligned Left', value: 'alignLeft'},
+          {title: 'Aligned Right', value: 'alignRight'},
+          {title: 'Center Aligned', value: 'alignCenter'},
         ],
       },
     }),
@@ -40,10 +40,10 @@ export const contentSection = defineType({
       type: 'number',
       options: {
         list: [
-          { title: 'Small', value: 2 },
-          { title: 'Regular', value: 3 },
-          { title: 'Large', value: 5 },
-          { title: 'Extra Large', value: 7 },
+          {title: 'Small', value: 2},
+          {title: 'Regular', value: 3},
+          {title: 'Large', value: 5},
+          {title: 'Extra Large', value: 7},
         ],
       },
       initialValue: 3,
@@ -54,15 +54,13 @@ export const contentSection = defineType({
     select: {
       title: 'content[0].children[0].text', // Assuming the first block has text
     },
-    prepare({ title }) {
-      const contentText = title
-        ? title
-        : 'No text preview available';
+    prepare({title}) {
+      const contentText = title ? title : 'No text preview available';
       const trimmedTitle =
         contentText.length > 48
           ? contentText.slice(0, 48) + '...'
           : contentText;
-      return { title: trimmedTitle };
+      return {title: trimmedTitle};
     },
   },
 });

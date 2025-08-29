@@ -5,7 +5,6 @@ import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';
 import PortableText from './PortableText';
 import styles from './ImageContentSection.module.css';
-import {bigTrimmer} from '~/lib/bigTrimmer';
 
 type ImageContentSectionProps = {
   block: ImageContentSection;
@@ -15,50 +14,45 @@ type ImageContentSectionProps = {
 export default function ImageContentSectionBlock({
   block,
 }: ImageContentSectionProps) {
-  // these sub classes below never seem to get appended to the DOM
-  const sectionLayout = bigTrimmer(block.sectionLayout) || 'imageLeft';
-  const contentAlign = bigTrimmer(block.contentAlign) || 'alignLeft';
-  console.log('layouts', sectionLayout, contentAlign);
-
-  const LayoutClasses = clsx(styles.layoutBlock, {
-    [styles.imageLeft]: sectionLayout === 'imageLeft',
-    [styles.imageRight]: sectionLayout === 'imageRight',
-    [styles.imageAbove]: sectionLayout === 'imageAbove',
-  });
-
   const textAlign =
-    contentAlign === 'alignCenter'
+    block.contentAlign === 'alignCenter'
       ? 'center'
-      : contentAlign === 'alignRight'
+      : block.contentAlign === 'alignRight'
         ? 'right'
         : 'left';
-  console.log('textAlign IC', textAlign);
 
   const flexAlign =
-    contentAlign === 'alignCenter'
+    block.contentAlign === 'alignCenter'
       ? 'center'
-      : contentAlign === 'alignRight'
+      : block.contentAlign === 'alignRight'
         ? 'flex-end'
         : 'flex-start';
-  console.log('flexAlign IC', flexAlign);
 
-  // however, relying on CSS props does seem to work reliably
+  // CSS prop for flex flow based on section layout
   const flexFlow =
-    sectionLayout === 'imageAbove'
+    block.sectionLayout === 'imageAbove'
       ? 'column wrap'
-      : sectionLayout === 'imageLeft'
+      : block.sectionLayout === 'imageLeft'
         ? 'row nowrap'
         : 'row-reverse nowrap';
-  console.log('flexFlow IC', flexFlow);
 
   return (
-    <div className={LayoutClasses}>
+    <div
+      className={styles.layoutBlock}
+      style={{'--flexFlow': flexFlow} as React.CSSProperties}
+    >
       <div className={styles.imageSide}>
         {block?.image && <CoverImage image={block.image} priority />}
       </div>
-      <div className={styles.contentSide}>
+      <div
+        className={styles.contentSide}
+        style={{'--flexAlign': flexAlign} as React.CSSProperties}
+      >
         {block?.content?.length && (
-          <div className={styles.contentContainer}>
+          <div
+            className={styles.contentContainer}
+            style={{'--textAlign': textAlign} as React.CSSProperties}
+          >
             <PortableText
               value={block.content?.map((blockItem) => ({
                 ...blockItem,

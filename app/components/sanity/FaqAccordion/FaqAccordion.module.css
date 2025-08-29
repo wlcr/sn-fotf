@@ -85,24 +85,3 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
-
-/* Animation classes for motion */
-.contentEnter {
-  opacity: 0;
-  height: 0;
-}
-
-.contentEnterActive {
-  opacity: 1;
-  height: auto;
-}
-
-.contentExit {
-  opacity: 1;
-  height: auto;
-}
-
-.contentExitActive {
-  opacity: 0;
-  height: 0;
-}

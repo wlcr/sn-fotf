@@ -4,7 +4,6 @@ import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import styles from './ContentSection.module.css';
 import {clsx} from 'clsx';
-import {bigTrimmer} from '~/lib/bigTrimmer';
 
 type ContentSectionProps = {
   block: ContentSection;
@@ -12,19 +11,18 @@ type ContentSectionProps = {
 };
 
 export default function ContentSectionBlock({block}: ContentSectionProps) {
-  const contentAlign = bigTrimmer(block.contentAlign) || 'alignLeft';
   const textAlign =
-    contentAlign === 'alignCenter'
+    block.contentAlign === 'alignCenter'
       ? 'center'
-      : contentAlign === 'alignRight'
+      : block.contentAlign === 'alignRight'
         ? 'right'
         : 'left';
   console.log('textAlign', textAlign);
 
   const flexAlign =
-    contentAlign === 'alignCenter'
+    block.contentAlign === 'alignCenter'
       ? 'center'
-      : contentAlign === 'alignRight'
+      : block.contentAlign === 'alignRight'
         ? 'flex-end'
         : 'flex-start';
   console.log('flexAlign', flexAlign);

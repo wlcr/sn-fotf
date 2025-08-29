@@ -23,12 +23,12 @@ export default async function handleRequest(
     scriptSrc: ['https://www.klaviyo.com', 'https://*.klaviyo.com'],
     // Comprehensive img-src support (Hydrogen doesn't reliably auto-generate this)
     imgSrc: [
-      'https://cdn.sanity.io',
       'https://www.klaviyo.com',
       'https://*.klaviyo.com',
       "'self'",
       'https://cdn.shopify.com',
       'https://shopify.com',
+      'https://cdn.sanity.io', // Sanity image CDN
       'http://localhost:*',
       'data:',
     ],

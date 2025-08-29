@@ -16,24 +16,36 @@ declare global {
   /**
    * A global `process` object is only available during build to access NODE_ENV.
    */
-  const process: {
-    env: {
-      NODE_ENV: 'production' | 'development';
-      SANITY_PROJECT_ID: string;
-      SANITY_DATASET: string;
-      SANITY_API_VERSION: string;
-      SANITY_API_TOKEN: string;
-      SANITY_STUDIO_URL: string;
+  const process: {env: {NODE_ENV: 'production' | 'development'}};
+
+  /**
+   * Window ENV object for client-side environment variables
+   * Populated by server-side rendering in root.tsx
+   *
+   * Note: Sanity project ID and dataset are hardcoded in the app, not passed as env vars
+   */
+  interface Window {
+    ENV: {
+      NODE_ENV?: string;
+      MODE?: string;
+      PUBLIC_BASE_URL?: string;
+      VERCEL_ENV?: string;
+      [key: string]: string | undefined;
     };
-  };
+  }
 
   interface Env extends HydrogenEnv {
     // declare additional Env parameter use in the fetch handler and Remix loader context here
-    SANITY_PROJECT_ID: string;
-    SANITY_DATASET: string;
-    SANITY_API_VERSION: string;
-    SANITY_API_TOKEN: string;
-    SANITY_STUDIO_URL: string;
+
+    // Sanity CMS environment variables (only secrets need to be env vars)
+    // Project ID, dataset, and API version are hardcoded in app/lib/sanity.ts
+    SANITY_API_TOKEN?: string; // For preview mode
+    SANITY_PREVIEW_SECRET?: string; // For preview authentication
+    SANITY_REVALIDATE_SECRET?: string; // For webhook validation
+    SANITY_STUDIO_URL?: string; // For development
+
+    // Other environment variables
+    PUBLIC_BASE_URL?: string;
   }
 }
 

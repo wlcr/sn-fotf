@@ -1,5 +1,5 @@
-import { DocumentTextIcon } from '@sanity/icons';
-import { defineField, defineType } from 'sanity';
+import {DocumentTextIcon} from '@sanity/icons';
+import {defineField, defineType} from 'sanity';
 
 /**
  * Image and Content schema.  Define and edit the fields for the 'imageAndContent' content type.
@@ -23,8 +23,8 @@ export const imageSection = defineType({
     select: {
       media: 'image',
     },
-    prepare({ media }) {
-      return { media };
+    prepare({media}) {
+      return {media};
     },
   },
 });

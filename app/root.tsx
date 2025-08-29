@@ -142,6 +142,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export function Layout({children}: {children?: React.ReactNode}) {
+  // Always call useNonce at the top level (React Hooks rule)
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>('root');
 

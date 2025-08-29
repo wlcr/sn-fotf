@@ -1,10 +1,5 @@
-import { defineField, defineType } from 'sanity';
-import { DocumentIcon } from '@sanity/icons';
-
-/**
- * Page schema.  Define and edit the fields for the 'page' content type.
- * Learn more: https://www.sanity.io/docs/schema-types
- */
+import {defineField, defineType} from 'sanity';
+import {DocumentIcon} from '@sanity/icons';
 
 export const page = defineType({
   name: 'page',
@@ -13,8 +8,8 @@ export const page = defineType({
   icon: DocumentIcon,
   fields: [
     defineField({
-      name: 'name',
-      title: 'Name',
+      name: 'title',
+      title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -22,52 +17,15 @@ export const page = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      validation: (Rule) => Rule.required(),
       options: {
-        source: 'name',
-        maxLength: 96,
+        source: 'title',
       },
-    }),
-    defineField({
-      name: 'heading',
-      title: 'Heading',
-      type: 'string',
       validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'subheading',
-      title: 'Subheading',
-      type: 'string',
-    }),
-    defineField({
-      name: 'coverImage',
-      title: 'Cover Image',
-      type: 'mediaImage',
-    }),
-    defineField({
-      name: 'pageBuilder',
-      title: 'Page builder',
-      type: 'array',
-      of: [
-        { type: 'contentSection' },
-        { type: 'imageContentSection' },
-        { type: 'imageSection' },
-        { type: 'faqSection' },
-        { type: 'callToAction' },
-        { type: 'infoSection' },
-      ],
-      options: {
-        insertMenu: {
-          // Configure the "Add Item" menu to display a thumbnail preview of the content type. https://www.sanity.io/docs/array-type#efb1fe03459d
-          views: [
-            {
-              name: 'grid',
-              previewImageUrl: (schemaTypeName) =>
-                `/static/page-builder-thumbnails/${schemaTypeName}.webp`,
-            },
-          ],
-        },
-      },
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+    },
+  },
 });

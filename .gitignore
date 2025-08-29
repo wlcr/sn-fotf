@@ -7,5 +7,3 @@ node_modules
 .env
 .shopify
 .react-router
-
-*.DS_Store

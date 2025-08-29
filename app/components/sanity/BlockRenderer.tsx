@@ -8,7 +8,6 @@ import SideBySideCtaSection from './SideBySideCtaSection';
 import JsonBlock from './JsonBlock';
 
 type BlocksType = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: React.FC<any>;
 };
 
@@ -34,6 +33,8 @@ const Blocks: BlocksType = {
 
 /**
  * Used by the <PageBuilder>, this component renders a the component that matches the block type.
+ *
+ * This is adapted for React Router v7 - no 'use client' directive needed.
  */
 export default function BlockRenderer({
   block,
@@ -41,17 +42,12 @@ export default function BlockRenderer({
   pageId,
   pageType,
 }: BlockProps) {
-  // const sanityDataAttr = dataAttr({
-  //   id: pageId,
-  //   type: pageType,
-  //   path: `pageBuilder[_key=="${block._key}"]`,
-  // }).toString();
-
   // Block does exist
-  if (typeof Blocks[block._type] !== 'undefined') {
+  const BlockComponent = Blocks[block._type];
+  if (BlockComponent) {
     return (
       <div key={block._key} data-sanity={'dataAttr_breaks_vite'}>
-        {createElement(Blocks[block._type], {
+        {createElement(BlockComponent, {
           key: block._key,
           block,
           index,

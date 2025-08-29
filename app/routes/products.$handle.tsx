@@ -12,10 +12,6 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import type {SanityDocument} from '@sanity/client';
-import {productDecoratorQuery} from 'studio/queries/index';
-import {loadQuery} from '~/lib/sanity/sanity.loader.server';
-import PageBuilder from '~/components/sanity/PageBuilder';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -26,8 +22,6 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     },
   ];
 };
-
-/** SANITY: include these queries in loadCriticalData() */
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -55,12 +49,11 @@ async function loadCriticalData({
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}, {data: decorator}] = await Promise.all([
+  const [{product}] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
-    loadQuery<SanityDocument>(productDecoratorQuery, {handle}),
   ]);
 
   if (!product?.id) {
@@ -72,7 +65,6 @@ async function loadCriticalData({
 
   return {
     product,
-    decorator,
   };
 }
 
@@ -89,8 +81,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
-  // TODO: implement useQuery for live Sanity content updates
-  const {product, decorator} = useLoaderData<typeof loader>();
+  const {product} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -111,52 +102,44 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <>
-      <div className="product">
-        <ProductImage image={selectedVariant?.image} />
-        <div className="product-main">
-          <h1>{decorator?.nameOverride ? decorator.nameOverride : title}</h1>
-          <ProductPrice
-            price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
-          />
-          <br />
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-          />
-          <br />
-          <br />
-          <p>
-            <strong>Description</strong>
-          </p>
-          <br />
-          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-          <br />
-        </div>
-        <Analytics.ProductView
-          data={{
-            products: [
-              {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price.amount || '0',
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || '',
-                variantTitle: selectedVariant?.title || '',
-                quantity: 1,
-              },
-            ],
-          }}
+    <div className="product">
+      <ProductImage image={selectedVariant?.image} />
+      <div className="product-main">
+        <h1>{title}</h1>
+        <ProductPrice
+          price={selectedVariant?.price}
+          compareAtPrice={selectedVariant?.compareAtPrice}
         />
+        <br />
+        <ProductForm
+          productOptions={productOptions}
+          selectedVariant={selectedVariant}
+        />
+        <br />
+        <br />
+        <p>
+          <strong>Description</strong>
+        </p>
+        <br />
+        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+        <br />
       </div>
-      {decorator && (
-        <PageBuilder
-          parent={{_id: decorator._id, _type: decorator._type}}
-          pageBuilder={decorator.pageBuilder}
-        />
-      )}
-    </>
+      <Analytics.ProductView
+        data={{
+          products: [
+            {
+              id: product.id,
+              title: product.title,
+              price: selectedVariant?.price.amount || '0',
+              vendor: product.vendor,
+              variantId: selectedVariant?.id || '',
+              variantTitle: selectedVariant?.title || '',
+              quantity: 1,
+            },
+          ],
+        }}
+      />
+    </div>
   );
 }
 

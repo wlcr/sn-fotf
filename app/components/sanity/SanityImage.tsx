@@ -1,4 +1,4 @@
-import {urlForImage} from '~/lib/sanity/urlForImage';
+import {urlForImage} from '~/lib/sanity';
 
 type SanityImageProps = {
   image: any; // Replace 'any' with the actual image type if available
