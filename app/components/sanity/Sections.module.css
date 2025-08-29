@@ -18,3 +18,11 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.fullHeight {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

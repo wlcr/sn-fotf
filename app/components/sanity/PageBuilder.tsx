@@ -1,6 +1,6 @@
 'use client';
 
-import BlockRenderer from './BlockRenderer';
+import BlockRenderer, {BlockType} from './BlockRenderer';
 import {Page, PageSection, ProductDecorator} from 'studio/sanity.types';
 
 type PageBuilderProps = {
@@ -11,17 +11,12 @@ type PageBuilderProps = {
     | Page['pageBuilder'];
 };
 
-type PageBuilderSection = {
-  _key: string;
-  _type: string;
-};
-
 /**
  * The PageBuilder component is used to render the blocks from the `pageBuilder` field in the Page type in your Sanity Studio.
  */
 
 function renderSections(
-  pageBuilderSections: PageBuilderSection[],
+  pageBuilderSections: BlockType[],
   parent: {_id: string; _type: string},
 ) {
   // TODO: implement a real data attr construction for visual editing
@@ -29,7 +24,7 @@ function renderSections(
 
   return (
     <div data-sanity={sanityDataAttr}>
-      {pageBuilderSections.map((block: PageBuilderSection, index: number) => (
+      {pageBuilderSections.map((block: BlockType, index: number) => (
         <BlockRenderer
           key={block._key}
           index={index}
