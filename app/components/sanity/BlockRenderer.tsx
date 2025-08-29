@@ -24,11 +24,11 @@ type BlockProps = {
 };
 
 const Blocks: BlocksType = {
-  faqSection: FaqSectionBlock,
-  imageSection: ImageSection,
-  contentSection: ContentSection,
-  imageContentSection: ImageContentSection,
-  sideBySideCta: SideBySideCtaSection,
+  faqBlock: FaqSectionBlock,
+  imageBlock: ImageSection,
+  contentBlock: ContentSection,
+  imageContentBlock: ImageContentSection,
+  ctaBlock: SideBySideCtaSection,
 };
 
 /**

@@ -2,13 +2,13 @@ import {DocumentTextIcon} from '@sanity/icons';
 import {defineField, defineType} from 'sanity';
 
 /**
- * Special Component Section
+ * Special Component Block
  */
 
-export const specialComponentSection = defineType({
-  name: 'specialComponentSection',
-  title: 'Special Component Section',
-  description: 'Special component section // pick a code-based section',
+export const specialComponentBlock = defineType({
+  name: 'specialComponentBlock',
+  title: 'Special Component Block',
+  description: 'Special component block // pick a code-based component block',
   icon: DocumentTextIcon,
   type: 'object',
   fields: [
@@ -18,8 +18,8 @@ export const specialComponentSection = defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Labels Component', value: 'labelsComponent'},
-          {title: 'Map Component', value: 'mapComponent'},
+          {title: 'Beer Labels Component', value: 'labelsComponent'},
+          {title: 'Beer Map Component', value: 'mapComponent'},
           {title: 'Dummy Component', value: 'dummyComponent'},
         ],
       },
@@ -28,12 +28,11 @@ export const specialComponentSection = defineType({
   preview: {
     select: {
       title: 'specialComponent',
-      subtitle: 'sectionId',
     },
-    prepare({title, subtitle}) {
+    prepare({title}) {
+      console.log('title', title);
       return {
-        title: title || 'Special Component Section',
-        subtitle: subtitle || '',
+        title: title || 'Special Component Block',
       };
     },
   },

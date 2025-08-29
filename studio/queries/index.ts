@@ -35,11 +35,7 @@ export const productDecoratorQuery = groq`
 
 export const homeQuery = groq`
   *[_type == 'homepage'][0]{
-    _id,
-    _type,
-    name,
-    heroVideo,
-    ${pageBuilder}
+    ...,
   }
 `;
 

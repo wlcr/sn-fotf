@@ -1,16 +1,16 @@
 import PortableText from './PortableText';
-import {ContentSection} from 'studio/sanity.types';
+import {ContentBlock} from 'studio/sanity.types';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import styles from './ContentSection.module.css';
 import {clsx} from 'clsx';
 
-type ContentSectionProps = {
-  block: ContentSection;
+type ContentBlockProps = {
+  block: ContentBlock;
   index: number;
 };
 
-export default function ContentSectionBlock({block}: ContentSectionProps) {
+export default function ContentSectionBlock({block}: ContentBlockProps) {
   const contentAlign = block.contentAlign || 'alignLeft';
   const textAlign =
     contentAlign === 'alignCenter'

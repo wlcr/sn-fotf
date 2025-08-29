@@ -1,13 +1,13 @@
 'use client';
-import {FaqSection} from 'studio/sanity.types';
+import {FaqBlock} from 'studio/sanity.types';
 import {FaqAccordion} from './FaqAccordion/FaqAccordion';
 
-type FaqSectionBlockProps = {
-  block: FaqSection;
+type FaqBlockProps = {
+  block: FaqBlock;
   index: number;
 };
 
-export default function FaqSectionBlock({block}: FaqSectionBlockProps) {
+export default function FaqSectionBlock({block}: FaqBlockProps) {
   if (!block?.faqItems?.length) return null;
 
   return (

@@ -1,11 +1,14 @@
 'use client';
 
 import BlockRenderer from './BlockRenderer';
-import {Page, ProductDecorator} from 'studio/sanity.types';
+import {Page, PageSection, ProductDecorator} from 'studio/sanity.types';
 
 type PageBuilderProps = {
   parent: {_id: string; _type: string};
-  pageBuilder: ProductDecorator['pageBuilder'] | Page['pageBuilder'];
+  pageBuilder:
+    | PageSection['sectionBuilder']
+    | ProductDecorator['pageBuilder']
+    | Page['pageBuilder'];
 };
 
 type PageBuilderSection = {
@@ -21,14 +24,11 @@ function renderSections(
   pageBuilderSections: PageBuilderSection[],
   parent: {_id: string; _type: string},
 ) {
-  // const sanityDataAttr = dataAttr({
-  //   id: parent._id,
-  //   type: parent._type,
-  //   path: `pageBuilder`,
-  // }).toString();
+  // TODO: implement a real data attr construction for visual editing
+  const sanityDataAttr = `${parent._id}-${parent._type}-pageBuilder`;
 
   return (
-    <div data-sanity={'dataAttr_breaks_vite'}>
+    <div data-sanity={sanityDataAttr}>
       {pageBuilderSections.map((block: PageBuilderSection, index: number) => (
         <BlockRenderer
           key={block._key}

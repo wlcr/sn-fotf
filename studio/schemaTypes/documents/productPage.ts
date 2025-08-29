@@ -41,10 +41,10 @@ export const productPage = defineType({
       title: 'Page builder',
       type: 'array',
       of: [
-        {type: 'faqSection'},
-        {type: 'contentSection'},
-        {type: 'imageContentSection'},
-        {type: 'imageSection'},
+        {type: 'faqBlock'},
+        {type: 'contentBlock'},
+        {type: 'imageContentBlock'},
+        {type: 'imageBlock'},
       ],
       options: {
         insertMenu: {

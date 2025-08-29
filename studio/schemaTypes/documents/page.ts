@@ -35,26 +35,14 @@ export const page = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'subheading',
-      title: 'Subheading',
-      type: 'string',
-    }),
-    defineField({
-      name: 'coverImage',
-      title: 'Cover Image',
-      type: 'mediaImage',
-    }),
-    defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',
       of: [
-        {type: 'contentSection'},
-        {type: 'imageContentSection'},
-        {type: 'imageSection'},
-        {type: 'faqSection'},
-        {type: 'callToAction'},
-        {type: 'infoSection'},
+        {type: 'faqBlock'},
+        {type: 'contentBlock'},
+        {type: 'imageContentBlock'},
+        {type: 'imageBlock'},
       ],
       options: {
         insertMenu: {

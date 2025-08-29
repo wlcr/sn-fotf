@@ -30,7 +30,7 @@ export const portableText = groq`
 export const pageBuilder = groq`
   pageBuilder[]{
     ...,
-    _type == "imageContentSection" => {
+    _type == "imageContentBlock" => {
       image{
         ...,
         ${linkFields}
@@ -41,35 +41,33 @@ export const pageBuilder = groq`
         ${linkFields}
       }
     },
-    _type == "imageSection" => {
+    _type == "imageBlock" => {
       image{
         ...,
         ${linkFields}
       }
     },
-    _type == "contentSection" => {
+    _type == "contentBlock" => {
       content[]${portableText},
       button{
         ...,
         ${linkFields}
       }
     },
-    _type == "faqSection" => {
+    _type == "faqBlock" => {
       faqItems[]{
         ...,
         answer[]${portableText}
       }
     },
-    _type == "sideBySideCta" => {
-      sideA{
+    _type == "ctaBlock" => {
+      ctas[]{
         ...,
         content[]${portableText},
-        ${linkFields}
-      },
-      sideB{
-        ...,
-        content[]${portableText},
-        ${linkFields}
+        button{
+          ...,
+          ${linkFields}
+        }
       }
     }
   }

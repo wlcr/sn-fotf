@@ -1,26 +1,25 @@
 import {page} from './documents/page';
 import {blockContent} from './objects/blockContent';
 import {callToAction} from './objects/callToAction';
-import {infoSection} from './objects/infoSection';
 import {link} from './objects/link';
 import {mediaImage} from './objects/mediaImage';
 import {settings} from './singletons/settings';
-import {imageContentSection} from './objects/imageContentSection';
+import {imageContentBlock} from './objects/imageContentBlock';
 import {linkButton} from './objects/linkButton';
-import {contentSection} from './objects/contentSection';
-import {imageSection} from './objects/imageSection';
+import {contentBlock} from './objects/contentBlock';
+import {imageBlock} from './objects/imageBlock';
 import {header} from './singletons/header';
 import {footer} from './singletons/footer';
 import {menu} from './objects/menu';
-import {faqSection} from './objects/faqSection';
+import {faqBlock} from './objects/faqBlock';
 import {productDecorator} from './documents/productDecorator';
-import {sideBySideCta} from './objects/sideBySideCTA';
+import {ctaBlock} from './objects/ctaBlock';
 import {homepage} from './singletons/homepage';
 import {productPage} from './documents/productPage';
-import {specialComponentSection} from './objects/specialComponentSection';
-import {newsletterSection} from './objects/newsletterSection';
+import {specialComponentBlock} from './objects/specialComponentBlock';
+import {newsletterBlock} from './objects/newsletterBlock';
 import {mediaVimeo} from './objects/mediaVimeo';
-import {pageSections} from './objects/pageSections';
+import {pageSection} from './objects/pageSection';
 
 export const schemaTypes = [
   // Singletons
@@ -40,15 +39,13 @@ export const schemaTypes = [
   mediaImage,
   mediaVimeo,
   menu,
-  sideBySideCta,
-  // Page Sections
-  pageSections,
-  // Sections
-  contentSection,
-  faqSection,
-  imageSection,
-  imageContentSection,
-  infoSection,
-  newsletterSection,
-  specialComponentSection,
+  // Block Arrays + Blocks
+  pageSection,
+  contentBlock,
+  ctaBlock,
+  faqBlock,
+  imageBlock,
+  imageContentBlock,
+  newsletterBlock,
+  specialComponentBlock,
 ];

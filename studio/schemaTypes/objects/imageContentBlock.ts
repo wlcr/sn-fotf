@@ -6,9 +6,9 @@ import {defineField, defineType} from 'sanity';
  * Learn more: https://www.sanity.io/docs/schema-types
  */
 
-export const imageContentSection = defineType({
-  name: 'imageContentSection',
-  title: 'Image / Content Section',
+export const imageContentBlock = defineType({
+  name: 'imageContentBlock',
+  title: 'Image / Content Block',
   icon: DocumentTextIcon,
   type: 'object',
   fields: [
@@ -52,20 +52,6 @@ export const imageContentSection = defineType({
         ],
       },
       initialValue: 'alignLeft',
-    }),
-    defineField({
-      name: 'typeSize',
-      title: 'Type Size',
-      type: 'number',
-      options: {
-        list: [
-          {title: 'Small', value: 2},
-          {title: 'Regular', value: 3},
-          {title: 'Large', value: 5},
-          {title: 'Extra Large', value: 7},
-        ],
-      },
-      initialValue: 3,
     }),
   ],
   // List preview configuration. https://www.sanity.io/docs/previews-list-views

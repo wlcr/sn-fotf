@@ -2,13 +2,13 @@ import {DocumentTextIcon} from '@sanity/icons';
 import {defineField, defineType} from 'sanity';
 
 /**
- * Newsletter Section
+ * Newsletter Block
  */
 
-export const newsletterSection = defineType({
-  name: 'newsletterSection',
-  title: 'Newsletter Section',
-  description: 'Newsletter signup section // Static component',
+export const newsletterBlock = defineType({
+  name: 'newsletterBlock',
+  title: 'Newsletter Block',
+  description: 'Newsletter signup block',
   icon: DocumentTextIcon,
   type: 'object',
   fields: [
@@ -26,8 +26,8 @@ export const newsletterSection = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Newsletter Section',
-        subtitle: 'Manage your newsletter settings // Static component',
+        title: 'Newsletter Block',
+        subtitle: 'Manage your newsletter settings',
       };
     },
   },

@@ -7,7 +7,6 @@ import {urlForImage} from '~/lib/sanity';
 
 type CtaProps = {
   block: CallToAction;
-  index: number;
 };
 
 export default function CTA({block}: CtaProps) {
@@ -40,8 +39,8 @@ export default function CTA({block}: CtaProps) {
         )}
 
         <Suspense fallback={null}>
-          <ResolvedLink className="button" link={block.link}>
-            {block.buttonText}
+          <ResolvedLink className="button" link={block.button.link}>
+            {block.button.buttonText}
           </ResolvedLink>
         </Suspense>
       </div>

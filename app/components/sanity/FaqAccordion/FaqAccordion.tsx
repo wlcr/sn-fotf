@@ -4,7 +4,7 @@ import {useState, useEffect, useRef, useCallback} from 'react';
 import {motion, AnimatePresence} from 'motion/react';
 import {clsx} from 'clsx';
 import accordionStyles from './FaqAccordion.module.css';
-import {FaqSection} from 'studio/sanity.types';
+import {FaqBlock} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
 
 // Animation configuration
@@ -49,7 +49,7 @@ function PlusXIcon({
 }
 
 type FaqAccordionProps = {
-  items: FaqSection['faqItems'];
+  items: FaqBlock['faqItems'];
   className?: string;
   allowMultiple?: boolean;
 };

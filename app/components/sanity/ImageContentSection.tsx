@@ -1,5 +1,5 @@
 import {clsx} from 'clsx';
-import {ImageContentSection} from 'studio/sanity.types';
+import {ImageContentBlock} from 'studio/sanity.types';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';
@@ -7,7 +7,7 @@ import PortableText from './PortableText';
 import styles from './ImageContentSection.module.css';
 
 type ImageContentSectionProps = {
-  block: ImageContentSection;
+  block: ImageContentBlock;
   index: number;
 };
 
