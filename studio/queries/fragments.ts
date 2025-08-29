@@ -2,8 +2,9 @@ import groq from 'groq';
 
 export const linkReference = groq`
   {
+    "home": '/',
     "page": page->slug.current,
-    "product": product->slug.current,
+    "productPage": productPage->slug.current,
   }
 `;
 
@@ -11,8 +12,9 @@ export const linkFields = groq`
   link {
     ...,
     _type == "link" => {
+      "home": '/',
       "page": page->slug.current,
-      "product": product->slug.current,
+      "productPage": productPage->slug.current,
     }
   }
 `;
@@ -28,7 +30,7 @@ export const portableText = groq`
 `;
 
 export const pageBuilder = groq`
-  pageBuilder[]{
+  {
     ...,
     _type == "imageContentBlock" => {
       image{

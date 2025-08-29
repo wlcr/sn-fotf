@@ -17,6 +17,7 @@ export default function CTA({block}: CtaProps) {
     .auto('format')
     .url();
 
+  console.log('BUTTON', block.button);
   return (
     <div
       className={styles.ctaWrapper}

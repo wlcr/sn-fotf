@@ -30,13 +30,17 @@ export const footerQuery = groq`
 export const homeQuery = groq`
   *[_type == 'homepage'][0]{
     ...,
+    pageBuilder[]{
+      ...,
+      sectionBuilder[]${pageBuilder}
+    }
   }
 `;
 
 export const productPageQuery = groq`
   *[_type == "productPage" && slug.current == $handle][0]{
     ...,
-    ${pageBuilder}
+    pageBuilder[]${pageBuilder}
   }`;
 
 export const getPageQuery = groq`
@@ -47,7 +51,7 @@ export const getPageQuery = groq`
     slug,
     heading,
     subheading,
-    ${pageBuilder}
+    pageBuilder[]${pageBuilder}
   }
 `;
 

@@ -2850,11 +2850,19 @@
             "of": [
               {
                 "type": "string",
-                "value": "href"
+                "value": "home"
+              },
+              {
+                "type": "string",
+                "value": "productPage"
               },
               {
                 "type": "string",
                 "value": "page"
+              },
+              {
+                "type": "string",
+                "value": "href"
               }
             ]
           },
@@ -2894,6 +2902,36 @@
               }
             },
             "dereferencesTo": "page"
+          },
+          "optional": true
+        },
+        "productPage": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "object",
+            "attributes": {
+              "_ref": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "reference"
+                }
+              },
+              "_weak": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "boolean"
+                },
+                "optional": true
+              }
+            },
+            "dereferencesTo": "productPage"
           },
           "optional": true
         },

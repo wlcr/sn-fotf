@@ -9,10 +9,10 @@
  */
 
 /* Import Open Props design tokens (foundational, may be customized/removed) */
-@import "open-props/style";
-@import "open-props/normalize";
-@import "open-props/buttons";
-@import "open-props/colors";
+@import 'open-props/style';
+@import 'open-props/normalize';
+@import 'open-props/buttons';
+@import 'open-props/colors';
 
 :root {
   /* Project-specific custom properties */
@@ -21,11 +21,26 @@
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
   --header-height: 64px;
-  
+
   /* Use Open Props colors as defaults, with fallbacks */
   /* TODO: Replace with Sierra Nevada brand colors */
   --color-dark: var(--gray-9, #000);
   --color-light: var(--gray-0, #fff);
+}
+
+/** DUMMY BUTTON STYLES **/
+.button {
+  background: var(--color-dark);
+  color: var(--color-light);
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 200ms,
+    color 200ms;
 }
 
 img {
@@ -229,7 +244,6 @@ button.reset:hover:not(:has(> *)) {
 .header-ctas > * {
   min-width: fit-content;
 }
-
 
 /*
 * --------------------------------------------------
