@@ -1,5 +1,5 @@
-import {defineField, defineType} from 'sanity';
-import {LinkIcon} from '@sanity/icons';
+import { defineField, defineType } from 'sanity';
+import { LinkIcon } from '@sanity/icons';
 
 /**
  * Link schema object. This link object lets the user first select the type of link and then
@@ -23,7 +23,11 @@ export const mediaImage = defineType({
       validation: (rule) => {
         // Custom validation to ensure alt text is provided if the image is present. https://www.sanity.io/docs/validation
         return rule.custom((alt, context) => {
-          if ((context.document?.coverImage as any)?.asset?._ref && !alt) {
+          if (
+            (context.document?.coverImage as any)?.asset
+              ?._ref &&
+            !alt
+          ) {
             return 'Required';
           }
           return true;

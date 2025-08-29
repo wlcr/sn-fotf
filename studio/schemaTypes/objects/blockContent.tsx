@@ -1,4 +1,8 @@
-import {defineArrayMember, defineType, defineField} from 'sanity';
+import {
+  defineArrayMember,
+  defineType,
+  defineField,
+} from 'sanity';
 
 /**
  * This is the schema definition for the rich text fields used for
@@ -33,8 +37,8 @@ export const blockContent = defineType({
                 initialValue: 'href',
                 options: {
                   list: [
-                    {title: 'URL', value: 'href'},
-                    {title: 'Page', value: 'page'},
+                    { title: 'URL', value: 'href' },
+                    { title: 'Page', value: 'page' },
                   ],
                   layout: 'radio',
                 },
@@ -43,11 +47,15 @@ export const blockContent = defineType({
                 name: 'href',
                 title: 'URL',
                 type: 'url',
-                hidden: ({parent}) =>
-                  parent?.linkType !== 'href' && parent?.linkType != null,
+                hidden: ({ parent }) =>
+                  parent?.linkType !== 'href' &&
+                  parent?.linkType != null,
                 validation: (Rule) =>
                   Rule.custom((value, context: any) => {
-                    if (context.parent?.linkType === 'href' && !value) {
+                    if (
+                      context.parent?.linkType === 'href' &&
+                      !value
+                    ) {
                       return 'URL is required when Link Type is URL';
                     }
                     return true;
@@ -57,11 +65,15 @@ export const blockContent = defineType({
                 name: 'page',
                 title: 'Page',
                 type: 'reference',
-                to: [{type: 'page'}],
-                hidden: ({parent}) => parent?.linkType !== 'page',
+                to: [{ type: 'page' }],
+                hidden: ({ parent }) =>
+                  parent?.linkType !== 'page',
                 validation: (Rule) =>
                   Rule.custom((value, context: any) => {
-                    if (context.parent?.linkType === 'page' && !value) {
+                    if (
+                      context.parent?.linkType === 'page' &&
+                      !value
+                    ) {
                       return 'Page reference is required when Link Type is Page';
                     }
                     return true;

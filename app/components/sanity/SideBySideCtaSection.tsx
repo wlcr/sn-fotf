@@ -8,10 +8,6 @@ type SideBySideCtaBlockProps = {
 };
 
 export default function SideBySideCtaBlock({block}: SideBySideCtaBlockProps) {
-  if (!block.sideA || !block.sideB) {
-    return null;
-  }
-
   return (
     <div className={styles.sectionGrid}>
       <Cta block={block.sideA} index={1} />

@@ -1,5 +1,5 @@
-import {defineField, defineType} from 'sanity';
-import {DocumentIcon} from '@sanity/icons';
+import {defineField, defineType} from 'sanity'
+import {DocumentIcon} from '@sanity/icons'
 
 /**
  * Page schema.  Define and edit the fields for the 'page' content type.
@@ -33,7 +33,6 @@ export const homepage = defineType({
         {type: 'imageContentSection'},
         {type: 'imageSection'},
         {type: 'sideBySideCta'},
-        {type: 'faqSection'},
       ],
       options: {
         insertMenu: {
@@ -49,4 +48,4 @@ export const homepage = defineType({
       },
     }),
   ],
-});
+})

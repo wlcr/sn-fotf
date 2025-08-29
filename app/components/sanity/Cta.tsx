@@ -3,7 +3,7 @@ import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import {CallToAction} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
-import {urlForImage} from '~/lib/sanity';
+import {urlForImage} from '~/lib/sanity/urlForImage';
 
 type CtaProps = {
   block: CallToAction;

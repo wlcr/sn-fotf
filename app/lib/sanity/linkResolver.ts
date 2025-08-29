@@ -16,7 +16,7 @@ export function linkResolver(link: Link | undefined) {
       if (link?.page && typeof link.page === 'string') {
         return `/${link.page}`;
       }
-      return null;
+      break;
     default:
       return null;
   }

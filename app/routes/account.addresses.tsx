@@ -101,14 +101,11 @@ export async function action({request, context}: ActionFunctionArgs) {
           );
 
           if (errors?.length) {
-            throw new Error(errors[0]?.message || 'Unknown error');
+            throw new Error(errors[0].message);
           }
 
           if (data?.customerAddressCreate?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressCreate?.userErrors[0]?.message ||
-                'Unknown error',
-            );
+            throw new Error(data?.customerAddressCreate?.userErrors[0].message);
           }
 
           if (!data?.customerAddressCreate?.customerAddress) {
@@ -153,14 +150,11 @@ export async function action({request, context}: ActionFunctionArgs) {
           );
 
           if (errors?.length) {
-            throw new Error(errors[0]?.message || 'Unknown error');
+            throw new Error(errors[0].message);
           }
 
           if (data?.customerAddressUpdate?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressUpdate?.userErrors[0]?.message ||
-                'Unknown error',
-            );
+            throw new Error(data?.customerAddressUpdate?.userErrors[0].message);
           }
 
           if (!data?.customerAddressUpdate?.customerAddress) {
@@ -201,14 +195,11 @@ export async function action({request, context}: ActionFunctionArgs) {
           );
 
           if (errors?.length) {
-            throw new Error(errors[0]?.message || 'Unknown error');
+            throw new Error(errors[0].message);
           }
 
           if (data?.customerAddressDelete?.userErrors?.length) {
-            throw new Error(
-              data?.customerAddressDelete?.userErrors[0]?.message ||
-                'Unknown error',
-            );
+            throw new Error(data?.customerAddressDelete?.userErrors[0].message);
           }
 
           if (!data?.customerAddressDelete?.deletedAddressId) {

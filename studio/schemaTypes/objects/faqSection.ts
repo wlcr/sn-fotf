@@ -1,5 +1,5 @@
-import {defineField, defineType} from 'sanity';
-import {HelpCircleIcon} from '@sanity/icons';
+import { defineField, defineType } from 'sanity';
+import { HelpCircleIcon } from '@sanity/icons';
 
 export default defineType({
   name: 'faqSection',
@@ -50,7 +50,7 @@ export default defineType({
     select: {
       title: 'title',
     },
-    prepare({title}) {
+    prepare({ title }) {
       return {
         title: 'FAQ Section',
         subtitle: title,

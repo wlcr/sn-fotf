@@ -7,11 +7,7 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
-import type {SanityDocument} from '@sanity/client';
-import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
-import {siteSettingsQuery, homeQuery} from '~/studio/queries';
-import type {SiteSettings, Homepage} from '~/studio/sanity.types';
-import PageBuilder from '~/components/sanity/PageBuilder';
+
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -31,43 +27,13 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({context}: LoaderFunctionArgs) {
-  // Create Sanity client
-  const sanityClient = createSanityClient(context.env);
-
-  const [{collections}, siteSettings, homepage] = await Promise.all([
+  const [{collections}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
-    // Fetch Sanity site settings for global content
-    sanityServerQuery<SiteSettings | null>(
-      sanityClient,
-      siteSettingsQuery,
-      {},
-      {
-        displayName: 'Site Settings',
-        env: context.env,
-      },
-    ).catch((error) => {
-      console.error('Failed to load Sanity site settings:', error);
-      return null; // Continue without Sanity data if it fails
-    }),
-    // Fetch Sanity homepage content
-    sanityServerQuery<Homepage | null>(
-      sanityClient,
-      homeQuery,
-      {},
-      {
-        displayName: 'Homepage Content',
-        env: context.env,
-      },
-    ).catch((error) => {
-      console.error('Failed to load Sanity homepage content:', error);
-      return null; // Continue without homepage data if it fails
-    }),
+    // Add other queries here, so that they are loaded in parallel
   ]);
 
   return {
     featuredCollection: collections.nodes[0],
-    siteSettings,
-    homepage,
   };
 }
 
@@ -94,15 +60,6 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      {/* Render Sanity homepage content if available */}
-      {data.homepage && (
-        <PageBuilder
-          parent={{_id: data.homepage._id, _type: data.homepage._type}}
-          pageBuilder={data.homepage.pageBuilder}
-        />
-      )}
-
-      {/* Keep existing Shopify content */}
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -112,7 +69,7 @@ export default function Homepage() {
 function FeaturedCollection({
   collection,
 }: {
-  collection: FeaturedCollectionFragment | undefined;
+  collection: FeaturedCollectionFragment;
 }) {
   if (!collection) return null;
   const image = collection?.image;
