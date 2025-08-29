@@ -4,10 +4,10 @@ import ResolvedLink from './ResolvedLink';
 import {CallToAction} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
 import {urlForImage} from '~/lib/sanity';
+import styles from './SideBySideCtaSection.module.css';
 
 type CtaProps = {
   block: CallToAction;
-  index: number;
 };
 
 export default function CTA({block}: CtaProps) {
@@ -17,8 +17,10 @@ export default function CTA({block}: CtaProps) {
     .auto('format')
     .url();
 
+  console.log('BUTTON', block.button);
   return (
     <div
+      className={styles.ctaWrapper}
       style={
         {
           '--backgroundImage': `url(${backgroundImageUrl})`,
@@ -26,11 +28,10 @@ export default function CTA({block}: CtaProps) {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           backgroundSize: 'cover',
-          padding: 'var(--spacer-4)',
         } as React.CSSProperties
       }
     >
-      <div className="flex">
+      <div className={styles.cta}>
         <h2 className="h2">{block.heading}</h2>
 
         {block.content && (
@@ -40,8 +41,8 @@ export default function CTA({block}: CtaProps) {
         )}
 
         <Suspense fallback={null}>
-          <ResolvedLink className="button" link={block.link}>
-            {block.buttonText}
+          <ResolvedLink className="button" link={block.button.link}>
+            {block.button.buttonText}
           </ResolvedLink>
         </Suspense>
       </div>

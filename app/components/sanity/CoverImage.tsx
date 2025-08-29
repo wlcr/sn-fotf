@@ -1,3 +1,4 @@
+import {stegaClean} from '@sanity/client/stega';
 import {getImageDimensions} from '@sanity/asset-utils';
 import SanityImage from './SanityImage';
 
@@ -14,7 +15,7 @@ export default function CoverImage(props: CoverImageProps) {
       width={getImageDimensions(source).width}
       height={getImageDimensions(source).height}
       aspectRatio={getImageDimensions(source).aspectRatio}
-      alt={source?.alt || ''}
+      alt={stegaClean(source?.alt) || ''}
     />
   ) : null;
 

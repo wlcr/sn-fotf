@@ -17,11 +17,13 @@ export const link = defineType({
       name: 'linkType',
       title: 'Link Type',
       type: 'string',
-      initialValue: 'url',
+      initialValue: 'home',
       options: {
         list: [
-          {title: 'URL', value: 'href'},
+          {title: 'Home', value: 'home'},
+          {title: 'Product Page', value: 'productPage'},
           {title: 'Page', value: 'page'},
+          {title: 'URL', value: 'href'},
         ],
         layout: 'dropdown',
       },
@@ -56,6 +58,21 @@ export const link = defineType({
         }),
     }),
     defineField({
+      name: 'productPage',
+      title: 'Product Page',
+      type: 'reference',
+      to: [{type: 'productPage'}],
+      hidden: ({parent}) => parent?.linkType !== 'productPage',
+      validation: (Rule) =>
+        // Custom validation to ensure page reference is provided if the link type is 'page'
+        Rule.custom((value, context: any) => {
+          if (context.parent?.linkType === 'productPage' && !value) {
+            return 'Product Page reference is required when Link Type is Product Page';
+          }
+          return true;
+        }),
+    }),
+    defineField({
       name: 'openInNewTab',
       title: 'Open in new tab',
       type: 'boolean',
@@ -64,15 +81,30 @@ export const link = defineType({
   ],
   preview: {
     select: {
+      productPage: 'productPage.slug.current',
       page: 'page.slug.current',
       href: 'href',
       type: 'linkType',
     },
-    prepare({type, page, href}) {
-      return {
-        title:
-          type === 'page' ? page || 'Internal Page' : href || 'External Link',
-      };
+    prepare({type, productPage, page, href}) {
+      switch (type) {
+        case 'home':
+          return {
+            title: 'Home',
+          };
+        case 'productPage':
+          return {
+            title: productPage || 'Product Page',
+          };
+        case 'page':
+          return {
+            title: page || 'Internal Page',
+          };
+        default:
+          return {
+            title: href || 'External Link',
+          };
+      }
     },
   },
 });

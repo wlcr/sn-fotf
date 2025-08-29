@@ -1,21 +1,42 @@
 /** Common section styles **/
 :root {
+  --sections-gap: 4rem;
   --section-gap: 1rem;
   --section-padding: 1rem;
 }
 
-.section {
-  padding: var(--section-padding);
+/** Basically homepage container **/
+.SectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sections-gap);
 }
 
-.sectionGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-items: center;
-  align-content: center;
-  gap: var(--section-gap);
+/** Sections are essentially each major content block **/
+.Section {
+  min-height: 33vh;
+  border: 4px solid orange;
+  background-color: #c0c0c0;
+}
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 1fr 1fr;
+/** add Section IDs or classes from Sanity **/
+.Section {
+  height: auto;
+  min-height: 33vh;
+
+  &:global(.green) {
+    background-color: #225533;
+  }
+  &:global(#fotf-beer-map),
+  &:global(#fotf-beer-labels) {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  &:global(#fotf-beer-labels) {
+    background-color: #202020;
   }
 }

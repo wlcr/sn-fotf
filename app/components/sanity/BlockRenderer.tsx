@@ -5,15 +5,19 @@ import ImageContentSection from './ImageContentSection';
 import ImageSection from './ImageSection';
 import FaqSectionBlock from './FaqSection';
 import SideBySideCtaSection from './SideBySideCtaSection';
-import JsonBlock from './JsonBlock';
+import NewsletterSectionBlock from './NewsletterBlock';
+import BeerLabelBlock from './BeerLabelBlock';
+import BeerMapBlock from './BeerMapBlock';
 
 type BlocksType = {
   [key: string]: React.FC<any>;
 };
 
-type BlockType = {
+export type BlockType = {
+  _id?: string;
   _type: string;
   _key: string;
+  specialComponent?: string;
 };
 
 type BlockProps = {
@@ -24,17 +28,18 @@ type BlockProps = {
 };
 
 const Blocks: BlocksType = {
-  faqSection: FaqSectionBlock,
-  imageSection: ImageSection,
-  contentSection: ContentSection,
-  imageContentSection: ImageContentSection,
-  sideBySideCta: SideBySideCtaSection,
+  faqBlock: FaqSectionBlock,
+  imageBlock: ImageSection,
+  contentBlock: ContentSection,
+  imageContentBlock: ImageContentSection,
+  ctaBlock: SideBySideCtaSection,
+  newsletterBlock: NewsletterSectionBlock,
+  labelsComponent: BeerLabelBlock,
+  mapComponent: BeerMapBlock,
 };
 
 /**
  * Used by the <PageBuilder>, this component renders a the component that matches the block type.
- *
- * This is adapted for React Router v7 - no 'use client' directive needed.
  */
 export default function BlockRenderer({
   block,
@@ -42,11 +47,20 @@ export default function BlockRenderer({
   pageId,
   pageType,
 }: BlockProps) {
+  // TODO: implement a real data attr construction for visual editing
+  const sanityDataAttr = `${block._id}-${block._type}-blockBuilder`;
+
   // Block does exist
-  const BlockComponent = Blocks[block._type];
+  const BlockComponent =
+    Blocks[
+      block.specialComponent && block.specialComponent !== ''
+        ? block.specialComponent
+        : block._type
+    ];
+
   if (BlockComponent) {
     return (
-      <div key={block._key} data-sanity={'dataAttr_breaks_vite'}>
+      <div key={block._key} data-sanity={sanityDataAttr}>
         {createElement(BlockComponent, {
           key: block._key,
           block,

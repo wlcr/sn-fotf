@@ -1,21 +1,21 @@
-import {SideBySideCta} from 'studio/sanity.types';
-import styles from './Sections.module.css';
+import {CtaBlock} from 'studio/sanity.types';
+import styles from './SideBySideCtaSection.module.css';
 import Cta from './Cta';
 
 type SideBySideCtaBlockProps = {
-  block: SideBySideCta;
+  block: CtaBlock;
   index: number;
 };
 
 export default function SideBySideCtaBlock({block}: SideBySideCtaBlockProps) {
-  if (!block.sideA || !block.sideB) {
+  if (!block?.ctas || block.ctas.length === 0) {
     return null;
   }
-
   return (
-    <div className={styles.sectionGrid}>
-      <Cta block={block.sideA} index={1} />
-      <Cta block={block.sideB} index={2} />
+    <div className={styles.grid}>
+      {block.ctas.map((cta) => (
+        <Cta block={cta} key={cta._key} />
+      ))}
     </div>
   );
 }

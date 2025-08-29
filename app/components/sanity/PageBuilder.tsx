@@ -1,29 +1,29 @@
-import BlockRenderer from './BlockRenderer';
-import type {Page, ProductDecorator} from 'studio/sanity.types';
+import BlockRenderer, {BlockType} from './BlockRenderer';
+import {Page, PageSection} from 'studio/sanity.types';
 
 type PageBuilderProps = {
   parent: {_id: string; _type: string};
-  pageBuilder: ProductDecorator['pageBuilder'] | Page['pageBuilder'];
-};
-
-type PageBuilderSection = {
-  _key: string;
-  _type: string;
+  pageBuilder: PageSection['sectionBuilder'] | Page['pageBuilder'];
+  idName?: string;
+  className?: string;
 };
 
 /**
  * The PageBuilder component is used to render the blocks from the `pageBuilder` field in the Page type in your Sanity Studio.
- *
- * This component is designed for React Router v7 and server-side rendering.
  */
 
 function renderSections(
-  pageBuilderSections: PageBuilderSection[],
+  pageBuilderSections: BlockType[],
   parent: {_id: string; _type: string},
+  idName?: string,
+  className?: string,
 ) {
+  // TODO: implement a real data attr construction for visual editing
+  const sanityDataAttr = `${parent._id}-${parent._type}-pageBuilder`;
+
   return (
-    <div data-sanity={'dataAttr_breaks_vite'}>
-      {pageBuilderSections.map((block: PageBuilderSection, index: number) => (
+    <div id={idName} data-sanity={sanityDataAttr} className={className}>
+      {pageBuilderSections.map((block: BlockType, index: number) => (
         <BlockRenderer
           key={block._key}
           index={index}
@@ -36,12 +36,17 @@ function renderSections(
   );
 }
 
-export default function PageBuilder({parent, pageBuilder}: PageBuilderProps) {
+export default function PageBuilder({
+  parent,
+  pageBuilder,
+  idName,
+  className,
+}: PageBuilderProps) {
   const pageBuilderSections = pageBuilder || [];
 
   return (
     pageBuilderSections &&
     pageBuilderSections.length > 0 &&
-    renderSections(pageBuilderSections, parent)
+    renderSections(pageBuilderSections, parent, idName, className)
   );
 }

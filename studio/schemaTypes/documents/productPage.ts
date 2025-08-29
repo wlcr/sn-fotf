@@ -2,37 +2,39 @@ import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
 
 /**
- * Page schema.  Define and edit the fields for the 'page' content type.
- * Learn more: https://www.sanity.io/docs/schema-types
+ * Product Decorator schema.
  */
 
-export const page = defineType({
-  name: 'page',
-  title: 'Page',
+export const productPage = defineType({
+  name: 'productPage',
+  title: 'Product Page',
   type: 'document',
   icon: DocumentIcon,
   fields: [
     defineField({
-      name: 'name',
-      title: 'Name',
+      name: 'productHandle',
+      title: 'Product Handle',
+      description:
+        'The SHOPIFY product handle, e.g. sierra-nevada-mustard-squeeze-bottle',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
+      description:
+        'The slug for this page. Can be the same or different than the product handle.',
       type: 'slug',
-      validation: (Rule) => Rule.required(),
       options: {
-        source: 'name',
-        maxLength: 96,
+        source: 'productHandle',
       },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'heading',
-      title: 'Heading',
+      name: 'nameOverride',
+      title: 'Name Override',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      description: 'An optional override for the product name.',
     }),
     defineField({
       name: 'pageBuilder',
@@ -58,4 +60,16 @@ export const page = defineType({
       },
     }),
   ],
+  preview: {
+    select: {
+      productHandle: 'productHandle',
+      slug: 'slug.current',
+    },
+    prepare({productHandle, slug}) {
+      return {
+        title: slug,
+        subtitle: 'Shopify product: ' + productHandle,
+      };
+    },
+  },
 });
