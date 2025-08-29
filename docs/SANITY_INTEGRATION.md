@@ -1,167 +1,168 @@
-# Sanity Integration Strategy for React Router v7 + Hydrogen
+# Sanity Integration Guide for Hydrogen 2025.5.0 + React Router v7
 
-This document outlines our approach for integrating Sanity CMS with our React Router v7 + Hydrogen project.
+This document outlines our **current working implementation** of Sanity CMS with Hydrogen 2025.5.0 and React Router v7.
 
 ## Table of Contents
 
-- [Why Not hydrogen-sanity Package](#why-not-hydrogen-sanity-package)
-- [Our Recommended Approach](#our-recommended-approach)
-- [Integration Strategy](#integration-strategy)
+- [Current Implementation Overview](#current-implementation-overview)
+- [Environment Setup](#environment-setup)
+- [Basic Usage Pattern](#basic-usage-pattern)
 - [Type Generation](#type-generation)
-- [Data Loading Patterns](#data-loading-patterns)
-- [Implementation Examples](#implementation-examples)
 - [Caching Strategy](#caching-strategy)
+- [Advanced Features (Optional)](#advanced-features-optional)
 - [Best Practices](#best-practices)
 
-## Why Not `hydrogen-sanity` Package?
+## Current Implementation Overview
 
-The official [`hydrogen-sanity`](https://github.com/sanity-io/hydrogen-sanity/) package has several compatibility issues with our React Router v7 setup:
+Our Sanity integration follows a **simple, reliable pattern** that works with Hydrogen 2025.5.0:
 
-### ❌ Compatibility Issues:
+### ✅ What's Working
 
-1. **Outdated Architecture**: Designed for Remix-based Hydrogen (pre-React Router v7)
-2. **Wrong Loader Pattern**: Uses `LoaderFunctionArgs` instead of React Router v7's `Route.LoaderArgs`
-3. **Context Mismatch**: Assumes Remix context structure, not React Router v7
-4. **Version Gap**: Examples show Hydrogen 2024.7.9, we're on 2025.5.0
-5. **Framework Lock-in**: Tightly coupled to old Hydrogen patterns
+- **Basic CMS Integration**: Homepage loads content from Sanity CMS
+- **Type Generation**: Automatic TypeScript types from Sanity schema
+- **CDN Caching**: Uses Sanity's built-in CDN for performance
+- **Environment Variables**: Clean separation of secrets vs. configuration
+- **Studio Access**: Local development studio at localhost:3333
 
-### Example of Incompatible Code:
+### 🎯 Architecture Principles
 
-```tsx
-// ❌ hydrogen-sanity approach (doesn't work with React Router v7)
-// Note: Uses old LoaderFunctionArgs type instead of Route.LoaderArgs
-export async function loader({context, params}: LoaderFunctionArgs) {
-  const query = `*[_type == "page" && _id == $id][0]`;
-  const initial = await context.sanity.loadQuery(query, params);
-  return json({initial});
-}
+1. **Simplicity First**: Use proven patterns, avoid over-engineering
+2. **Hydrogen Compatible**: Uses current Hydrogen 2025.5.0 patterns
+3. **Type Safety**: Generated types from Sanity schema
+4. **Performance**: Leverages Sanity CDN caching
+
+## Environment Setup
+
+### Configuration Strategy
+
+**Hardcoded Values** (in `app/lib/sanity.ts`):
+
+```typescript
+export const sanityConfig = {
+  projectId: 'rimuhevv', // Not sensitive - visible in API URLs
+  dataset: 'production', // Public information
+  apiVersion: '2025-01-01', // Version string
+  studioUrl: 'http://localhost:3333', // Development default
+};
 ```
 
-```tsx
-// ✅ Our React Router v7 approach
-export async function loader({params}: Route.LoaderArgs) {
-  const page = await sanityServerQuery(client, query, params);
-  return {page};
-}
+**Environment Variables** (secrets only):
+
+```bash
+# In .env (managed by Shopify CLI)
+SANITY_API_TOKEN=sk... # For preview mode (optional)
+SANITY_PREVIEW_SECRET=... # For preview authentication (optional)
+SANITY_REVALIDATE_SECRET=... # For webhook validation (optional)
+SANITY_STUDIO_URL=... # Override studio URL (optional)
 ```
 
-## Our Recommended Approach
+### Why This Approach?
 
-### ✅ Use `@sanity/client` + Custom Utilities
+- ✅ **Security**: Only secrets are environment variables
+- ✅ **Simplicity**: No complex env var management
+- ✅ **Reliability**: Hardcoded values won't break in different environments
+- ✅ **Performance**: No runtime env var lookups for basic config
 
-**Benefits:**
+## Basic Usage Pattern
 
-1. **Framework Agnostic**: Works with any React setup
-2. **Full Control**: Complete control over caching and data loading
-3. **React Router v7 Compatible**: Integrates perfectly with our data loading patterns
-4. **Future-Proof**: Won't break when Hydrogen updates
-5. **Hydrogen Caching**: Can leverage Hydrogen's built-in caching strategies
-6. **Type Safety**: Full TypeScript support with Sanity's type generation
+### 1. Server-Side Data Loading
 
-## Integration Strategy
+This is our **current working pattern** as seen in `app/routes/_index.tsx`:
 
-### 1. **Server-Side Data Loading**
+```typescript
+import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
+import type {Homepage, SettingsQueryResult} from '~/studio/sanity.types';
+import {homeQuery, settingsQuery} from '~/studio/queries/index';
 
-Use React Router v7 `loader` functions with Sanity's built-in CDN caching:
+export async function loader({context}: LoaderFunctionArgs) {
+  // Create Sanity client with environment variables
+  const sanityClient = createSanityClient(context.env);
 
-```tsx
-// app/routes/pages.$slug.tsx
-export async function loader({params, context}: Route.LoaderArgs) {
-  const page = await sanityServerQuery(
-    context.sanity, // Sanity client from Hydrogen context
-    SANITY_QUERIES.PAGE_BY_SLUG,
-    {slug: params.slug},
-    {displayName: 'Page by slug'}, // For debugging
-  );
-  return {page};
-}
-```
+  // Load content with error handling
+  const [siteSettings, homepage] = await Promise.all([
+    sanityServerQuery<SettingsQueryResult | null>(
+      sanityClient,
+      settingsQuery,
+      {},
+      {
+        displayName: 'Site Settings',
+        env: context.env,
+      },
+    ).catch((error) => {
+      console.error('Failed to load Sanity site settings:', error);
+      return null; // Continue without Sanity data if it fails
+    }),
 
-### 2. **Client-Side Data Loading**
-
-Use React Router v7 `clientLoader` for browser-side fetching:
-
-```tsx
-export async function clientLoader({params}: Route.ClientLoaderArgs) {
-  const page = await sanityClientQuery(
-    sanityClient,
-    SANITY_QUERIES.PAGE_BY_SLUG,
-    {slug: params.slug},
-    {useCache: true}, // Client-side caching
-  );
-  return {page};
-}
-clientLoader.hydrate = true;
-```
-
-### 3. **Combined Server + Client Pattern**
-
-Perfect for personalized content:
-
-```tsx
-export async function loader({params, context}: Route.LoaderArgs) {
-  // Server: Get public content for SEO with CDN caching
-  const page = await sanityServerQuery(context.sanity, query, params, {
-    displayName: 'Page content',
-  });
-  return {page};
-}
-
-export async function clientLoader({serverLoader}: Route.ClientLoaderArgs) {
-  // Client: Add user-specific data
-  const [serverData, userPrefs] = await Promise.all([
-    serverLoader(),
-    getUserPreferences(),
+    sanityServerQuery<Homepage | null>(
+      sanityClient,
+      homeQuery,
+      {},
+      {
+        displayName: 'Homepage Content',
+        env: context.env,
+      },
+    ).catch((error) => {
+      console.error('Failed to load Sanity homepage content:', error);
+      return null; // Continue without homepage data if it fails
+    }),
   ]);
 
   return {
-    ...serverData,
-    personalized: true,
-    userPreferences: userPrefs,
+    siteSettings,
+    homepage,
   };
+}
+```
+
+### 2. Component Usage
+
+```typescript
+export default function Homepage() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div className="home">
+      {/* Render Sanity homepage content if available */}
+      {data.homepage?.pageBuilder && (
+        <PageSectionsBuilder
+          parent={{_id: data.homepage._id, _type: data.homepage._type}}
+          pageBuilder={data.homepage.pageBuilder}
+        />
+      )}
+
+      {/* Keep existing Shopify content */}
+      <FeaturedCollection collection={data.featuredCollection} />
+    </div>
+  );
 }
 ```
 
 ## Type Generation
 
-### Sanity TypeGen Integration
+### Automatic Type Generation
 
-Yes! Sanity has excellent type generation tools. We'll use [`@sanity/codegen`](https://www.sanity.io/docs/sanity-codegen) to automatically generate TypeScript types from our Sanity schema.
-
-#### Setup Process:
-
-1. **Install Sanity CodeGen**:
+We use Sanity's built-in type generation:
 
 ```bash
-npm install @sanity/codegen --save-dev
+# Generate types from Sanity schema
+npm run sanity:codegen
 ```
 
-2. **Configure Type Generation** in `package.json`:
+This creates `studio/sanity.types.ts` with full TypeScript types for all content.
 
-```json
-{
-  "scripts": {
-    "sanity:codegen": "sanity schema extract --path=./sanity-schema.json && sanity typegen generate"
-  }
-}
-```
+### Usage with Generated Types
 
-3. **Use Generated Types**:
-
-```tsx
-// Generated types from Sanity schema
-import type {Page, SiteSettings} from './sanity.types';
+```typescript
+import type {Homepage, SettingsQueryResult} from '~/studio/sanity.types';
 
 // Type-safe queries
-export async function loader({params, context}: Route.LoaderArgs) {
-  const page = await sanityServerQuery<Page>(
-    context.sanity,
-    SANITY_QUERIES.PAGE_BY_SLUG,
-    {slug: params.slug},
-    {displayName: 'Typed page query'},
-  );
-  return {page}; // page is fully typed!
-}
+const homepage = await sanityServerQuery<Homepage>(client, homeQuery, {});
+
+// IntelliSense works perfectly
+homepage.pageBuilder?.forEach((section) => {
+  // Full type safety and autocompletion
+});
 ```
 
 #### Benefits of Type Generation:
@@ -459,6 +460,86 @@ export async function liveLoader(): Route.ClientLoaderArgs {
     {useCache: false}, // Always fresh
   );
   return {liveData};
+}
+```
+
+## Advanced Features (Optional)
+
+### Preview Mode (Future Implementation)
+
+If you need preview mode in the future, here's the Hydrogen 2025.5.0 compatible approach:
+
+```typescript
+// Preview mode compatible with current LoaderFunctionArgs pattern
+import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {isPreviewMode, createSanityPreviewClient} from '~/lib/sanity';
+
+export async function loader({context, request}: LoaderFunctionArgs) {
+  const inPreviewMode = isPreviewMode(request, context.env);
+
+  const client = inPreviewMode
+    ? createSanityPreviewClient(context.env)
+    : createSanityClient(context.env);
+
+  const data = await sanityServerQuery(client, query, params);
+  return {data, preview: inPreviewMode};
+}
+```
+
+### Client-Side Loading (Future Implementation)
+
+For future client-side enhancements using Hydrogen 2025.5.0 patterns:
+
+```typescript
+// Note: This would require React Router v7 clientLoader support in Hydrogen
+// Currently, Hydrogen 2025.5.0 still uses LoaderFunctionArgs pattern
+
+// Server-side data for SEO
+export async function loader({context}: LoaderFunctionArgs) {
+  const staticData = await sanityServerQuery(client, query, params);
+  return {staticData};
+}
+
+// Future client enhancement when available
+export async function clientLoader({serverLoader}: any) {
+  const {staticData} = await serverLoader();
+
+  // Add client-side enhancements
+  const userSpecificData = await sanityClientQuery(client, userQuery, {
+    userId: getCurrentUserId(),
+  });
+
+  return {
+    ...staticData,
+    userSpecificData,
+  };
+}
+```
+
+### Error Boundaries for Sanity Content
+
+```typescript
+// Error boundary component for Sanity content failures
+import {isRouteErrorResponse, useRouteError} from 'react-router';
+
+export function SanityErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error) && error.status === 503) {
+    return (
+      <div className="sanity-error">
+        <h2>Content temporarily unavailable</h2>
+        <p>We're experiencing issues loading content. Please try again later.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="sanity-error">
+      <h2>Something went wrong</h2>
+      <p>Unable to load content.</p>
+    </div>
+  );
 }
 ```
 

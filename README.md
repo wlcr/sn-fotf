@@ -117,14 +117,14 @@ The following variables are automatically configured:
 - `SESSION_SECRET` - Session encryption key
 - Customer Account API configuration
 
-**Sanity CMS Variables**:
+**Sanity CMS Variables** (Server-only secrets):
 
-- `SANITY_API_TOKEN` - API access token for preview mode (server-only)
-- `SANITY_PREVIEW_SECRET` - Preview mode authentication (server-only)
-- `SANITY_REVALIDATE_SECRET` - Webhook validation (server-only)
+- `SANITY_API_TOKEN` - API access token for preview mode and authenticated queries
+- `SANITY_PREVIEW_SECRET` - Secret for preview mode authentication
+- `SANITY_REVALIDATE_SECRET` - Secret for webhook validation
 - `SANITY_STUDIO_URL` - Studio development URL (optional, defaults to localhost:3333)
 
-**Note**: The Sanity project ID (`rimuhevv`) and dataset (`production`) are hardcoded in the application code since project IDs are not sensitive information - they're visible in API URLs and client requests. Only secrets like API tokens are stored as environment variables for security.
+**Important**: The Sanity project ID (`rimuhevv`), dataset (`production`), and API version (`2025-01-01`) are hardcoded in `app/lib/sanity.ts` since they're not sensitive information - project IDs are visible in API URLs and client requests. Only secrets like API tokens are stored as environment variables for security.
 
 [Linking your project](https://shopify.dev/docs/custom-storefronts/hydrogen/cli#link) automatically keeps your local environment variables in sync with Oxygen, allows you to query your store data, and lets you create deployments from the command line at any time. Check the complete [list of Hydrogen CLI](https://shopify.dev/docs/custom-storefronts/hydrogen/cli) for a complete list of features.
 
