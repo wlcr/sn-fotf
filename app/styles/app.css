@@ -1,61 +1,29 @@
-/*
- * Design Foundation - Sierra Nevada Friends of the Family
- * 
- * This stylesheet provides a foundational design system using Open Props.
- * Open Props may be lightly used or replaced entirely as we implement
- * Sierra Nevada's specific brand guidelines and member-only design requirements.
- * 
- * TODO: Update to match SN - FOTF designs and branding
- */
-
-/* Import Open Props design tokens (foundational, may be customized/removed) */
-@import 'open-props/style';
-@import 'open-props/normalize';
-@import 'open-props/buttons';
-@import 'open-props/colors';
-
-:root {
-  /* Project-specific custom properties */
-  --aside-width: 400px;
-  --cart-aside-summary-height-with-discount: 300px;
-  --cart-aside-summary-height: 250px;
-  --grid-item-width: 355px;
-  --header-height: 64px;
-
-  /* Use Open Props colors as defaults, with fallbacks */
-  /* TODO: Replace with Sierra Nevada brand colors */
-  --color-dark: var(--gray-9, #000);
-  --color-light: var(--gray-0, #fff);
-}
-
-/** DUMMY BUTTON STYLES **/
-.button {
-  background: var(--color-dark);
-  color: var(--color-light);
-  border: none;
-  cursor: pointer;
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  text-align: center;
-  text-decoration: none;
-  transition:
-    background-color 200ms,
-    color 200ms;
-}
-
-img {
-  border-radius: 4px;
-}
+@import './colors.css';
+@import './units.css';
+@import './fonts.css';
+@import './typography.css';
+@import './links.css';
+@import './layout.css';
+@import './base.css';
+@import './buttons.css';
+@import './forms.css';
+@import './tables.css';
+@import './helpers.css';
+@import './motion.css';
+@import './view-transitions.css';
 
 /*
-* --------------------------------------------------
-* Non anchor links
-* --------------------------------------------------
+Open Props CSS variables
+ - used for fluid fonts
 */
-.link:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
+@import 'open-props/fonts';
+
+/*
+Note about media queries:
+- Open Props breakpoints are available globally as CSS variables, e.g. `var(--md-n-above)`.
+for reference of available media queries: https://open-props.style/#media-queries
+because of the @custom syntax, to make them work with CSS modules, they need to be added into the PostCSS config file.
+*/
 
 /*
 * --------------------------------------------------
@@ -69,48 +37,232 @@ img {
 }
 
 aside {
-  background: var(--color-light);
+  --aside-bg: var(--color-brand-maroon);
+  --aside-color: var(--color-brand-orange);
+  --aside-color-header: var(--color-brand-orange);
+  --aside-border-color: var(--aside-color);
+  --aside-link-coloor: var(--color-brand-orange);
+  --aside-padding-x: 20px;
+  background: var(--aside-bg);
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
   height: 100vh;
   width: min(var(--aside-width), 100vw);
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
-  transition: transform 200ms ease-in-out;
+  color: var(--aside-color);
+}
+
+aside a {
+  color: var(--aside-link-color);
+  text-decoration: none;
+}
+
+/* Cart specific styling */
+
+aside.cart {
+  --aside-bg: var(--color-brand-cream);
+  --aside-color: var(--body-color);
+  --aside-color-header: var(--body-color);
+  border: var(--border-default);
+
+  & .cart-details {
+    height: calc(100vh - var(--header-height));
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  & .cart-line {
+    padding-left: var(--aside-padding-x);
+    padding-right: var(--aside-padding-x);
+  }
+
+  & .cart-line-items,
+  & .cart-summary-aside {
+    overflow: auto;
+  }
+
+  & .cart-summary-aside {
+    min-height: var(--cart-aside-summary-height-with-discount);
+  }
+}
+
+aside.cart header .close {
+  border: none;
+  color: inherit;
+}
+
+aside.cart form {
+  width: unset;
+}
+
+aside.cart .empty-cart {
+  padding: 0 var(--aside-padding-x);
+}
+
+/* Mobile menu specific styling */
+.mobile-menu-content {
+  --link-color-hover: var(--color-brand-orange-2);
+  padding: 20px;
+}
+
+/* Mobile menu navigation links */
+.mobile-menu-content .header-menu-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobile-menu-content .header-menu-mobile a {
+  color: var(--color-brand-orange);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 95, 66, 0.2);
+  transition: all 200ms ease;
+}
+
+.mobile-menu-content .header-menu-mobile a:hover {
+  color: var(--link-color-hover);
+  border-bottom-color: var(--link-color-hover);
+}
+
+.mobile-menu-content .header-menu-mobile a:last-of-type {
+  border-bottom: none;
+}
+
+.mobile-menu-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-brand-orange);
+}
+
+.mobile-menu-link {
+  color: var(--color-brand-orange);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 95, 66, 0.2);
+  transition: all 200ms ease;
+}
+
+.mobile-menu-link:hover {
+  color: var(--link-color-hover);
+  border-bottom-color: var(--link-color-hover);
+}
+
+.mobile-menu-link:last-child {
+  border-bottom: none;
 }
 
 aside header {
   align-items: center;
-  border-bottom: 1px solid var(--color-dark);
+  border-bottom: 2px solid var(--aside-border-color);
   display: flex;
   height: var(--header-height);
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 var(--aside-padding-x);
 }
 
 aside header h3 {
   margin: 0;
+  color: var(--aside-color-header);
+  font-size: calc(15rem / 16);
+
+  @media (--lg-n-above) {
+    font-size: calc(18rem / 16);
+  }
 }
 
+/* Unified close button styles */
+.close-button {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.close-button:focus {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+.close-button > svg {
+  width: 36px;
+  height: 36px;
+  transition: transform 0.2s ease;
+}
+
+.close-button:hover > svg {
+  transform: rotate(90deg);
+}
+
+/* Aside-specific close button (for mobile menu and cart) */
 aside header .close {
-  font-weight: bold;
-  opacity: 0.8;
-  text-decoration: none;
-  transition: all 200ms;
-  width: 20px;
+  background: transparent;
+  color: var(--color-brand-orange);
+  border: var(--border-default);
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 aside header .close:hover {
-  opacity: 1;
+  color: var(--link-color-hover);
+  background: transparent;
+  border-color: var(--link-color-hover);
+  transform: scale(1.1);
+}
+
+aside header .close:focus {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+aside header .close > svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* Mobile navigation close button */
+.mobile-navigation-menu .close > svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* Header SVG icons (including mobile menu toggle) */
+header svg {
+  width: 36px;
+  height: 36px;
 }
 
 aside header h2 {
   margin-bottom: 0.6rem;
   margin-top: 0;
-}
-
-aside main {
-  margin: 1rem;
 }
 
 aside p {
@@ -137,7 +289,7 @@ aside li {
   transition: opacity 400ms ease-in-out;
   transition: opacity 400ms;
   visibility: hidden;
-  z-index: 10;
+  z-index: var(--nav-menu-z-index);
 }
 
 .overlay .close-outside {
@@ -194,105 +346,68 @@ button.reset:hover:not(:has(> *)) {
 
 /*
 * --------------------------------------------------
-* components/Header
-* --------------------------------------------------
-*/
-.header {
-  align-items: center;
-  background: #fff;
-  display: flex;
-  height: var(--header-height);
-  padding: 0 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.header-menu-mobile-toggle {
-  @media (min-width: 48em) {
-    display: none;
-  }
-}
-
-.header-menu-mobile {
-  display: flex;
-  flex-direction: column;
-  grid-gap: 1rem;
-}
-
-.header-menu-desktop {
-  display: none;
-  grid-gap: 1rem;
-  @media (min-width: 45em) {
-    display: flex;
-    grid-gap: 1rem;
-    margin-left: 3rem;
-  }
-}
-
-.header-menu-item {
-  cursor: pointer;
-}
-
-.header-ctas {
-  align-items: center;
-  display: flex;
-  grid-gap: 1rem;
-  margin-left: auto;
-}
-
-.header-ctas > * {
-  min-width: fit-content;
-}
-
-/*
-* --------------------------------------------------
-* components/Footer
-* --------------------------------------------------
-*/
-.footer {
-  background: var(--color-dark);
-  margin-top: auto;
-}
-
-.footer-menu {
-  justify-content: center;
-  display: flex;
-  flex-wrap: wrap;
-  grid-gap: 1rem;
-  padding: 1rem;
-}
-
-.footer-menu a {
-  color: var(--color-light);
-  min-width: fit-content;
-}
-
-/*
-* --------------------------------------------------
 * components/Cart
 * --------------------------------------------------
 */
 .cart-main {
-  height: 100%;
-  max-height: calc(100vh - var(--cart-aside-summary-height));
+  height: calc(100vh - var(--header-height));
   overflow-y: auto;
   width: auto;
 }
 
-.cart-main.with-discount {
-  max-height: calc(100vh - var(--cart-aside-summary-height-with-discount));
+.cart-lines {
+  padding: 0 1rem;
 }
 
 .cart-line {
   display: flex;
-  padding: 0.75rem 0;
+  padding: var(--spacer-2) var(--spacer-4);
 }
 
 .cart-line img {
   height: 100%;
   display: block;
   margin-right: 0.75rem;
+  border: var(--border-default);
+  align-self: flex-end;
+}
+
+.cart-line .remove {
+  border: var(--border-default);
+  margin-left: 9px;
+}
+
+.cart-line .remove svg {
+  fill: inherit;
+  width: 14px;
+}
+
+.cart-line-text-contents {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.cart-qty-text {
+  min-width: 24px;
+  text-align: center;
+}
+
+.cart-line-header {
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-actions {
+  display: flex;
+}
+
+.cart-actions .button-icon {
+  padding: 0;
+  min-width: 42px;
+  min-height: 42px;
+  height: 100%;
 }
 
 .cart-summary-page {
@@ -300,16 +415,15 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .cart-summary-aside {
-  background: white;
-  border-top: 1px solid var(--color-dark);
-  bottom: 0;
-  padding-top: 0.75rem;
-  position: absolute;
-  width: calc(var(--aside-width) - 40px);
+  border-top: var(--border-default);
+  padding: 29px var(--aside-padding-x);
+  width: 100%;
 }
 
 .cart-line-quantity {
-  display: flex;
+  display: inline-flex;
+  border: var(--border-default);
+  align-items: center;
 }
 
 .cart-discount {
@@ -322,6 +436,7 @@ button.reset:hover:not(:has(> *)) {
   align-items: center;
   display: flex;
 }
+
 /*
 * --------------------------------------------------
 * components/Search
@@ -333,7 +448,7 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .predictive-search-form {
-  background: var(--color-light);
+  background: var(--color-brand-cream);
   position: sticky;
   top: 0;
 }
@@ -380,24 +495,6 @@ button.reset:hover:not(:has(> *)) {
 * routes/__index
 * --------------------------------------------------
 */
-.featured-collection {
-  display: block;
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.featured-collection-image {
-  aspect-ratio: 1 / 1;
-  @media (min-width: 45em) {
-    aspect-ratio: 16 / 9;
-  }
-}
-
-.featured-collection img {
-  height: auto;
-  max-height: 100%;
-  object-fit: cover;
-}
 
 .recommended-products-grid {
   display: grid;
@@ -430,88 +527,27 @@ button.reset:hover:not(:has(> *)) {
 
 /*
 * --------------------------------------------------
-* routes/collections.$handle.tsx
+* routes/collections.all.tsx
 * --------------------------------------------------
 */
-.collection-description {
-  margin-bottom: 1rem;
-  max-width: 95%;
+.collection-banner {
+  text-align: center;
+  padding: 85px 71px;
+
   @media (min-width: 45em) {
-    max-width: 600px;
+    text-align: left;
+    padding: 196px 101px 111px;
   }
 }
 
 .products-grid {
   display: grid;
-  grid-gap: 1.5rem;
+  border: var(--border-default);
+  border-top: none;
+  background-color: var(--color-brand-maroon);
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-width), 1fr));
-  margin-bottom: 2rem;
-}
-
-.product-item img {
-  height: auto;
-  width: 100%;
-}
-
-/*
-* --------------------------------------------------
-* routes/products.$handle.tsx
-* --------------------------------------------------
-*/
-.product {
-  display: grid;
-  @media (min-width: 45em) {
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 4rem;
-  }
-}
-
-.product h1 {
-  margin-top: 0;
-}
-
-.product-image img {
-  height: auto;
-  width: 100%;
-}
-
-.product-main {
-  align-self: start;
-  position: sticky;
-  top: 6rem;
-}
-
-.product-price-on-sale {
-  display: flex;
-  grid-gap: 0.5rem;
-}
-
-.product-price-on-sale s {
-  opacity: 0.5;
-}
-
-.product-options-grid {
-  display: flex;
-  flex-wrap: wrap;
-  grid-gap: 0.75rem;
-}
-
-.product-options-item,
-.product-options-item:disabled {
-  padding: 0.25rem 0.5rem;
-  background-color: transparent;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-.product-option-label-swatch {
-  width: 1.25rem;
-  height: 1.25rem;
-  margin: 0.25rem 0;
-}
-
-.product-option-label-swatch img {
-  width: 100%;
+  gap: 2px;
+  padding: 2px;
 }
 
 /*
@@ -550,7 +586,183 @@ button.reset:hover:not(:has(> *)) {
 * routes/account
 * --------------------------------------------------
 */
+.account-container {
+  --section-spacer: var(--spacer-5);
+  max-width: 900px;
+
+  h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    margin-bottom: 1rem;
+  }
+
+  @media (--lg-n-above) {
+    --section-spacer: var(--spacer-9);
+  }
+}
+
+.account-nav {
+  margin: var(--spacer-3) 0 var(--spacer-4);
+  text-transform: uppercase;
+
+  button {
+    text-transform: inherit;
+  }
+
+  ul {
+    @media (--lg-n-above) {
+      display: flex;
+      gap: var(--spacer-3);
+    }
+  }
+
+  [aria-current] {
+    font-weight: 500;
+  }
+}
+
+.account-addresses {
+  .button + .button {
+    margin-left: var(--spacer-2);
+  }
+}
 
 .account-logout {
   display: inline-block;
+}
+
+.order-card {
+  display: grid;
+  width: 100%;
+  padding: var(--spacer-2);
+  border: var(--border-default);
+  gap: var(--spacer-2);
+
+  .order-card__order-id-link {
+    display: inline-block;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  @media (--md-n-above) {
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacer-3);
+
+    > div:last-of-type {
+      align-self: end;
+    }
+  }
+
+  .order-card__text-wrapper {
+    > * + * {
+      margin-top: var(--spacer-1);
+    }
+  }
+
+  & + .order-card {
+    margin-top: var(--spacer-3);
+  }
+}
+
+.account-order {
+  display: grid;
+  gap: var(--section-spacer);
+
+  table {
+    width: 100%;
+
+    thead th {
+      &:not(:nth-child(1)) {
+        text-align: right;
+      }
+    }
+
+    tbody {
+      td {
+        &:not(:nth-child(1)) {
+          text-align: right;
+        }
+      }
+    }
+
+    tfoot {
+      text-align: right;
+    }
+  }
+
+  .line-item {
+    img {
+      border: var(--border-default);
+    }
+
+    > * + * {
+      margin-top: var(--spacer-1);
+    }
+  }
+
+  address {
+    * + * {
+      margin-top: var(--spacer-1);
+    }
+  }
+}
+
+/*
+* --------------------------------------------------
+* routes/policies
+* --------------------------------------------------
+*/
+.policies,
+.policy {
+  --container-width: 800px;
+
+  .content {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    line-height: 1.8;
+  }
+
+  h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  p + p {
+    margin-top: 2rem;
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 1rem;
+    margin: 1rem 0;
+  }
+
+  li {
+    margin-bottom: 1rem;
+  }
+}
+
+/*
+* --------------------------------------------------
+* Global classes for component targeting
+* --------------------------------------------------
+*/
+/* .product-badge - Available for parent components to target ProductBadge instances */
+
+/*
+* --------------------------------------------------
+* overrides cart hover behavior to prevent the app from disappearing
+* --------------------------------------------------
+*/
+button:not(.does-not-exist):hover {
+  background-color: inherit;
 }

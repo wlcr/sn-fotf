@@ -1,0 +1,273 @@
+.button,
+input[type='submit'] {
+  &:not(
+    .secondary,
+    .tertiary,
+    .chip,
+    :disabled,
+    .disabled,
+    .button-icon,
+    .ticketing
+  ) {
+    --button-color: var(--color-brand-cream);
+    --button-color-hover: var(--color-brand-maroon, #4d1c24);
+    --button-bg: var(--color-brand-maroon, #4d1c24);
+    --button-bg-hover: var(--color-brand-cream);
+    --button-active-color: var(--color-brand-maroon, #4d1c24);
+    --button-active-bg: var(--color-brand-maroon, #4d1c24);
+  }
+
+  display: inline-block;
+  padding: 12px 24px;
+  color: var(--button-color);
+  background-color: var(--button-bg);
+  border: var(--button-border-width) solid var(--button-bg);
+  border-radius: var(--button-border-radius, 0px);
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  letter-spacing: var(--button-letter-spacing, 0.0225em);
+  text-align: center;
+  text-decoration: none;
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  user-select: none;
+
+  &.jumbo {
+    font-size: calc(18rem / 16);
+    padding-top: var(--spacer-3);
+    padding-bottom: var(--spacer-3);
+  }
+
+  &:not(:disabled, .disabled) {
+    cursor: pointer;
+  }
+
+  &:hover {
+    background-color: var(--button-bg-hover);
+    color: var(--button-color-hover);
+  }
+
+  &:active {
+    background-color: var(--button-active-bg);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    border-radius: var(--focus-radius);
+  }
+
+  &.ticketing {
+    --button-color: var(--color-brand-cream);
+    --button-color-hover: var(--button-color);
+    --button-bg: var(--color-brand-maroon, #4d1c24);
+    --button-bg-hover: var(--color-brand-maroon, #4d1c24);
+    --button-active-color: var(--color-brand-maroon, #4d1c24);
+    --button-active-bg: hsla(350, 47%, 21%, 0.7);
+    position: relative;
+    height: 70px;
+
+    &:hover {
+      background-color: var(--button-bg-hover);
+      color: var(--button-color-hover);
+    }
+
+    &:active {
+      background-color: var(--button-active-bg);
+    }
+
+    &:focus-visible {
+      outline: var(--focus-outline);
+      outline-offset: calc(-1 * var(--input-border-width));
+      border-radius: var(--focus-radius);
+    }
+
+    & > span {
+      display: inline-block;
+      position: relative;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--color-brand-orange);
+        transition: transform 0.25s ease-out;
+        transform-origin: bottom center;
+      }
+    }
+
+    &:hover > span::after {
+      transform: scaleX(1);
+      transform-origin: bottom center;
+    }
+  }
+
+  &.secondary {
+    /* --button-color: var(--primary-color);
+    --button-bg: var(--primary-500);
+    --button-bg-hover: var(--primary-900);
+    --button-active-bg: var(--primary-700); */
+  }
+
+  &.tertiary {
+    /* --button-color: var(--primary-900);
+    --button-bg: var(--primary-300);
+    --button-bg-hover: var(--primary-color);
+    --button-active-bg: var(--primary-200); */
+  }
+
+  &.chip {
+    /* --button-color: var(--primary-color);
+    --button-bg: var(--primary-700);
+    --button-bg-hover: var(--primary-600);
+    --button-active-bg: var(--primary-500); */
+
+    padding: 5px 16px;
+    font-size: var(--button-font-size--small);
+    text-transform: uppercase;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+
+  &:disabled,
+  &.disabled {
+    --button-color: var(--disabled-color);
+    --button-bg: var(--disabled-bg-color);
+    pointer-events: none;
+
+    &.clickable {
+      --button-bg-hover: var(--color-bg);
+      --button-active-bg: var(--neutral-600);
+    }
+
+    &:not(.clickable) {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.button-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px;
+  vertical-align: middle;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  & svg {
+    fill: var(--color-brand-cream);
+    & path {
+      fill: inherit;
+    }
+  }
+
+  &:hover {
+    background-color: transparent;
+  }
+
+  &:hover svg {
+    background-color: transparent;
+    fill: var(--color-brand-maroon, #4d1c24);
+    & path {
+      fill: inherit;
+    }
+  }
+
+  &:active svg {
+    background-color: transparent;
+    fill: var(--color-brand-maroon, #4d1c24);
+    & path {
+      fill: inherit;
+    }
+  }
+
+  &:focus-visible {
+    background-color: transparent;
+    outline: var(--focus-outline);
+    border-radius: var(--focus-radius);
+  }
+
+  &.persistent {
+    & svg {
+      background-color: transparent;
+      fill: var(--color-brand-maroon, #4d1c24);
+      & path {
+        fill: inherit;
+      }
+    }
+  }
+}
+
+/*
+* --------------------------------------------------
+* Text button (features arrow on right side)
+* --------------------------------------------------
+*/
+.text-button {
+  --color: inherit;
+  --hover: var(--hover-color);
+  --active: var(--active-color);
+  display: inline-flex;
+  background-color: transparent;
+  background-color: initial;
+  border: initial;
+  cursor: pointer;
+  color: var(--color);
+  letter-spacing: var(--button-letter-spacing, 0.0225em);
+  text-decoration: none;
+  padding: 0;
+
+  &:hover {
+    color: var(--hover);
+  }
+
+  &:active {
+    color: var(--active);
+  }
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
+    background: url('/icons/arrow_diagnol_up.svg') no-repeat center/contain;
+  }
+}
+
+/*
+* --------------------------------------------------
+* Ghost button
+* --------------------------------------------------
+*/
+.ghost-button {
+  --color: inherit;
+  --hover: var(--hover-color);
+  --active: var(--active-color);
+  display: inline-flex;
+  background-color: transparent;
+  background-color: initial;
+  border: initial;
+  cursor: pointer;
+  color: var(--color);
+  letter-spacing: var(--button-letter-spacing, 0.0225em);
+  text-decoration: none;
+  padding: 0;
+
+  &:hover {
+    color: var(--hover);
+  }
+
+  &:active {
+    color: var(--active);
+  }
+}

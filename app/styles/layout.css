@@ -1,0 +1,41 @@
+.container {
+  max-width: var(--container-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* DRY refactor for text containers */
+.text-container-1,
+.text-container-2,
+.text-container-3,
+.text-container-4,
+.text-container-5 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-container-1 {
+  max-width: var(--text-container-width-1);
+}
+.text-container-2 {
+  max-width: var(--text-container-width-2);
+}
+.text-container-3 {
+  max-width: var(--text-container-width-3);
+}
+.text-container-4 {
+  max-width: var(--text-container-width-4);
+}
+.text-container-5 {
+  max-width: var(--text-container-width-5);
+}
+
+.content {
+  padding-left: var(--edge-space);
+  padding-right: var(--edge-space);
+}
+
+.edge-space {
+  margin-left: var(--edge-space);
+  margin-right: var(--edge-space);
+}

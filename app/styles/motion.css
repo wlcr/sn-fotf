@@ -1,0 +1,37 @@
+:root {
+  --transition-duration: 150ms;
+  --transition-timing-function: ease;
+
+  --global-transition: var(--transition-duration)
+    var(--transition-timing-function);
+  --form-transition: var(--transition-duration)
+    var(--transition-timing-function);
+
+  --marqueeSpeed: 26;
+}
+
+@keyframes popIn {
+  0% {
+    visibility: visible;
+    opacity: 0;
+    transform: translate(var(--popin-distance, 10%, 0));
+  }
+
+  80% {
+    transform: translate(0%, 0%);
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

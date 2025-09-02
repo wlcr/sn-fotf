@@ -1,0 +1,50 @@
+a,
+.link {
+  color: var(--link-color);
+  text-decoration: none;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.075em;
+  text-underline-offset: 0.125em;
+  transition:
+    text-decoration-color var(--animation-speed) var(--animation-easing),
+    color var(--animation-speed) var(--animation-easing);
+
+  &:hover {
+    color: var(--link-color-hover);
+  }
+
+  &:active {
+    color: var(--link-color-active);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-offset);
+    border-radius: var(--focus-radius);
+  }
+
+  &.secondary {
+    --link-color: var(--color-brand-orange);
+    --link-color-hover: var(--color-brand-cream);
+    --link-color-active: var(--color-brand-orange);
+    text-decoration: none;
+  }
+}
+
+.link-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+
+  & svg {
+    fill: var(--link-color);
+  }
+}
+
+ol.link-list,
+ul.link-list {
+  list-style: none;
+  padding: 0;
+}

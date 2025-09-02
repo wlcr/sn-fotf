@@ -1,0 +1,22 @@
+@font-face {
+  font-family: 'soehne-mono';
+  src: url('/fonts/soehne-mono/soehne-mono-leicht.woff2') format('woff2');
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'soehne-mono';
+  src: url('/fonts/soehne-mono/soehne-mono-buch.woff2') format('woff2');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'soehne-mono';
+  src: url('/fonts/soehne-mono/soehne-mono-kraftig.woff2') format('woff2');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'driphaus';
+  src:
+    url('/fonts/driphaus/driphaus-regular-webfont.woff') format('woff'),
+    url('/fonts/driphaus/driphaus-regular-webfont.woff2') format('woff2');
+  font-weight: 400;
+}
