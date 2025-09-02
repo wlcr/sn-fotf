@@ -173,6 +173,8 @@ This project uses Sanity CMS for content management. The Sanity Studio provides 
 npm run studio:dev
 ```
 
+**Note**: If you see a warning about "Could not find a production build in the dist directory", choose **"Y" to start a development server**. This is normal for local development - you only need a production build for deployment.
+
 The Studio will be available at: **http://localhost:3333/**
 
 **Development Workflow** (run both simultaneously):

@@ -13,23 +13,48 @@ export const header = defineType({
   icon: CogIcon,
   fields: [
     defineField({
-      name: 'mainMenu',
-      title: 'Main Menu',
-      type: 'menu',
+      name: 'logo',
+      title: 'Logo',
+      type: 'image',
+      description: 'Site logo displayed in the header',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description:
+            'Alternative text for the logo (important for accessibility)',
+          validation: (rule) => rule.required(),
+        }),
+      ],
     }),
     defineField({
-      name: 'showAddress',
-      description: 'Show the address in the header?',
-      title: 'Show Address',
-      type: 'boolean',
-      initialValue: false,
-    }),
-    defineField({
-      name: 'showPhone',
-      description: 'Show the phone number in the header?',
-      title: 'Show Phone',
-      type: 'boolean',
-      initialValue: false,
+      name: 'ctaButton',
+      title: 'CTA Button',
+      type: 'object',
+      description: 'Call-to-action button in the header',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Button Text',
+          type: 'string',
+          placeholder: 'e.g., "Shop Now", "Join Now"',
+        }),
+        defineField({
+          name: 'link',
+          title: 'Button Link',
+          type: 'link',
+        }),
+        defineField({
+          name: 'enabled',
+          title: 'Show Button',
+          type: 'boolean',
+          initialValue: true,
+        }),
+      ],
     }),
     defineField({
       name: 'announcementBar',

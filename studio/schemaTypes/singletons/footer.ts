@@ -13,22 +13,36 @@ export const footer = defineType({
   icon: CogIcon,
   fields: [
     defineField({
-      name: 'footerMenu',
-      title: 'Footer Menu',
-      type: 'menu',
-    }),
-    defineField({
-      name: 'privacyLink',
+      name: 'logo',
+      title: 'Footer Logo',
+      type: 'image',
       description:
-        'Link to the privacy policy: https://www.squadup.com/privacy',
-      title: 'Privacy Policy Link',
-      type: 'link',
+        'Logo displayed in the footer (different style than header logo)',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description:
+            'Alternative text for the footer logo (important for accessibility)',
+          validation: (rule) => rule.required(),
+        }),
+      ],
     }),
     defineField({
-      name: 'termsLink',
-      description: 'Link to the terms of service: https://www.squadup.com/tos',
-      title: 'Terms of Service Link',
-      type: 'link',
+      name: 'internalLinks',
+      title: 'Internal Links Menu',
+      type: 'menu',
+      description: 'Navigation links for internal pages (Products, FAQ, etc.)',
+    }),
+    defineField({
+      name: 'externalLinks',
+      title: 'External Links Menu',
+      type: 'menu',
+      description: 'External links for SierraNevada.com pages etc.',
     }),
   ],
   preview: {

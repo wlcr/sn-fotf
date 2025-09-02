@@ -1,13 +1,14 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {
-  CartApiQueryFragment,
-  FooterQuery,
-  HeaderQuery,
-} from 'storefrontapi.generated';
+  Header as SanityHeader,
+  Footer as SanityFooter,
+  Settings,
+} from '~/studio/sanity.types';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
-import {Header, HeaderMenu} from '~/components/Header';
+import {Header} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
@@ -17,8 +18,9 @@ import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
-  footer: Promise<FooterQuery | null>;
-  header: HeaderQuery;
+  footer: SanityFooter | null;
+  header: SanityHeader | null;
+  settings: Settings | null;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
   children?: React.ReactNode;
@@ -29,6 +31,7 @@ export function PageLayout({
   children = null,
   footer,
   header,
+  settings,
   isLoggedIn,
   publicStoreDomain,
 }: PageLayoutProps) {
@@ -36,21 +39,9 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <SearchAside />
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-      {header && (
-        <Header
-          header={header}
-          cart={cart}
-          isLoggedIn={isLoggedIn}
-          publicStoreDomain={publicStoreDomain}
-        />
-      )}
-      <main>{children}</main>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
+      {header && <Header header={header} />}
+      <main id="main-content">{children}</main>
+      {footer && <Footer footer={footer} />}
     </Aside.Provider>
   );
 }
@@ -151,24 +142,5 @@ function SearchAside() {
   );
 }
 
-function MobileMenuAside({
-  header,
-  publicStoreDomain,
-}: {
-  header: PageLayoutProps['header'];
-  publicStoreDomain: PageLayoutProps['publicStoreDomain'];
-}) {
-  return (
-    header.menu &&
-    header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="MENU">
-        <HeaderMenu
-          menu={header.menu}
-          viewport="mobile"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
-      </Aside>
-    )
-  );
-}
+// Mobile menu aside removed - will be handled by Header component internally
+// when we implement mobile menu functionality

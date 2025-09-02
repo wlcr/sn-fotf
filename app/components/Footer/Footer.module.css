@@ -1,0 +1,218 @@
+/* Footer Component Styles */
+
+.footer {
+  background: var(--color-dark, #000);
+  color: var(--color-light, #fff);
+  padding: var(--spacing-2xl, 3rem) var(--spacing-md, 1rem)
+    var(--spacing-lg, 1.5rem);
+  margin-top: auto; /* Push footer to bottom of page */
+}
+
+.footerContainer {
+  max-width: var(--max-content-width, 1200px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg, 1.5rem);
+}
+
+/* Logo Section - Always centered on its own line */
+.logoSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoLink,
+.logoTextLink {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.logoLink:hover,
+.logoTextLink:hover {
+  opacity: 0.8;
+}
+
+.logoLink:focus,
+.logoTextLink:focus {
+  outline: 2px solid var(--color-light, #fff);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 48px;
+
+  @media (min-width: 768px) {
+    max-height: 56px;
+  }
+}
+
+.logoText {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-light, #fff);
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+/* Navigation Sections - Centered horizontal arrangement */
+.internalLinksSection,
+.externalLinksSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.linksList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md, 1rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @media (min-width: 768px) {
+    gap: var(--spacing-lg, 1.5rem);
+  }
+}
+
+.linkItem {
+  margin: 0;
+}
+
+.internalLink,
+.externalLink {
+  display: inline-block;
+  color: var(--color-light, #fff);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  border-radius: 4px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    text-decoration 0.2s ease;
+
+  @media (min-width: 768px) {
+    font-size: 15px;
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+  }
+}
+
+.internalLink:hover,
+.externalLink:hover {
+  color: var(--color-light, #fff);
+  text-decoration: underline;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.internalLink:focus,
+.externalLink:focus {
+  outline: 2px solid var(--color-light, #fff);
+  outline-offset: 2px;
+  text-decoration: underline;
+}
+
+/* External links have slightly different styling to distinguish them */
+.externalLink {
+  opacity: 0.9;
+}
+
+.externalLink:hover {
+  opacity: 1;
+}
+
+/* Decorative Line Divider - Hardcoded */
+.divider {
+  width: 100%;
+  max-width: 300px;
+  height: 1px;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  margin: var(--spacing-sm, 0.5rem) 0;
+
+  @media (min-width: 768px) {
+    max-width: 400px;
+    margin: var(--spacing-md, 1rem) 0;
+  }
+}
+
+/* Copyright Section */
+.copyrightSection {
+  text-align: center;
+  margin-top: var(--spacing-md, 1rem);
+}
+
+.copyrightText {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.4;
+
+  @media (min-width: 768px) {
+    font-size: 13px;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+  .footer {
+    padding: var(--spacing-xl, 2rem) var(--spacing-md, 1rem)
+      var(--spacing-lg, 1.5rem);
+  }
+
+  .footerContainer {
+    gap: var(--spacing-md, 1rem);
+  }
+
+  .linksList {
+    gap: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+  }
+
+  .internalLink,
+  .externalLink {
+    font-size: 13px;
+    padding: var(--spacing-xs, 0.25rem);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .footer {
+    border-top: 2px solid var(--color-light, #fff);
+  }
+
+  .divider {
+    background: var(--color-light, #fff);
+    height: 2px;
+  }
+
+  .internalLink:focus,
+  .externalLink:focus,
+  .logoLink:focus,
+  .logoTextLink:focus {
+    outline: 3px solid var(--color-light, #fff);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .internalLink,
+  .externalLink,
+  .logoLink,
+  .logoTextLink {
+    transition: none;
+  }
+}

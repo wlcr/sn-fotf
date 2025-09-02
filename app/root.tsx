@@ -12,7 +12,17 @@ import {
   useRouteLoaderData,
 } from 'react-router';
 import favicon from '~/assets/favicon.svg?url';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {HEADER_QUERY, FOOTER_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
+import {
+  createSanityClient,
+  validateSanityEnv,
+  sanityServerQuery,
+} from '~/lib/sanity';
+import type {
+  Header as SanityHeader,
+  Footer as FooterType,
+  Settings,
+} from '~/studio/sanity.types';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
@@ -98,19 +108,47 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({context}: LoaderFunctionArgs) {
-  const {storefront} = context;
+  const {env} = context;
 
-  const [header] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
+  // Create Sanity client for server-side queries
+  const sanityEnv = validateSanityEnv(env);
+  const sanityClient = createSanityClient(sanityEnv);
+
+  const [header, footer, settings] = await Promise.all([
+    sanityServerQuery<SanityHeader>(
+      sanityClient,
+      HEADER_QUERY,
+      {},
+      {
+        displayName: 'Header Query',
+        env: sanityEnv,
       },
-    }),
-    // Add other queries here, so that they are loaded in parallel
+    ),
+    sanityServerQuery<FooterType>(
+      sanityClient,
+      FOOTER_QUERY,
+      {},
+      {
+        displayName: 'Footer Query',
+        env: sanityEnv,
+      },
+    ),
+    sanityServerQuery<Settings>(
+      sanityClient,
+      SETTINGS_QUERY,
+      {},
+      {
+        displayName: 'Settings Query',
+        env: sanityEnv,
+      },
+    ),
   ]);
 
-  return {header};
+  return {
+    header: header || null,
+    footer: footer || null,
+    settings: settings || null,
+  };
 }
 
 /**
@@ -121,23 +159,9 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
 function loadDeferredData({context}: LoaderFunctionArgs) {
   const {storefront, customerAccount, cart} = context;
 
-  // defer the footer query (below the fold)
-  const footer = storefront
-    .query(FOOTER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
   return {
     cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
-    footer,
   };
 }
 

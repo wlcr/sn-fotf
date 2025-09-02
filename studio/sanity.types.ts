@@ -420,9 +420,24 @@ export type Header = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  mainMenu?: Menu;
-  showAddress?: boolean;
-  showPhone?: boolean;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  ctaButton?: {
+    text?: string;
+    link?: Link;
+    enabled?: boolean;
+  };
   announcementBar?: {
     text?: string;
     link?: Link;
@@ -436,9 +451,21 @@ export type Footer = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  footerMenu?: Menu;
-  privacyLink?: Link;
-  termsLink?: Link;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  internalLinks?: Menu;
+  externalLinks?: Menu;
 };
 
 export type Link = {
@@ -669,22 +696,24 @@ export type HeaderQueryResult = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  mainMenu: Array<{
-    title?: string;
-    link: {
-      _type: 'link';
-      linkType?: 'home' | 'href' | 'page' | 'productPage';
-      href?: string;
-      page: string | null;
-      productPage: string | null;
-      openInNewTab?: boolean;
-      home: '/';
-    } | null;
-    _type: 'menuItem';
-    _key: string;
-  }> | null;
-  showAddress?: boolean;
-  showPhone?: boolean;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  ctaButton?: {
+    text?: string;
+    link?: Link;
+    enabled?: boolean;
+  };
   announcementBar: {
     text?: string;
     link: {
@@ -698,6 +727,7 @@ export type HeaderQueryResult = {
     } | null;
     enabled?: boolean;
   } | null;
+  mainMenu: null;
 } | null;
 // Variable: footerQuery
 // Query: *[_type == "footer"][0] {    ...,    footerMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }
@@ -707,22 +737,22 @@ export type FooterQueryResult = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  footerMenu: Array<{
-    title?: string;
-    link: {
-      _type: 'link';
-      linkType?: 'home' | 'href' | 'page' | 'productPage';
-      href?: string;
-      page: string | null;
-      productPage: string | null;
-      openInNewTab?: boolean;
-      home: '/';
-    } | null;
-    _type: 'menuItem';
-    _key: string;
-  }> | null;
-  privacyLink?: Link;
-  termsLink?: Link;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  internalLinks?: Menu;
+  externalLinks?: Menu;
+  footerMenu: null;
 } | null;
 // Variable: homeQuery
 // Query: *[_type == 'homepage'][0]{    ...,    pageBuilder[]{      ...,      sectionBuilder[]  {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }    }  }
