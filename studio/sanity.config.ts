@@ -10,6 +10,7 @@ import {defineConfig} from 'sanity';
 import {structureTool} from 'sanity/structure';
 import {visionTool} from '@sanity/vision';
 import {schemaTypes} from './schemaTypes';
+import {structure} from './structure';
 
 // Sanity Studio Configuration
 // Note: Project IDs are not sensitive - they're visible in API URLs and client requests
@@ -29,7 +30,7 @@ export default defineConfig({
   basePath: '/studio', // Studio will be available at /studio
 
   plugins: [
-    structureTool(),
+    structureTool({structure}),
     visionTool(), // GROQ query tool for development
   ],
 

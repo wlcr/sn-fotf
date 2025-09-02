@@ -8,7 +8,7 @@ import {defineArrayMember, defineField, defineType} from 'sanity';
 
 export const settings = defineType({
   name: 'settings',
-  title: 'Settings',
+  title: 'Site Settings',
   type: 'document',
   icon: CogIcon,
   fields: [

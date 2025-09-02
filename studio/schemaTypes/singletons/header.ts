@@ -8,7 +8,7 @@ import {defineField, defineType} from 'sanity';
 
 export const header = defineType({
   name: 'header',
-  title: 'Header',
+  title: 'Header Configuration',
   type: 'document',
   icon: CogIcon,
   fields: [
