@@ -214,6 +214,39 @@
   fill: currentColor;
 }
 
+.cartIconWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--color-brand-orange);
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.utilityLink:hover .cartCount {
+  background: var(--color-brand-maroon);
+  transform: scale(1.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 767px) {
   .headerContainer {

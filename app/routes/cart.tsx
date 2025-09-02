@@ -7,7 +7,8 @@ import {
   type ActionFunctionArgs,
   type HeadersFunction,
 } from '@shopify/remix-oxygen';
-import {CartMain} from '~/components/CartMain';
+import {CartMain} from '~/components/Cart/CartMain';
+import styles from '~/components/Cart/Cart.module.css';
 
 export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Cart`}];
@@ -109,8 +110,10 @@ export default function Cart() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart">
-      <h1>Cart</h1>
+    <div className={styles.cartMainPage}>
+      <header className={styles.cartHeader}>
+        <h1 className={styles.cartTitle}>Your Cart</h1>
+      </header>
       <CartMain layout="page" cart={cart} />
     </div>
   );

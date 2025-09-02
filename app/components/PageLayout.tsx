@@ -9,7 +9,7 @@ import type {
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
-import {CartMain} from '~/components/CartMain';
+import {CartMain} from '~/components/Cart/CartMain';
 import {
   SEARCH_ENDPOINT,
   SearchFormPredictive,
@@ -39,7 +39,7 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <SearchAside />
-      {header && <Header header={header} />}
+      {header && <Header header={header} cart={cart} />}
       <main id="main-content">{children}</main>
       {footer && <Footer footer={footer} />}
     </Aside.Provider>

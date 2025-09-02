@@ -1,0 +1,358 @@
+/* Cart Summary Component Styles */
+
+/*
+* --------------------------------------------------
+* Cart Summary Layout
+* --------------------------------------------------
+*/
+.cartSummary {
+  background: var(--color-brand-cream);
+  border: var(--border-default);
+  border-radius: 4px;
+  padding: var(--spacer-4);
+}
+
+.cartSummaryPage {
+  composes: cartSummary;
+  padding: var(--spacer-6);
+  position: sticky;
+  top: var(--spacer-4);
+}
+
+.cartSummaryAside {
+  composes: cartSummary;
+  border-top: var(--border-default);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 0;
+  background: var(--color-brand-cream);
+  margin-top: auto;
+  flex-shrink: 0;
+  padding: var(--spacer-4) var(--spacer-3);
+}
+
+/*
+* --------------------------------------------------
+* Summary Header
+* --------------------------------------------------
+*/
+.summaryTitle {
+  margin: 0 0 var(--spacer-4) 0;
+  font-size: var(--font-size-fluid-1);
+  color: var(--color-brand-maroon);
+  font-family: var(--font-accent--family);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-brand-maroon-3);
+  padding-bottom: var(--spacer-2);
+}
+
+.summaryTitleAside {
+  composes: summaryTitle;
+  font-size: var(--font-size-fluid-0);
+  margin-bottom: var(--spacer-3);
+}
+
+/*
+* --------------------------------------------------
+* Summary Lines (Subtotal, Taxes, etc.)
+* --------------------------------------------------
+*/
+.summaryLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 var(--spacer-2) 0;
+  gap: var(--spacer-3);
+}
+
+.summaryLineTotal {
+  composes: summaryLine;
+  font-weight: 600;
+  font-size: calc(18rem / 16);
+  border-top: 1px solid var(--color-brand-maroon-3);
+  padding-top: var(--spacer-3);
+  margin-top: var(--spacer-3);
+  margin-bottom: var(--spacer-4);
+}
+
+.summaryLabel {
+  color: var(--body-color);
+  font-size: var(--font-size-fluid-0);
+  margin: 0;
+}
+
+.summaryValue {
+  color: var(--color-brand-maroon);
+  font-weight: 500;
+  font-size: var(--font-size-fluid-0);
+  text-align: right;
+}
+
+.summaryValueTotal {
+  composes: summaryValue;
+  font-size: calc(18rem / 16);
+  font-weight: 600;
+}
+
+/*
+* --------------------------------------------------
+* Discounts Section
+* --------------------------------------------------
+*/
+.discountsSection {
+  margin: var(--spacer-3) 0;
+}
+
+.discountLine {
+  composes: summaryLine;
+  color: var(--success-500);
+  margin-bottom: var(--spacer-2);
+}
+
+.discountCode {
+  background: var(--success-300);
+  color: var(--color-brand-maroon);
+  padding: var(--spacer-1) var(--spacer-2);
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: calc(12rem / 16);
+  letter-spacing: 0.05em;
+}
+
+.discountRemove {
+  background: transparent;
+  border: 1px solid var(--success-500);
+  color: var(--success-500);
+  padding: calc(var(--spacer-1) / 2) var(--spacer-1);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: calc(11rem / 16);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
+.discountRemove:hover {
+  background: var(--success-500);
+  color: white;
+}
+
+/*
+* --------------------------------------------------
+* Discount/Gift Card Input Forms
+* --------------------------------------------------
+*/
+.promoForm {
+  margin: var(--spacer-3) 0;
+  padding: var(--spacer-3);
+  border: 1px solid var(--color-brand-maroon-3);
+  border-radius: 4px;
+  background: white;
+}
+
+.promoInputGroup {
+  display: flex;
+  gap: var(--spacer-2);
+  align-items: stretch;
+}
+
+.promoInput {
+  flex: 1;
+  padding: var(--spacer-2) var(--spacer-3);
+  border: var(--border-default);
+  border-radius: 4px;
+  background: var(--color-brand-cream);
+  color: var(--color-brand-maroon);
+  font-size: calc(14rem / 16);
+}
+
+.promoInput:focus {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: -2px;
+  border-color: var(--color-brand-orange);
+}
+
+.promoInput::placeholder {
+  color: var(--neutral-500);
+}
+
+.promoSubmit {
+  background: var(--color-brand-maroon);
+  color: var(--color-brand-cream);
+  border: var(--border-default);
+  border-color: var(--color-brand-maroon);
+  padding: var(--spacer-2) var(--spacer-3);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: calc(13rem / 16);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.promoSubmit:hover {
+  background: var(--color-brand-orange);
+  border-color: var(--color-brand-orange);
+}
+
+.promoSubmit:focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+/*
+* --------------------------------------------------
+* Gift Card Section
+* --------------------------------------------------
+*/
+.giftCardSection {
+  margin: var(--spacer-3) 0;
+}
+
+.giftCardCodes {
+  background: var(--color-brand-maroon-3);
+  padding: var(--spacer-2) var(--spacer-3);
+  border-radius: 4px;
+  margin-bottom: var(--spacer-2);
+}
+
+.giftCardCode {
+  font-family: monospace;
+  font-size: calc(12rem / 16);
+  color: var(--color-brand-maroon);
+  letter-spacing: 0.1em;
+}
+
+/*
+* --------------------------------------------------
+* Checkout Actions
+* --------------------------------------------------
+*/
+.checkoutActions {
+  margin-top: var(--spacer-4);
+  padding-top: var(--spacer-4);
+  border-top: 1px solid var(--color-brand-maroon-3);
+}
+
+.checkoutButton {
+  display: block;
+  width: 100%;
+  background: var(--color-brand-maroon);
+  color: var(--color-brand-cream);
+  text-decoration: none;
+  text-align: center;
+  padding: var(--spacer-3) var(--spacer-4);
+  border-radius: 4px;
+  font-size: var(--font-size-fluid-0);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  border: 2px solid var(--color-brand-maroon);
+}
+
+.checkoutButton:hover {
+  background: var(--color-brand-orange);
+  border-color: var(--color-brand-orange);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.checkoutButton:focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+.checkoutButtonPage {
+  composes: checkoutButton;
+  padding: var(--spacer-4) var(--spacer-6);
+  font-size: calc(18rem / 16);
+}
+
+.checkoutButtonAside {
+  composes: checkoutButton;
+  padding: var(--spacer-3);
+  font-size: calc(15rem / 16);
+}
+
+/*
+* --------------------------------------------------
+* Loading States
+* --------------------------------------------------
+*/
+.summaryLoading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.summaryLoading .checkoutButton {
+  background: var(--neutral-400);
+  border-color: var(--neutral-400);
+  cursor: not-allowed;
+}
+
+/*
+* --------------------------------------------------
+* Responsive Adjustments
+* --------------------------------------------------
+*/
+@media (max-width: 480px) {
+  .promoInputGroup {
+    flex-direction: column;
+  }
+
+  .cartSummaryPage {
+    position: static;
+    margin-top: var(--spacer-4);
+  }
+
+  .summaryLine {
+    font-size: calc(14rem / 16);
+  }
+
+  .summaryLineTotal {
+    font-size: calc(16rem / 16);
+  }
+}
+
+/*
+* --------------------------------------------------
+* Accessibility & Motion
+* --------------------------------------------------
+*/
+@media (prefers-reduced-motion: reduce) {
+  .checkoutButton,
+  .promoSubmit,
+  .discountRemove {
+    transition: none;
+    transform: none;
+  }
+
+  .checkoutButton:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .cartSummary {
+    border-width: 2px;
+  }
+
+  .promoInput {
+    border-width: 2px;
+  }
+
+  .checkoutButton {
+    border-width: 2px;
+  }
+
+  .promoSubmit {
+    border-width: 2px;
+  }
+}

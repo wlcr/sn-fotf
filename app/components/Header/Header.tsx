@@ -1,16 +1,20 @@
 import type {FC} from 'react';
-import {Link, NavLink} from 'react-router';
+import {Link, NavLink, Await} from 'react-router';
 import {clsx} from 'clsx';
+import {Suspense} from 'react';
 import {urlForImage} from '~/lib/sanity';
+import {useAside} from '~/components/Aside';
 import type {Header as HeaderType} from '~/studio/sanity.types';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
 
 export interface HeaderProps {
   header: HeaderType;
+  cart?: Promise<CartApiQueryFragment | null>;
   className?: string;
 }
 
-export const Header: FC<HeaderProps> = ({header, className}) => {
+export const Header: FC<HeaderProps> = ({header, cart, className}) => {
   const {logo, ctaButton, announcementBar} = header;
 
   return (
@@ -119,18 +123,15 @@ export const Header: FC<HeaderProps> = ({header, className}) => {
                 </NavLink>
               </li>
               <li className={styles.utilityItem}>
-                <button
-                  className={styles.utilityLink}
-                  aria-label="Open shopping cart"
-                  onClick={() => {
-                    // Cart toggle logic will be added when cart component is created
-                    console.log('Toggle cart');
-                  }}
-                >
-                  <span className={styles.utilityText}>Cart</span>
-                  <CartIcon className={styles.utilityIcon} aria-hidden={true} />
-                  {/* Cart count badge will be added when cart state is implemented */}
-                </button>
+                {cart ? (
+                  <Suspense fallback={<CartToggleFallback />}>
+                    <Await resolve={cart}>
+                      {(resolvedCart) => <CartToggle cart={resolvedCart} />}
+                    </Await>
+                  </Suspense>
+                ) : (
+                  <CartToggleFallback />
+                )}
               </li>
             </ul>
           </nav>
@@ -184,3 +185,44 @@ const CartIcon: FC<{className?: string; 'aria-hidden'?: boolean}> = ({
     />
   </svg>
 );
+
+const CartToggle: FC<{cart: CartApiQueryFragment | null}> = ({cart}) => {
+  const {open} = useAside();
+  const cartCount = cart?.totalQuantity || 0;
+
+  return (
+    <button
+      className={styles.utilityLink}
+      aria-label={`Open shopping cart with ${cartCount} items`}
+      onClick={() => open('cart')}
+    >
+      <span className={styles.utilityText}>Cart</span>
+      <div className={styles.cartIconWrapper}>
+        <CartIcon className={styles.utilityIcon} aria-hidden={true} />
+        {cartCount > 0 && (
+          <span
+            className={styles.cartCount}
+            aria-label={`${cartCount} items in cart`}
+          >
+            {cartCount > 99 ? '99+' : cartCount}
+          </span>
+        )}
+      </div>
+    </button>
+  );
+};
+
+const CartToggleFallback: FC = () => {
+  const {open} = useAside();
+
+  return (
+    <button
+      className={styles.utilityLink}
+      aria-label="Open shopping cart"
+      onClick={() => open('cart')}
+    >
+      <span className={styles.utilityText}>Cart</span>
+      <CartIcon className={styles.utilityIcon} aria-hidden={true} />
+    </button>
+  );
+};

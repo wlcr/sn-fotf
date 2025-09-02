@@ -1,0 +1,227 @@
+/* Cart Component Styles - Sierra Nevada Branding */
+
+/*
+* --------------------------------------------------
+* Cart Main Layout
+* --------------------------------------------------
+*/
+.cartMain {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+}
+
+.cartMainPage {
+  composes: cartMain;
+  padding: var(--spacer-4) var(--edge-space);
+  max-width: var(--container-width);
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height));
+}
+
+.cartMainAside {
+  composes: cartMain;
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+}
+
+/*
+* --------------------------------------------------
+* Cart Content Layout
+* --------------------------------------------------
+*/
+.cartDetails {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--spacer-3);
+}
+
+.cartDetailsPage {
+  composes: cartDetails;
+  gap: var(--spacer-6);
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacer-8);
+    align-items: start;
+  }
+}
+
+.cartDetailsAside {
+  composes: cartDetails;
+  height: 100%;
+}
+
+/*
+* --------------------------------------------------
+* Cart Items Section
+* --------------------------------------------------
+*/
+.cartLines {
+  flex: 1;
+  overflow: auto;
+}
+
+.cartLinesPage {
+  composes: cartLines;
+  overflow: visible;
+}
+
+.cartLinesAside {
+  composes: cartLines;
+  padding: 0 var(--spacer-3);
+  border-bottom: var(--border-default);
+}
+
+.cartLinesList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacer-3);
+}
+
+.cartLinesListPage {
+  composes: cartLinesList;
+  gap: var(--spacer-4);
+}
+
+/*
+* --------------------------------------------------
+* Empty Cart State
+* --------------------------------------------------
+*/
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacer-8) var(--spacer-4);
+  flex: 1;
+  gap: var(--spacer-4);
+}
+
+.emptyCartPage {
+  composes: emptyCart;
+  min-height: 400px;
+  padding: var(--spacer-10) var(--spacer-4);
+}
+
+.emptyCartAside {
+  composes: emptyCart;
+  padding: var(--spacer-6) var(--spacer-4);
+}
+
+.emptyCartMessage {
+  color: var(--body-color);
+  font-size: var(--font-size-fluid-0);
+  margin: 0;
+  max-width: 400px;
+}
+
+.emptyCartAction {
+  color: var(--color-brand-maroon);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--spacer-2) var(--spacer-3);
+  border: var(--border-default);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.emptyCartAction:hover {
+  background: var(--color-brand-maroon);
+  color: var(--color-brand-cream);
+}
+
+/*
+* --------------------------------------------------
+* Cart Header (for page layout)
+* --------------------------------------------------
+*/
+.cartHeader {
+  border-bottom: var(--border-default);
+  padding-bottom: var(--spacer-3);
+  margin-bottom: var(--spacer-4);
+}
+
+.cartTitle {
+  margin: 0;
+  font-size: var(--font-size-fluid-2);
+  color: var(--color-brand-maroon);
+  font-family: var(--font-accent--family);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/*
+* --------------------------------------------------
+* Cart Loading States
+* --------------------------------------------------
+*/
+.cartLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacer-6);
+  color: var(--body-color);
+  font-style: italic;
+}
+
+.cartError {
+  background: var(--color-brand-maroon-3);
+  color: var(--color-brand-maroon);
+  padding: var(--spacer-3);
+  border-radius: 4px;
+  border: 1px solid var(--color-brand-maroon);
+  margin-bottom: var(--spacer-4);
+}
+
+/*
+* --------------------------------------------------
+* Responsive Adjustments
+* --------------------------------------------------
+*/
+@media (max-width: 767px) {
+  .cartMainPage {
+    padding: var(--spacer-3) var(--spacer-3);
+  }
+
+  .cartTitle {
+    font-size: var(--font-size-fluid-1);
+  }
+}
+
+/*
+* --------------------------------------------------
+* Accessibility & Motion
+* --------------------------------------------------
+*/
+@media (prefers-reduced-motion: reduce) {
+  .emptyCartAction,
+  .cartLoading {
+    transition: none;
+  }
+}
+
+/* Focus visible styles for keyboard navigation */
+.emptyCartAction:focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .cartError {
+    border-width: 2px;
+  }
+
+  .emptyCartAction {
+    border-width: 2px;
+  }
+}
