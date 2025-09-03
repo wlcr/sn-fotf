@@ -11,16 +11,37 @@
  */
 export const SETTINGS_QUERY = `
   *[_type == "settings"][0] {
-    venueName,
-    address,
-    phone,
-    email,
+    // SEO & Metadata
     title,
     description,
+    keywords,
     ogImage {
       asset,
-      alt,
-      metadataBase
-    }
+      alt
+    },
+    
+    // Analytics & Tracking
+    gtmContainerId,
+    ga4MeasurementId,
+    facebookPixelId,
+    
+    // Company Info
+    companyName,
+    contactEmail,
+    phoneNumber,
+    address,
+    
+    // Social Media
+    socialMedia {
+      instagram,
+      facebook,
+      twitter,
+      youtube,
+      linkedin
+    },
+    
+    // Legal & Compliance
+    cookieConsentMessage,
+    showCookieConsent
   }
 ` as const;

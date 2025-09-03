@@ -69,12 +69,17 @@ export const structure: StructureResolver = (S) =>
         .icon(DocumentIcon)
         .child(S.documentTypeList('productPage').title('Product Pages')),
 
-      // Filter out singleton types from the regular document lists
-      // This prevents users from seeing them in auto-generated lists
+      // Filter out singleton types and manually configured document types
+      // This prevents duplication in the navigation
       ...S.documentTypeListItems().filter(
         (listItem) =>
-          !['settings', 'header', 'footer', 'homepage'].includes(
-            listItem.getId()!,
-          ),
+          ![
+            'settings',
+            'header',
+            'footer',
+            'homepage',
+            'page',
+            'productPage',
+          ].includes(listItem.getId()!),
       ),
     ]);
