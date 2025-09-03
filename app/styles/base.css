@@ -145,8 +145,8 @@ p:not(.h1, .h2, .h3, .h4, .h5, .h6)
 
 svg {
   fill: currentColor;
-  width: 24px;
-  height: auto;
+  /* width: 24px; */
+  /* height: auto; */
   & path {
     fill: currentColor;
   }
