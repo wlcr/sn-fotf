@@ -39,7 +39,16 @@ export default defineConfig({
        * Include 'example-dep' in the array below.
        * @see https://vitejs.dev/config/dep-optimization-options
        */
-      include: ['rxjs', '@sanity/client', '@sanity/image-url'],
+      include: [
+        'rxjs',
+        '@sanity/client',
+        '@sanity/image-url',
+        'use-sync-external-store/shim',
+        '@radix-ui/react-use-is-hydrated',
+        '@radix-ui/react-avatar',
+        'classnames',
+        '@radix-ui/themes',
+      ],
     },
   },
 });
