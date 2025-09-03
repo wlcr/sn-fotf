@@ -107,7 +107,8 @@ export const settings = defineType({
           description: 'Describe the image for accessibility and SEO',
           validation: (rule) => {
             return rule.custom((alt, context) => {
-              if ((context.document?.ogImage as any)?.asset?._ref && !alt) {
+              // Check if image is selected and alt text is missing
+              if (context.document && context.document.ogImage && !alt) {
                 return 'Alternative text is required when an image is selected';
               }
               return true;
