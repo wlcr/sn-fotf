@@ -27,6 +27,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
 import {Theme} from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
 
 export type RootLoader = typeof loader;
 
