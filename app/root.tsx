@@ -27,7 +27,10 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
 import {Theme} from '@radix-ui/themes';
-import '@radix-ui/themes/styles.css';
+import radixStyles from '@radix-ui/themes/styles.css?url';
+import themeStyles from './styles/themes.css?url';
+import variableStyles from './styles/variables.css?url';
+import ThemeMillsRiver from './components/Themes/ThemeMillsRiver';
 
 export type RootLoader = typeof loader;
 
@@ -179,11 +182,14 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={radixStyles}></link>
+        <link rel="stylesheet" href={themeStyles}></link>
+        <link rel="stylesheet" href={variableStyles}></link>
         <Meta />
         <Links />
       </head>
       <body>
-        <Theme>
+        <ThemeMillsRiver>
           {data ? (
             <Analytics.Provider
               cart={data.cart}
@@ -195,7 +201,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
           ) : (
             children
           )}
-        </Theme>
+        </ThemeMillsRiver>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
