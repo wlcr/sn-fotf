@@ -99,7 +99,14 @@ async function loadCriticalData({
       displayName: 'ProductPage Content',
       env: context.env,
     },
-  ).catch(() => null); // Don't fail if Sanity query fails
+  ).catch((error) => {
+    // Log Sanity query errors for debugging, but don't fail the page
+    console.warn(
+      'Failed to load ProductPage from Sanity:',
+      error instanceof Error ? error.message : String(error),
+    );
+    return null;
+  });
 
   // Step 2: Determine which product handle to use for Shopify query
   let productHandle = handle;
@@ -125,7 +132,14 @@ async function loadCriticalData({
         displayName: 'Settings',
         env: context.env,
       },
-    ).catch(() => null),
+    ).catch((error) => {
+      // Log Settings query errors for debugging, but don't fail the page
+      console.warn(
+        'Failed to load Settings from Sanity:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
   ]);
 
   const product = shopifyRes.product;

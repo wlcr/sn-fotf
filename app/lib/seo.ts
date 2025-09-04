@@ -8,7 +8,11 @@
  * where SEO discoverability needs careful control.
  */
 
-import type {Settings, ProductPage} from '~/studio/sanity.types';
+import type {
+  Settings,
+  ProductPage,
+  CollectionPage,
+} from '~/studio/sanity.types';
 
 import {
   isSiteDiscoverable,
@@ -111,10 +115,11 @@ export function generateProductMetaTags(
 }
 
 /**
- * Generate meta tags for a collection page
+ * Generate meta tags for a collection page with both global and collection-specific SEO controls
  */
 export function generateCollectionMetaTags(
   globalSettings: Settings | null,
+  collectionPageData: CollectionPage | null,
   collectionData: {
     title: string;
     description?: string;
@@ -124,10 +129,23 @@ export function generateCollectionMetaTags(
     preventIndexing?: boolean;
   },
 ): SeoMetaTags {
+  // Use custom meta description if provided, otherwise fall back to collection description
+  const description =
+    collectionPageData?.seoControls?.customMetaDescription ||
+    collectionPageData?.descriptionOverride ||
+    collectionData.description;
+
+  // Determine indexability and followability from collection-specific settings
+  const indexable = collectionPageData?.seoControls?.indexable ?? true;
+  const followable = collectionPageData?.seoControls?.followable ?? true;
+
   return {
-    title: `${collectionData.title} Collection`,
-    description: collectionData.description,
+    title:
+      collectionPageData?.nameOverride || `${collectionData.title} Collection`,
+    description,
     robots: generateRobotsDirective(globalSettings, {
+      indexable,
+      followable,
       preventIndexing: options?.preventIndexing,
     }),
     canonical: `/collections/${collectionData.handle}`,

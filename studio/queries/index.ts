@@ -56,6 +56,26 @@ export const productPageQuery = groq`
     pageBuilder[]${pageBuilder}
   }`;
 
+export const collectionPageQuery = groq`
+  *[_type == "collectionPage" && slug.current == $handle][0]{
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
+    collectionHandle,
+    slug,
+    nameOverride,
+    descriptionOverride,
+    seoControls {
+      indexable,
+      followable,
+      customMetaDescription,
+      seoNotes
+    },
+    pageBuilder[]${pageBuilder}
+  }`;
+
 export const getPageQuery = groq`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
