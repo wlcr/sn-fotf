@@ -1,0 +1,44 @@
+.radix-themes {
+  --default-font-family: monospace;
+  --heading-font-family: monospace;
+  --strong-font-family: monospace;
+  --em-font-family: monospace;
+  --quote-font-family: monospace;
+}
+
+[data-accent-color='millsRiver'] {
+  --accent-1: #fafffc;
+  --accent-2: #f2fcf7;
+  --accent-3: #dff9ed;
+  --accent-4: #caf4e1;
+  --accent-5: #b3edd4;
+  --accent-6: #96e3c3;
+  --accent-7: #7bd1af;
+  --accent-8: #61b795;
+  --accent-9: #003c2a;
+  --accent-10: #1a4f3c;
+  --accent-11: #207d5e;
+  --accent-12: #023e2c;
+
+  --accent-a1: #00ff6605;
+  --accent-a2: #00c5630d;
+  --accent-a3: #00d07020;
+  --accent-a4: #00cb6f35;
+  --accent-a5: #00c36f4c;
+  --accent-a6: #00bb6e69;
+  --accent-a7: #00a76584;
+  --accent-a8: #008b549e;
+  --accent-a9: #003c2a;
+  --accent-a10: #003b26e5;
+  --accent-a11: #006a47df;
+  --accent-a12: #003c2afd;
+
+  --accent-contrast: #fff;
+  --accent-surface: #effbf5cc;
+  --accent-indicator: #003c2a;
+  --accent-track: #003c2a;
+}
+
+[data-background-color='foamWhite'] {
+  --color-background: #e8e6df;
+}

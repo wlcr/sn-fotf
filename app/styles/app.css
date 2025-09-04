@@ -1,28 +1,4 @@
-@import './colors.css';
-@import './units.css';
 @import './fonts.css';
-@import './typography.css';
-@import './links.css';
-@import './layout.css';
 @import './base.css';
-@import './buttons.css';
-@import './forms.css';
-@import './tables.css';
 @import './helpers.css';
 @import './motion.css';
-@import './view-transitions.css';
-@import './components.css';
-@import './routes.css';
-
-/*
-Open Props CSS variables
- - used for fluid fonts
-*/
-@import 'open-props/fonts';
-
-/*
-Note about media queries:
-- Open Props breakpoints are available globally as CSS variables, e.g. `var(--md-n-above)`.
-for reference of available media queries: https://open-props.style/#media-queries
-because of the @custom syntax, to make them work with CSS modules, they need to be added into the PostCSS config file.
-*/
