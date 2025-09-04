@@ -509,6 +509,116 @@ export default function StyleGuide() {
               </Flex>
             </Card>
           </Section>
+
+          <Section size="1">
+            <Heading size="6" mb="4">
+              Select
+            </Heading>
+
+            <Card size="3" mb="6">
+              <Heading size="5" mb="3">
+                Basic Select
+              </Heading>
+              <Select.Root defaultValue="apple">
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Label>Fruits</Select.Label>
+                    <Select.Item value="orange">Orange</Select.Item>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="grape" disabled>
+                      Grape
+                    </Select.Item>
+                  </Select.Group>
+                  <Select.Separator />
+                  <Select.Group>
+                    <Select.Label>Vegetables</Select.Label>
+                    <Select.Item value="carrot">Carrot</Select.Item>
+                    <Select.Item value="potato">Potato</Select.Item>
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            </Card>
+
+            <Card size="3" mb="6">
+              <Heading size="5" mb="3">
+                Select Variants
+              </Heading>
+              <Flex gap="3" wrap="wrap">
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="classic" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="surface" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="soft" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="ghost" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+              </Flex>
+            </Card>
+
+            <Card size="3" mb="6">
+              <Heading size="5" mb="3">
+                Select Variants
+              </Heading>
+              <Flex gap="3" wrap="wrap">
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="classic" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="surface" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="soft" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+
+                <Select.Root defaultValue="apple">
+                  <Select.Trigger variant="ghost" />
+                  <Select.Content>
+                    <Select.Item value="apple">Apple</Select.Item>
+                    <Select.Item value="orange">Orange</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+              </Flex>
+            </Card>
+          </Section>
+
           <Section size="1">
             <Heading size="6" mb="4">
               Dialog
