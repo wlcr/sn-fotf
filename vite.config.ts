@@ -42,4 +42,9 @@ export default defineConfig({
       include: ['rxjs', '@sanity/client', '@sanity/image-url'],
     },
   },
+  server: {
+    allowedHosts: [
+      'a36c3951edeb.ngrok-free.app', // Replace with your actual ngrok URL without protocol
+    ],
+  },
 });
