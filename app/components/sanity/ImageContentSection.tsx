@@ -17,7 +17,6 @@ export default function ImageContentSectionBlock({
   // these sub classes below never seem to get appended to the DOM
   const sectionLayout = block.sectionLayout || 'imageLeft';
   const contentAlign = block.contentAlign || 'alignLeft';
-  console.log('layouts', sectionLayout, contentAlign);
 
   const LayoutClasses = clsx(
     styles.layoutBlock,
