@@ -70,6 +70,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       console.error('Failed to load Sanity homepage content:', error);
       return null; // Continue without homepage data if it fails
     }),
+    // Fetch customer data to determine if they can access account features
     context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error) => {
       console.error('error fetching customer', error);
       return null;
