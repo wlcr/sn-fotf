@@ -3,9 +3,10 @@
  *
  * GROQ queries for global site settings including site metadata, contact info, and branding.
  */
+import type {Settings} from '~/studio/sanity.types';
 
 /**
- * Settings query - gets global site configuration
+ * Settings query - gets global site settings
  *
  * @returns Global site settings including metadata, contact info, and SEO data
  */
@@ -45,3 +46,70 @@ export const SETTINGS_QUERY = `
     showCookieConsent
   }
 ` as const;
+
+/**
+ * Helper functions to access specific settings groups
+ * These provide type safety and organization while still using a single query
+ */
+
+/**
+ * Get SEO & metadata settings
+ */
+export function getSeoSettings(settings: Settings | null) {
+  if (!settings) return null;
+
+  return {
+    title: settings.title,
+    description: settings.description,
+    keywords: settings.keywords,
+    ogImage: settings.ogImage,
+  };
+}
+
+/**
+ * Get analytics & tracking settings
+ */
+export function getAnalyticsSettings(settings: Settings | null) {
+  if (!settings) return null;
+
+  return {
+    gtmContainerId: settings.gtmContainerId,
+    ga4MeasurementId: settings.ga4MeasurementId,
+    facebookPixelId: settings.facebookPixelId,
+  };
+}
+
+/**
+ * Get company information settings
+ */
+export function getCompanySettings(settings: Settings | null) {
+  if (!settings) return null;
+
+  return {
+    companyName: settings.companyName,
+    contactEmail: settings.contactEmail,
+    phoneNumber: settings.phoneNumber,
+    address: settings.address,
+  };
+}
+
+/**
+ * Get social media settings
+ */
+export function getSocialSettings(settings: Settings | null) {
+  if (!settings) return null;
+
+  return settings.socialMedia || null;
+}
+
+/**
+ * Get legal & compliance settings
+ */
+export function getLegalSettings(settings: Settings | null) {
+  if (!settings) return null;
+
+  return {
+    cookieConsentMessage: settings.cookieConsentMessage,
+    showCookieConsent: settings.showCookieConsent,
+  };
+}
