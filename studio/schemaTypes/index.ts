@@ -1,6 +1,7 @@
 import {page} from './documents/page';
 import {blockContent} from './objects/blockContent';
 import {callToAction} from './objects/callToAction';
+import {collectionBlock} from './objects/collectionBlock';
 import {link} from './objects/link';
 import {mediaImage} from './objects/mediaImage';
 import {settings} from './singletons/settings';
@@ -39,6 +40,7 @@ export const schemaTypes = [
   menu,
   // Block Arrays + Blocks
   pageSection,
+  collectionBlock,
   contentBlock,
   ctaBlock,
   faqBlock,

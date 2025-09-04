@@ -252,6 +252,53 @@ export const settings = defineType({
       initialValue: true,
       group: 'legal',
     }),
+
+    // Global SEO Controls
+    defineField({
+      name: 'globalSeoControls',
+      title: 'Global SEO Controls',
+      type: 'object',
+      description:
+        'Site-wide search engine discoverability controls for members-only content',
+      group: 'seo',
+      fields: [
+        defineField({
+          name: 'siteDiscoverable',
+          title: 'Allow Site to be Discoverable',
+          type: 'boolean',
+          description:
+            'Controls whether search engines should index this site. Recommended: OFF for members-only sites.',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'allowRobotsCrawling',
+          title: 'Allow Search Engine Crawling',
+          type: 'boolean',
+          description:
+            'Controls whether search engines can crawl and follow links on this site.',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'customRobotsDirectives',
+          title: 'Custom Robots Directives',
+          type: 'array',
+          of: [{type: 'string'}],
+          description: 'Additional robots.txt directives (advanced users only)',
+          options: {
+            layout: 'tags',
+          },
+        }),
+        defineField({
+          name: 'seoNote',
+          title: 'SEO Strategy Note',
+          type: 'text',
+          description: 'Internal note about SEO strategy decisions',
+          initialValue:
+            'This is a members-only site. Consider carefully which content should be discoverable.',
+          readOnly: true,
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {

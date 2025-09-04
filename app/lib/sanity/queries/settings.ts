@@ -43,7 +43,15 @@ export const SETTINGS_QUERY = `
     
     // Legal & Compliance
     cookieConsentMessage,
-    showCookieConsent
+    showCookieConsent,
+    
+    // Global SEO Controls
+    globalSeoControls {
+      siteDiscoverable,
+      allowRobotsCrawling,
+      customRobotsDirectives,
+      seoNote
+    }
   }
 ` as const;
 
@@ -112,4 +120,30 @@ export function getLegalSettings(settings: Settings | null) {
     cookieConsentMessage: settings.cookieConsentMessage,
     showCookieConsent: settings.showCookieConsent,
   };
+}
+
+/**
+ * Get global SEO controls for site-wide search engine discoverability
+ */
+export function getGlobalSeoControls(settings: Settings | null) {
+  if (!settings) return null;
+
+  return settings.globalSeoControls || null;
+}
+
+/**
+ * Check if the site should be discoverable by search engines
+ * This is the main function to determine global SEO strategy
+ */
+export function isSiteDiscoverable(settings: Settings | null): boolean {
+  const seoControls = getGlobalSeoControls(settings);
+  return seoControls?.siteDiscoverable ?? false; // Default to false for members-only sites
+}
+
+/**
+ * Check if search engine crawling is allowed
+ */
+export function isRobotsCrawlingAllowed(settings: Settings | null): boolean {
+  const seoControls = getGlobalSeoControls(settings);
+  return seoControls?.allowRobotsCrawling ?? false;
 }

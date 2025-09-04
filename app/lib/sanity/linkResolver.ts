@@ -23,7 +23,7 @@ export function linkResolver(link: Link | undefined) {
       return null;
     case 'productPage':
       if (link?.productPage && typeof link.productPage === 'string') {
-        return `/packages/${link.productPage}`;
+        return `/products/${link.productPage}`;
       }
       return null;
     default:

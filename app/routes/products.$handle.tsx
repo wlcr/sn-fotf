@@ -13,14 +13,49 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
+// Sanity integration
+import {productPageQuery} from 'studio/queries';
+import PageBuilder from '~/components/sanity/PageBuilder';
+import {ProductPage} from '~/studio/sanity.types';
+import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
+
+// SEO integration
+import {
+  generateProductMetaTags,
+  seoMetaTagsToRemixMeta,
+  pageHasNonIndexableCollections,
+} from '~/lib/seo';
+import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
+import type {Settings} from '~/studio/sanity.types';
+
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+  if (!data?.product) {
+    return [{title: 'Product Not Found'}];
+  }
+
+  // Generate comprehensive SEO meta tags combining Shopify + Sanity data
+  const metaTags = generateProductMetaTags(
+    data.settings,
+    data.sanityProductPage,
     {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      title: data.product.title,
+      description:
+        data.product.description || data.product.seo?.description || undefined,
+      handle: data.product.handle,
     },
-  ];
+  );
+
+  // Check if page has non-indexable collection blocks
+  const hasNonIndexableCollections = data.sanityProductPage?.pageBuilder
+    ? pageHasNonIndexableCollections(data.sanityProductPage.pageBuilder)
+    : false;
+
+  // Override robots directive if page contains non-indexable collections
+  if (hasNonIndexableCollections && metaTags.robots) {
+    metaTags.robots = 'noindex, nofollow';
+  }
+
+  return seoMetaTagsToRemixMeta(metaTags);
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -49,22 +84,62 @@ async function loadCriticalData({
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  // Create Sanity client for potential ProductPage lookup
+  const sanityClient = createSanityClient(context.env);
+
+  // Strategy: Try to find Sanity ProductPage first, then get Shopify product
+  // If no ProductPage exists, just load Shopify product directly
+
+  // Step 1: Try to load Sanity ProductPage using URL handle
+  const sanityProductPage = await sanityServerQuery<ProductPage | null>(
+    sanityClient,
+    productPageQuery,
+    {handle},
+    {
+      displayName: 'ProductPage Content',
+      env: context.env,
+    },
+  ).catch(() => null); // Don't fail if Sanity query fails
+
+  // Step 2: Determine which product handle to use for Shopify query
+  let productHandle = handle;
+  if (sanityProductPage?.productHandle) {
+    // If Sanity ProductPage exists, use its productHandle for Shopify
+    productHandle = sanityProductPage.productHandle;
+  }
+
+  // Step 3: Load Shopify product and settings in parallel
+  const [shopifyRes, settings] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
-      variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+      variables: {
+        handle: productHandle,
+        selectedOptions: getSelectedProductOptions(request),
+      },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    // Load global settings for SEO
+    sanityServerQuery<Settings | null>(
+      sanityClient,
+      SETTINGS_QUERY,
+      {},
+      {
+        displayName: 'Settings',
+        env: context.env,
+      },
+    ).catch(() => null),
   ]);
 
+  const product = shopifyRes.product;
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
   // The API handle might be localized, so redirect to the localized handle
-  redirectIfHandleIsLocalized(request, {handle, data: product});
+  redirectIfHandleIsLocalized(request, {handle: productHandle, data: product});
 
   return {
     product,
+    sanityProductPage, // May be null if no ProductPage exists
+    settings, // For SEO meta tag generation
   };
 }
 
@@ -81,7 +156,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, sanityProductPage} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -101,45 +176,62 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
 
+  // Use name override from Sanity if available
+  const displayTitle = sanityProductPage?.nameOverride || title;
+
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
+    <>
+      <div className="product">
+        <ProductImage image={selectedVariant?.image} />
+        <div className="product-main">
+          <h1>{displayTitle}</h1>
+          <ProductPrice
+            price={selectedVariant?.price}
+            compareAtPrice={selectedVariant?.compareAtPrice}
+          />
+          <br />
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+          />
+          <br />
+          <br />
+          <p>
+            <strong>Description</strong>
+          </p>
+          <br />
+          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+          <br />
+        </div>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
         />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
       </div>
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
-              variantId: selectedVariant?.id || '',
-              variantTitle: selectedVariant?.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
-      />
-    </div>
+
+      {/* Render Sanity page builder content if available */}
+      {sanityProductPage?.pageBuilder &&
+        sanityProductPage.pageBuilder.length > 0 && (
+          <PageBuilder
+            parent={{
+              _id: sanityProductPage._id,
+              _type: sanityProductPage._type,
+            }}
+            pageBuilder={sanityProductPage.pageBuilder}
+          />
+        )}
+    </>
   );
 }
 

@@ -39,7 +39,20 @@ export const homeQuery = groq`
 
 export const productPageQuery = groq`
   *[_type == "productPage" && slug.current == $handle][0]{
-    ...,
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
+    productHandle,
+    slug,
+    nameOverride,
+    seoControls {
+      indexable,
+      followable,
+      customMetaDescription,
+      seoNotes
+    },
     pageBuilder[]${pageBuilder}
   }`;
 
