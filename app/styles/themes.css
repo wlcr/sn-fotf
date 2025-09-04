@@ -6,76 +6,83 @@
   --quote-font-family: monospace;
 }
 
-[data-accent-color='millsRiver'] {
-  --accent-1: var(--color-mills-river-1);
-  --accent-2: var(--color-mills-river-2);
-  --accent-3: var(--color-mills-river-3);
-  --accent-4: var(--color-mills-river-4);
-  --accent-5: var(--color-mills-river-5);
-  --accent-6: var(--color-mills-river-6);
-  --accent-7: var(--color-mills-river-7);
-  --accent-8: var(--color-mills-river-8);
-  --accent-9: var(--color-mills-river-9);
-  --accent-10: var(--color-mills-river-10);
-  --accent-11: var(--color-mills-river-11);
-  --accent-12: var(--color-mills-river-12);
+:root,
+.light,
+.light-theme {
+  --green-1: #dfe3e1;
+  --green-2: #d5dfda;
+  --green-3: #c0dace;
+  --green-4: #aad3c1;
+  --green-5: #91cab2;
+  --green-6: #72bfa0;
+  --green-7: #56ac8b;
+  --green-8: #389171;
+  --green-9: #003c2a;
+  --green-10: #005438;
+  --green-11: #005b3e;
+  --green-12: #023e2c;
 
-  --accent-a1: var(--color-mills-river-a1);
-  --accent-a2: var(--color-mills-river-a2);
-  --accent-a3: var(--color-mills-river-a3);
-  --accent-a4: var(--color-mills-river-a4);
-  --accent-a5: var(--color-mills-river-a5);
-  --accent-a6: var(--color-mills-river-a6);
-  --accent-a7: var(--color-mills-river-a7);
-  --accent-a8: var(--color-mills-river-a8);
-  --accent-a9: var(--color-mills-river-a9);
-  --accent-a10: var(--color-mills-river-a10);
-  --accent-a11: var(--color-mills-river-a11);
-  --accent-a12: var(--color-mills-river-a12);
+  --green-a1: #59b7ff10;
+  --green-a2: #0291a315;
+  --green-a3: #01a17c2c;
+  --green-a4: #03a07045;
+  --green-a5: #019c6860;
+  --green-a6: #00996482;
+  --green-a7: #008a5aa1;
+  --green-a8: #01764fc2;
+  --green-a9: #003c2a;
+  --green-a10: #005438;
+  --green-a11: #005b3e;
+  --green-a12: #003c2afd;
 
-  --accent-contrast: var(--color-mills-river-contrast);
-  --accent-surface: var(--color-mills-river-surface);
-  --accent-indicator: var(--color-mills-river-indicator);
-  --accent-track: var(--color-mills-river-track);
+  --green-contrast: #fff;
+  --green-surface: #d1ddd8cc;
+  --green-indicator: #003c2a;
+  --green-track: #003c2a;
 }
 
-[data-accent-color='dryMalt'] {
-  --accent-1: var(--color-dry-malt-1);
-  --accent-2: var(--color-dry-malt-2);
-  --accent-3: var(--color-dry-malt-3);
-  --accent-4: var(--color-dry-malt-4);
-  --accent-5: var(--color-dry-malt-5);
-  --accent-6: var(--color-dry-malt-6);
-  --accent-7: var(--color-dry-malt-7);
-  --accent-8: var(--color-dry-malt-8);
-  --accent-9: var(--color-dry-malt-9);
-  --accent-10: var(--color-dry-malt-10);
-  --accent-11: var(--color-dry-malt-11);
-  --accent-12: var(--color-dry-malt-12);
+@supports (color: color(display-p3 1 1 1)) {
+  @media (color-gamut: p3) {
+    :root,
+    .light,
+    .light-theme {
+      --green-1: oklch(91.3% 0.006 166.1);
+      --green-2: oklch(89.4% 0.0125 166.1);
+      --green-3: oklch(86.5% 0.0316 166.1);
+      --green-4: oklch(83.2% 0.0501 166.1);
+      --green-5: oklch(79.3% 0.0685 166.1);
+      --green-6: oklch(74.5% 0.0891 166.1);
+      --green-7: oklch(68.1% 0.0982 166.1);
+      --green-8: oklch(59.3% 0.0982 166.1);
+      --green-9: oklch(31.6% 0.0655 166.1);
+      --green-10: oklch(38.8% 0.0982 166.1);
+      --green-11: oklch(41.1% 0.0982 166.1);
+      --green-12: oklch(32.2% 0.0655 166.1);
 
-  --accent-a1: var(--color-dry-malt-a1);
-  --accent-a2: var(--color-dry-malt-a2);
-  --accent-a3: var(--color-dry-malt-a3);
-  --accent-a4: var(--color-dry-malt-a4);
-  --accent-a5: var(--color-dry-malt-a5);
-  --accent-a6: var(--color-dry-malt-a6);
-  --accent-a7: var(--color-dry-malt-a7);
-  --accent-a8: var(--color-dry-malt-a8);
-  --accent-a9: var(--color-dry-malt-a9);
-  --accent-a10: var(--color-dry-malt-a10);
-  --accent-a11: var(--color-dry-malt-a11);
-  --accent-a12: var(--color-dry-malt-a12);
+      --green-a1: color(display-p3 0 0.549 1 / 0.033);
+      --green-a2: color(display-p3 0.0118 0.5333 0.5608 / 0.074);
+      --green-a3: color(display-p3 0.0039 0.5647 0.4392 / 0.151);
+      --green-a4: color(display-p3 0.0039 0.5686 0.3765 / 0.233);
+      --green-a5: color(display-p3 0.0039 0.5412 0.3373 / 0.324);
+      --green-a6: color(display-p3 0.0039 0.5294 0.3176 / 0.432);
+      --green-a7: color(display-p3 0 0.4627 0.2706 / 0.535);
+      --green-a8: color(display-p3 0 0.3804 0.2235 / 0.651);
+      --green-a9: color(display-p3 0 0.1608 0.0941 / 0.906);
+      --green-a10: color(display-p3 0 0.2235 0.1137 / 0.854);
+      --green-a11: color(display-p3 0 0.2471 0.1294 / 0.841);
+      --green-a12: color(display-p3 0 0.1608 0.098 / 0.897);
 
-  --accent-contrast: var(--color-dry-malt-contrast);
-  --accent-surface: var(--color-dry-malt-surface);
-  --accent-indicator: var(--color-dry-malt-indicator);
-  --accent-track: var(--color-dry-malt-track);
+      --green-contrast: #fff;
+      --green-surface: color(display-p3 0.8275 0.8627 0.8471 / 0.8);
+      --green-indicator: oklch(31.6% 0.0655 166.1);
+      --green-track: oklch(31.6% 0.0655 166.1);
+    }
+  }
 }
 
-[data-background-color='foamWhite'] {
+:root,
+.light,
+.light-theme,
+.radix-themes {
   --color-background: #e8e6df;
-}
-
-[data-background-color='millsRiver'] {
-  --color-background: #003c2a;
 }

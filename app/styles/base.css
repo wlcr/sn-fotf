@@ -17,8 +17,6 @@ html {
 
 svg {
   fill: currentColor;
-  /* width: 24px; */
-  /* height: auto; */
   & path {
     fill: currentColor;
   }

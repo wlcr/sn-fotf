@@ -30,7 +30,6 @@ import {Theme} from '@radix-ui/themes';
 import radixStyles from '@radix-ui/themes/styles.css?url';
 import themeStyles from './styles/themes.css?url';
 import variableStyles from './styles/variables.css?url';
-import ThemeMillsRiverLight from './components/Themes/ThemeMillsRiverLight';
 
 export type RootLoader = typeof loader;
 
@@ -189,7 +188,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        <ThemeMillsRiverLight>
+        <Theme accentColor="green">
           {data ? (
             <Analytics.Provider
               cart={data.cart}
@@ -201,7 +200,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
           ) : (
             children
           )}
-        </ThemeMillsRiverLight>
+        </Theme>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>
