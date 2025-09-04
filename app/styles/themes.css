@@ -7,38 +7,75 @@
 }
 
 [data-accent-color='millsRiver'] {
-  --accent-1: #fafffc;
-  --accent-2: #f2fcf7;
-  --accent-3: #dff9ed;
-  --accent-4: #caf4e1;
-  --accent-5: #b3edd4;
-  --accent-6: #96e3c3;
-  --accent-7: #7bd1af;
-  --accent-8: #61b795;
-  --accent-9: #003c2a;
-  --accent-10: #1a4f3c;
-  --accent-11: #207d5e;
-  --accent-12: #023e2c;
+  --accent-1: var(--color-mills-river-1);
+  --accent-2: var(--color-mills-river-2);
+  --accent-3: var(--color-mills-river-3);
+  --accent-4: var(--color-mills-river-4);
+  --accent-5: var(--color-mills-river-5);
+  --accent-6: var(--color-mills-river-6);
+  --accent-7: var(--color-mills-river-7);
+  --accent-8: var(--color-mills-river-8);
+  --accent-9: var(--color-mills-river-9);
+  --accent-10: var(--color-mills-river-10);
+  --accent-11: var(--color-mills-river-11);
+  --accent-12: var(--color-mills-river-12);
 
-  --accent-a1: #00ff6605;
-  --accent-a2: #00c5630d;
-  --accent-a3: #00d07020;
-  --accent-a4: #00cb6f35;
-  --accent-a5: #00c36f4c;
-  --accent-a6: #00bb6e69;
-  --accent-a7: #00a76584;
-  --accent-a8: #008b549e;
-  --accent-a9: #003c2a;
-  --accent-a10: #003b26e5;
-  --accent-a11: #006a47df;
-  --accent-a12: #003c2afd;
+  --accent-a1: var(--color-mills-river-a1);
+  --accent-a2: var(--color-mills-river-a2);
+  --accent-a3: var(--color-mills-river-a3);
+  --accent-a4: var(--color-mills-river-a4);
+  --accent-a5: var(--color-mills-river-a5);
+  --accent-a6: var(--color-mills-river-a6);
+  --accent-a7: var(--color-mills-river-a7);
+  --accent-a8: var(--color-mills-river-a8);
+  --accent-a9: var(--color-mills-river-a9);
+  --accent-a10: var(--color-mills-river-a10);
+  --accent-a11: var(--color-mills-river-a11);
+  --accent-a12: var(--color-mills-river-a12);
 
-  --accent-contrast: #fff;
-  --accent-surface: #effbf5cc;
-  --accent-indicator: #003c2a;
-  --accent-track: #003c2a;
+  --accent-contrast: var(--color-mills-river-contrast);
+  --accent-surface: var(--color-mills-river-surface);
+  --accent-indicator: var(--color-mills-river-indicator);
+  --accent-track: var(--color-mills-river-track);
+}
+
+[data-accent-color='dryMalt'] {
+  --accent-1: var(--color-dry-malt-1);
+  --accent-2: var(--color-dry-malt-2);
+  --accent-3: var(--color-dry-malt-3);
+  --accent-4: var(--color-dry-malt-4);
+  --accent-5: var(--color-dry-malt-5);
+  --accent-6: var(--color-dry-malt-6);
+  --accent-7: var(--color-dry-malt-7);
+  --accent-8: var(--color-dry-malt-8);
+  --accent-9: var(--color-dry-malt-9);
+  --accent-10: var(--color-dry-malt-10);
+  --accent-11: var(--color-dry-malt-11);
+  --accent-12: var(--color-dry-malt-12);
+
+  --accent-a1: var(--color-dry-malt-a1);
+  --accent-a2: var(--color-dry-malt-a2);
+  --accent-a3: var(--color-dry-malt-a3);
+  --accent-a4: var(--color-dry-malt-a4);
+  --accent-a5: var(--color-dry-malt-a5);
+  --accent-a6: var(--color-dry-malt-a6);
+  --accent-a7: var(--color-dry-malt-a7);
+  --accent-a8: var(--color-dry-malt-a8);
+  --accent-a9: var(--color-dry-malt-a9);
+  --accent-a10: var(--color-dry-malt-a10);
+  --accent-a11: var(--color-dry-malt-a11);
+  --accent-a12: var(--color-dry-malt-a12);
+
+  --accent-contrast: var(--color-dry-malt-contrast);
+  --accent-surface: var(--color-dry-malt-surface);
+  --accent-indicator: var(--color-dry-malt-indicator);
+  --accent-track: var(--color-dry-malt-track);
 }
 
 [data-background-color='foamWhite'] {
   --color-background: #e8e6df;
+}
+
+[data-background-color='millsRiver'] {
+  --color-background: #003c2a;
 }

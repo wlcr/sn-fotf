@@ -4,12 +4,13 @@ export type ThemeMillsRiverProps = {
   children?: React.ReactNode;
 };
 
-export default function ThemeMillsRiver({children}: ThemeMillsRiverProps) {
+export default function ThemeMillsRiverDark({children}: ThemeMillsRiverProps) {
   return (
     <Theme
-      accentColor="millsRiver"
-      data-background-color="foamWhite"
+      accentColor="dryMalt"
+      data-background-color="millsRiver"
       radius="none"
+      appearance="dark"
     >
       {children}
     </Theme>
