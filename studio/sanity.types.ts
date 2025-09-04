@@ -320,13 +320,9 @@ export type Settings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  venueName: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  googleMapLink?: string;
   title: string;
   description?: string;
+  keywords?: Array<string>;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -338,9 +334,24 @@ export type Settings = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
-    metadataBase?: string;
     _type: 'image';
   };
+  gtmContainerId?: string;
+  ga4MeasurementId?: string;
+  facebookPixelId?: string;
+  companyName: string;
+  contactEmail?: string;
+  phoneNumber?: string;
+  address?: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
+  cookieConsentMessage?: string;
+  showCookieConsent?: boolean;
 };
 
 export type Homepage = {
@@ -666,13 +677,9 @@ export type SettingsQueryResult = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  venueName: string;
-  address?: string;
-  phone?: string;
-  email?: string;
-  googleMapLink?: string;
   title: string;
   description?: string;
+  keywords?: Array<string>;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -684,9 +691,24 @@ export type SettingsQueryResult = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
-    metadataBase?: string;
     _type: 'image';
   };
+  gtmContainerId?: string;
+  ga4MeasurementId?: string;
+  facebookPixelId?: string;
+  companyName: string;
+  contactEmail?: string;
+  phoneNumber?: string;
+  address?: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
+  cookieConsentMessage?: string;
+  showCookieConsent?: boolean;
 } | null;
 // Variable: headerQuery
 // Query: *[_type == "header"][0] {    ...,    mainMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    },    announcementBar{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }
