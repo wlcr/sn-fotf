@@ -10,13 +10,14 @@ Our SEO strategy balances the need for search engine visibility with the exclusi
 
 ### Core Components
 
-1. **Sanity CMS SEO Controls** - Global and page-level SEO management
-2. **Enhanced Meta Tag Generation** - Automatic optimization with validation
-3. **Open Graph Integration** - Rich social media previews
-4. **Structured Data System** - JSON-LD for search engines
-5. **Route-based SEO Configuration** - Fine-grained control over indexing
-6. **Dynamic XML/TXT Generation** - robots.txt and sitemap.xml
-7. **SEO Testing & Validation** - 100-point scoring system
+1. **Embedded Sanity Studio** - Integrated CMS with real-time SEO testing
+2. **Sanity CMS SEO Controls** - Global and page-level SEO management
+3. **Enhanced Meta Tag Generation** - Automatic optimization with validation
+4. **Open Graph Integration** - Rich social media previews
+5. **Structured Data System** - JSON-LD for search engines
+6. **Route-based SEO Configuration** - Fine-grained control over indexing
+7. **Dynamic XML/TXT Generation** - robots.txt and sitemap.xml
+8. **Dual SEO Testing Systems** - Studio tool + command line with 100-point scoring
 
 ## 📋 Implemented Features
 
@@ -125,7 +126,29 @@ const ROUTE_SEO_CONFIG = {
 
 ### ✅ SEO Testing & Validation
 
-#### Comprehensive Testing Script (`/scripts/seo-test.js`)
+#### Embedded Studio SEO Tool (`/studio/seo` API route)
+
+**Real-time SEO Testing Interface:**
+
+- **Studio Integration**: Accessible via Studio sidebar "SEO Testing" tool
+- **Visual Scorecard**: 100-point scoring with category breakdown
+- **Live Testing**: Test current site settings with instant feedback
+- **Actionable Recommendations**: Content manager-friendly suggestions
+- **No CORS Issues**: Same-origin API calls from embedded Studio
+
+**Technical Implementation:**
+
+- **DOM Parsing**: Uses `ultrahtml` for zero-dependency, SSR-compatible HTML parsing
+- **Fallback Support**: Regex-based parsing when DOM libraries unavailable
+- **Type Safety**: Full TypeScript interfaces for simplified DOM operations
+
+**Usage:**
+
+1. Navigate to `/studio` in your browser
+2. Click "SEO Testing" in the Studio sidebar
+3. Click "Run Full SEO Test" for real-time analysis
+
+#### Command Line Testing Script (`/scripts/seo-test.js`)
 
 **100-Point Scoring System:**
 
@@ -151,6 +174,12 @@ npm run seo:test:local
 # Test specific URL
 node scripts/seo-test.js --url=https://friends.sierranevada.com/products/pale-ale
 ```
+
+**Technical Implementation:**
+
+- **DOM Parsing**: Uses `JSDOM` for full DOM implementation in Node.js environment
+- **CI/CD Integration**: Perfect for automated testing and validation
+- **Detailed Reporting**: Verbose output with category-by-category analysis
 
 #### OpenGraph Integration Test (`/app/test-open-graph.ts`)
 
@@ -196,11 +225,19 @@ if (process.env.NODE_ENV === 'development') {
 
 ## 🎨 Content Editor Experience
 
+### Embedded Studio Benefits
+
+1. **Integrated Testing**: SEO tool directly in Studio interface
+2. **Real-time Validation**: Test changes immediately without switching tools
+3. **Visual Scorecard**: See SEO scores with category breakdown
+4. **No Technical Barriers**: No terminal or command line knowledge required
+
 ### Global SEO Management
 
 1. **Site Discoverability Toggle**: One-click public/private site control
 2. **Social Media Defaults**: Set site-wide Open Graph settings
 3. **Brand Consistency**: Default images and messaging
+4. **Live Testing**: "Test Current Settings" button in Settings document
 
 ### Page-Level Control
 
@@ -208,12 +245,15 @@ if (process.env.NODE_ENV === 'development') {
 2. **Social Media Previews**: Upload custom images for sharing
 3. **Indexing Control**: Per-page noindex settings
 4. **Content Overrides**: Alternative names and descriptions
+5. **Instant Validation**: Test individual pages from Studio
 
 ### Visual Feedback
 
 - **Preview Components**: See how pages appear in search results
 - **Image Optimization**: Automatic social media image sizing
 - **Validation Warnings**: Real-time feedback on SEO issues
+- **SEO Scorecard**: Visual 100-point scoring with recommendations
+- **Category Breakdown**: Detailed analysis by SEO category
 
 ## 🔧 Technical Integration
 

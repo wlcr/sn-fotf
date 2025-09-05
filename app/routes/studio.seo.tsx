@@ -80,7 +80,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     // Get current Sanity settings (simplified for Studio use)
     const settings = await getSettings(context);
 
-    console.warn(`🔍 Running SEO test for: ${testUrl}`);
+    console.log(`🔍 Running SEO test for: ${testUrl}`);
 
     const results = await Promise.all(
       testPages.map((page) => testPage(`${testUrl}${page}`)),
@@ -113,6 +113,9 @@ export async function action({request, context}: ActionFunctionArgs) {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
         },
       },
     );
@@ -137,12 +140,17 @@ export async function action({request, context}: ActionFunctionArgs) {
  */
 async function testPage(url: string) {
   try {
-    console.warn(`  📄 Testing: ${url}`);
+    console.log(`  📄 Testing: ${url}`);
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Sanity Studio SEO Test)',
+        'User-Agent': 'Mozilla/5.0 (compatible; Sanity-Studio-SEO-Test/1.0)',
+        Accept:
+          'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
       },
+      // Add timeout to prevent hanging requests
+      signal: AbortSignal.timeout(30000), // 30 second timeout
     });
 
     if (!response.ok) {

@@ -1,14 +1,31 @@
 import {useEffect, useState} from 'react';
 import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
+// Types for Sanity Studio components
+interface StudioComponent {
+  (props: {
+    config: any;
+    unstable_noAuthBoundary?: boolean;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    unstable_globalErrorHandler?: (error: unknown) => boolean;
+  }): JSX.Element;
+}
+
+interface SanityConfig {
+  // Add specific config properties if needed
+  [key: string]: any;
+}
+
 export async function loader({request}: LoaderFunctionArgs) {
   // Optional: Add authentication check for production
+  // const session = await getSession(request.headers.get('Cookie'));
+  // if (!session) throw redirect('/login');
   return null;
 }
 
 export default function StudioPage() {
-  const [Studio, setStudio] = useState<any>(null);
-  const [config, setConfig] = useState<any>(null);
+  const [Studio, setStudio] = useState<StudioComponent | null>(null);
+  const [config, setConfig] = useState<SanityConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,14 +39,14 @@ export default function StudioPage() {
 
     async function loadStudio() {
       try {
-        console.warn('Loading Sanity Studio...');
+        console.log('Loading Sanity Studio...');
 
         const [{Studio: StudioComponent}, studioConfig] = await Promise.all([
           import('sanity'),
           import('../../studio/sanity.config'),
         ]);
 
-        console.warn('Studio loaded successfully');
+        console.log('Studio loaded successfully');
         setStudio(() => StudioComponent);
         setConfig(studioConfig.default);
       } catch (err) {
@@ -110,14 +127,10 @@ export default function StudioPage() {
       <Studio
         config={config}
         unstable_noAuthBoundary
-        // Additional props to help with auth issues
         unstable_globalErrorHandler={(error: unknown) => {
-          console.warn('Studio error (handled):', error);
-          // Return true to prevent the error from bubbling up
-          return true;
+          console.error('Studio error (handled):', error);
+          return true; // Prevent error from bubbling up
         }}
-        // Navigation handler for debugging if needed
-        // onNavigate={(route) => console.log('Studio navigating to:', route)}
       />
     </div>
   );

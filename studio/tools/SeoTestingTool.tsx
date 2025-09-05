@@ -41,6 +41,9 @@ export default function SeoTestingTool() {
 
     try {
       // This works because studio is embedded - same origin!
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+
       const response = await fetch('/studio/seo', {
         method: 'POST',
         headers: {
@@ -50,7 +53,10 @@ export default function SeoTestingTool() {
           url: window.location.origin,
           testType: 'full',
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = (await response.json().catch(() => ({
@@ -62,7 +68,21 @@ export default function SeoTestingTool() {
       const data = (await response.json()) as SeoTestResult;
       setResults(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'SEO test failed');
+      let errorMessage = 'SEO test failed';
+
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          errorMessage =
+            'Test timed out - this may indicate server performance issues';
+        } else if (err.message.includes('Failed to fetch')) {
+          errorMessage =
+            'Cannot connect to SEO test service - make sure the development server is running';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+
+      setError(errorMessage);
       console.error('SEO test error:', err);
     } finally {
       setIsLoading(false);

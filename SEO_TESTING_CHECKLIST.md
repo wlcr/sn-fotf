@@ -44,7 +44,37 @@ Before testing, ensure the following content is added in Sanity Studio:
 
 ## Testing Checklist 🧪
 
-### 1. Meta Tags Generation
+### 1. Embedded Studio SEO Tool Testing
+
+- [ ] **Access Studio SEO Tool**
+  - [ ] Navigate to `/studio` (or `http://localhost:3000/studio` in development)
+  - [ ] Verify "SEO Testing" tool appears in Studio sidebar
+  - [ ] Click to open SEO testing interface
+
+- [ ] **Run SEO Tests from Studio**
+  - [ ] Click "Run Full SEO Test" button
+  - [ ] Verify loading state appears during test
+  - [ ] Confirm test completes within 30 seconds
+  - [ ] Check that results display without errors
+
+- [ ] **Review SEO Scorecard**
+  - [ ] Verify overall score displays (0-100)
+  - [ ] Check category breakdown shows all 6 categories:
+    - [ ] Meta Tags & Titles
+    - [ ] Open Graph & Social Media
+    - [ ] Structured Data
+    - [ ] Performance & Technical
+    - [ ] Accessibility
+    - [ ] Members-Only Features
+  - [ ] Confirm recommendations section appears
+  - [ ] Verify timestamp shows when test was run
+
+- [ ] **Test Error Handling**
+  - [ ] Test with invalid/unreachable URL (if applicable)
+  - [ ] Verify graceful error messages display
+  - [ ] Confirm Studio remains responsive after errors
+
+### 2. Meta Tags Generation
 
 - [ ] **Homepage**
   - [ ] Visit homepage and inspect `<head>` section
@@ -122,16 +152,30 @@ Before testing, ensure the following content is added in Sanity Studio:
 
 ### 7. Development Test Utilities
 
-- [ ] **Run Comprehensive SEO Test Script**
+- [ ] **Embedded Studio SEO Testing** (Recommended)
+  1. **Start Development Environment**:
+
+     ```bash
+     npm run dev  # Starts both app and embedded studio
+     ```
+
+  2. **Access Studio SEO Tool**:
+     - [ ] Navigate to `http://localhost:3000/studio`
+     - [ ] Use "SEO Testing" tool for real-time validation
+     - [ ] Test changes immediately without switching tools
+
+- [ ] **Command Line SEO Test Script** (CI/CD & Detailed Analysis)
 
   ```bash
   npm run seo:test:local  # Test local development
   npm run seo:test        # Test production
+  npm run seo:test:verbose # Detailed output
   ```
 
   - [ ] Verify 100-point scoring system results
   - [ ] Check all test categories pass
   - [ ] Review detailed analysis output
+  - [ ] Confirm JSDOM parsing works correctly
 
 - [ ] **Run OpenGraph Integration Test**
 
@@ -145,6 +189,7 @@ Before testing, ensure the following content is added in Sanity Studio:
   - [ ] Confirm sample tags display correctly
 
 - [ ] **Use SEO Route Debug Utility**
+
   ```typescript
   // Add to development code
   import {debugSEORoutes} from '~/lib/seo/routes';
@@ -211,12 +256,14 @@ Before testing, ensure the following content is added in Sanity Studio:
 
 ## Sign-off ✅
 
+- [ ] **Embedded Studio SEO tool functional**
 - [ ] **All meta tags generating correctly**
 - [ ] **Structured data validates successfully**
 - [ ] **Social media previews working**
 - [ ] **SEO routes (robots.txt, sitemap.xml) functional**
 - [ ] **Global controls working as expected**
 - [ ] **Performance impact acceptable**
+- [ ] **Both Studio and command line testing working**
 
 **Tested by**: **\*\***\_\_\_**\*\***  
 **Date**: **\*\***\_\_\_**\*\***  
