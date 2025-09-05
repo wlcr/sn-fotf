@@ -2900,6 +2900,47 @@
         "value": {
           "type": "object",
           "attributes": {
+            "seoStrategy": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "string",
+                    "value": "marketing"
+                  },
+                  {
+                    "type": "string",
+                    "value": "private"
+                  },
+                  {
+                    "type": "string",
+                    "value": "homepage_only"
+                  },
+                  {
+                    "type": "string",
+                    "value": "custom"
+                  }
+                ]
+              },
+              "optional": true
+            },
+            "impactPreview": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "object",
+                "attributes": {
+                  "placeholder": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    },
+                    "optional": true
+                  }
+                }
+              },
+              "optional": true
+            },
             "siteDiscoverable": {
               "type": "objectAttribute",
               "value": {
@@ -2914,6 +2955,20 @@
               },
               "optional": true
             },
+            "emergencyPrivateMode": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "boolean"
+              },
+              "optional": true
+            },
+            "lastModified": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
             "customRobotsDirectives": {
               "type": "objectAttribute",
               "value": {
@@ -2921,13 +2976,6 @@
                 "of": {
                   "type": "string"
                 }
-              },
-              "optional": true
-            },
-            "seoNote": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
               },
               "optional": true
             }

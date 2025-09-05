@@ -432,10 +432,15 @@ export type Settings = {
   cookieConsentMessage?: string;
   showCookieConsent?: boolean;
   globalSeoControls?: {
+    seoStrategy?: 'marketing' | 'private' | 'homepage_only' | 'custom';
+    impactPreview?: {
+      placeholder?: string;
+    };
     siteDiscoverable?: boolean;
     allowRobotsCrawling?: boolean;
+    emergencyPrivateMode?: boolean;
+    lastModified?: string;
     customRobotsDirectives?: Array<string>;
-    seoNote?: string;
   };
 };
 
@@ -810,10 +815,15 @@ export type SettingsQueryResult = {
   cookieConsentMessage?: string;
   showCookieConsent?: boolean;
   globalSeoControls?: {
+    seoStrategy?: 'custom' | 'homepage_only' | 'marketing' | 'private';
+    impactPreview?: {
+      placeholder?: string;
+    };
     siteDiscoverable?: boolean;
     allowRobotsCrawling?: boolean;
+    emergencyPrivateMode?: boolean;
+    lastModified?: string;
     customRobotsDirectives?: Array<string>;
-    seoNote?: string;
   };
 } | null;
 // Variable: headerQuery

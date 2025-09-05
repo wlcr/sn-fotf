@@ -1,5 +1,8 @@
 import {CogIcon} from '@sanity/icons';
-import {defineField, defineType} from 'sanity';
+import {defineField, defineType, useFormValue} from 'sanity';
+import React from 'react';
+
+import {SeoImpactPreview} from '../../components/SeoImpactPreview';
 
 /**
  * Site Settings schema - Global configuration for SEO, analytics, branding, and company info.
@@ -83,11 +86,11 @@ export const settings = defineType({
     }),
     defineField({
       name: 'keywords',
-      title: 'Site Keywords',
+      title: 'Site Keywords 🎯',
       type: 'array',
       of: [{type: 'string'}],
       description:
-        'Keywords that describe your site (optional, for internal use)',
+        '📝 Internal use only: These help you stay focused on target topics when writing content. Modern search engines ignore meta keywords, but they\'re useful for content strategy and team alignment. Example: "craft beer", "sierra nevada", "exclusive brewing"',
       options: {
         layout: 'tags',
       },
@@ -237,49 +240,128 @@ export const settings = defineType({
       group: 'legal',
     }),
 
-    // Global SEO Controls
+    // Global SEO Controls - Redesigned for clarity
     defineField({
       name: 'globalSeoControls',
-      title: 'Global SEO Controls',
+      title: '🚨 Search Engine Visibility Controls',
       type: 'object',
       description:
-        'Site-wide search engine discoverability controls for members-only content',
+        '⚠️ IMPORTANT: These settings control how Google and other search engines can find and index your site. Changes take effect immediately and impact ALL pages.',
       group: 'seo',
       fields: [
         defineField({
+          name: 'seoStrategy',
+          title: '📋 Current SEO Strategy',
+          type: 'string',
+          options: {
+            list: [
+              {
+                title: '🎯 RECOMMENDED: Marketing Mode (Tease & Convert)',
+                value: 'marketing',
+              },
+              {
+                title:
+                  '🔒 Private Mode (Members Find Us Through Other Channels)',
+                value: 'private',
+              },
+              {
+                title: '🏠 Homepage Only (Just Landing Page Visible)',
+                value: 'homepage_only',
+              },
+              {
+                title: '⚙️ Custom (Advanced - Set Individual Controls Below)',
+                value: 'custom',
+              },
+            ],
+            layout: 'radio',
+          },
+          description:
+            'Choose your SEO strategy. This automatically sets the technical controls below. "Marketing Mode" is recommended for member acquisition.',
+          initialValue: 'marketing',
+        }),
+        defineField({
+          name: 'impactPreview',
+          title: '📊 Impact Preview',
+          type: 'object',
+          description: 'Real-time preview of what your SEO strategy means',
+          fields: [
+            {
+              name: 'placeholder',
+              type: 'string',
+              hidden: true,
+            },
+          ],
+          components: {
+            input: () => {
+              const Component = () => {
+                const parentValue = (useFormValue([]) as any) || {};
+                const globalSeoControls = parentValue.globalSeoControls || {};
+
+                const strategy = globalSeoControls.seoStrategy || 'marketing';
+                const emergencyMode =
+                  globalSeoControls.emergencyPrivateMode || false;
+                const siteDiscoverable = globalSeoControls.siteDiscoverable;
+                const allowRobotsCrawling =
+                  globalSeoControls.allowRobotsCrawling;
+
+                return React.createElement(SeoImpactPreview, {
+                  strategy,
+                  emergencyMode,
+                  siteDiscoverable,
+                  allowRobotsCrawling,
+                });
+              };
+
+              return React.createElement(Component);
+            },
+          },
+          hidden: false,
+        }),
+        defineField({
           name: 'siteDiscoverable',
-          title: 'Allow Site to be Discoverable',
+          title: '🔍 Technical: Site Indexing Control',
           type: 'boolean',
           description:
-            'Controls whether search engines should index this site. Recommended: OFF for members-only sites.',
-          initialValue: false,
+            '✅ ON = Google can index and show your pages in search results\n❌ OFF = Google will NOT show any pages in search results (complete privacy)\n\n⚠️ IMPACT: Turning OFF removes ALL pages from Google search results within days.',
+          initialValue: true,
+          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
         }),
         defineField({
           name: 'allowRobotsCrawling',
-          title: 'Allow Search Engine Crawling',
+          title: '🤖 Technical: Search Engine Access Control',
           type: 'boolean',
           description:
-            'Controls whether search engines can crawl and follow links on this site.',
+            '✅ ON = Google can visit and crawl all public pages\n❌ OFF = Google can only see your homepage, everything else is blocked\n\n⚠️ IMPACT: Turning OFF means only your homepage appears in search results.',
+          initialValue: true,
+          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
+        }),
+        defineField({
+          name: 'emergencyPrivateMode',
+          title: '🚨 EMERGENCY: Hide Site From Search Engines',
+          type: 'boolean',
+          description:
+            '⚠️ EMERGENCY USE ONLY: Immediately hides the entire site from Google and all search engines. Use this if you need to urgently make the site private.\n\n🕐 Takes effect: Immediately\n🕐 Google removal: 1-3 days\n\n❌ This will hurt SEO if used unnecessarily.',
           initialValue: false,
         }),
         defineField({
+          name: 'lastModified',
+          title: '📅 Last SEO Change',
+          type: 'datetime',
+          description: 'When these SEO settings were last updated',
+          readOnly: true,
+          initialValue: new Date().toISOString(),
+        }),
+        defineField({
           name: 'customRobotsDirectives',
-          title: 'Custom Robots Directives',
+          title: '⚙️ Advanced: Custom Robots Directives',
           type: 'array',
           of: [{type: 'string'}],
-          description: 'Additional robots.txt directives (advanced users only)',
+          description:
+            '🔧 For advanced users only: Additional robots.txt rules. Most users should leave this empty.',
           options: {
             layout: 'tags',
           },
-        }),
-        defineField({
-          name: 'seoNote',
-          title: 'SEO Strategy Note',
-          type: 'text',
-          description: 'Internal note about SEO strategy decisions',
-          initialValue:
-            'This is a members-only site. Consider carefully which content should be discoverable.',
-          readOnly: true,
+          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
         }),
       ],
     }),

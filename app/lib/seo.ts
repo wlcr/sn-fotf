@@ -406,40 +406,112 @@ export function seoMetaTagsToRemixMeta(metaTags: SeoMetaTags) {
 }
 
 /**
- * Generate robots.txt content based on global settings
+ * Generate robots.txt content based on global settings and SEO strategy
  */
 export function generateRobotsTxt(globalSettings: Settings | null): string {
-  const siteDiscoverable = isSiteDiscoverable(globalSettings);
-  const crawlingAllowed = isRobotsCrawlingAllowed(globalSettings);
+  const seoStrategy =
+    globalSettings?.globalSeoControls?.seoStrategy || 'marketing';
+  const emergencyPrivateMode =
+    globalSettings?.globalSeoControls?.emergencyPrivateMode || false;
 
-  if (!siteDiscoverable) {
-    return `# Friends of the Family - Members Only Site
+  // Emergency private mode overrides everything
+  if (emergencyPrivateMode) {
+    return `# Friends of the Family - EMERGENCY PRIVATE MODE
+# 🚨 Site temporarily hidden from all search engines
 User-agent: *
 Disallow: /
 
-# Block all search engines from indexing
+# Block all crawling during emergency mode
 User-agent: *
-Crawl-delay: 86400`;
+Crawl-delay: 86400
+
+# Last updated: ${new Date().toISOString()}`;
   }
 
-  if (!crawlingAllowed) {
-    return `# Friends of the Family - Limited Crawling
+  // Handle preset strategies
+  switch (seoStrategy) {
+    case 'private':
+      return `# Friends of the Family - Private Mode
+# Members find us through direct channels only
+User-agent: *
+Disallow: /
+
+# Private site - no search engine access
+User-agent: *
+Crawl-delay: 86400`;
+
+    case 'homepage_only':
+      return `# Friends of the Family - Homepage Only Mode
+# Landing page visible for member acquisition
+User-agent: *
+Disallow: /
+Allow: /$ # Allow homepage only
+Allow: /robots.txt
+Allow: /sitemap.xml
+
+# Limited crawling - homepage only
+User-agent: *
+Crawl-delay: 3600`;
+
+    case 'marketing':
+      return `# Friends of the Family - Marketing Mode
+# Products and collections visible for member acquisition
+User-agent: *
+Allow: /
+
+# Block private member areas
+Disallow: /account/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /members/
+Disallow: /api/
+
+# Sitemap for marketing content
+Sitemap: https://friends.sierranevada.com/sitemap.xml`;
+
+    case 'custom':
+      // Use individual technical controls for custom mode
+      const siteDiscoverable = isSiteDiscoverable(globalSettings);
+      const crawlingAllowed = isRobotsCrawlingAllowed(globalSettings);
+
+      if (!siteDiscoverable) {
+        return `# Friends of the Family - Custom: No Indexing
+User-agent: *
+Disallow: /
+
+# Custom configuration - site not discoverable
+User-agent: *
+Crawl-delay: 86400`;
+      }
+
+      if (!crawlingAllowed) {
+        return `# Friends of the Family - Custom: Limited Crawling
 User-agent: *
 Disallow: /
 Allow: /$ # Allow homepage only
 
-# Slow down crawling for privacy
+# Custom configuration - limited crawling
 User-agent: *
 Crawl-delay: 3600`;
-  }
+      }
 
-  // Standard robots.txt for discoverable sites
-  return `# Friends of the Family
+      return `# Friends of the Family - Custom Configuration
 User-agent: *
 Allow: /
 
-# Sitemap
+# Custom SEO settings active
 Sitemap: https://friends.sierranevada.com/sitemap.xml`;
+
+    default:
+      // Fallback to marketing mode
+      return generateRobotsTxt({
+        ...globalSettings,
+        globalSeoControls: {
+          ...globalSettings?.globalSeoControls,
+          seoStrategy: 'marketing',
+        },
+      } as Settings);
+  }
 }
 
 /**
