@@ -8,7 +8,7 @@ import type {Header as HeaderType} from '~/studio/sanity.types';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
 import Logo from '../Icons/Logo';
-import {Button, Theme} from '@radix-ui/themes';
+import Button from '../Button/Button';
 
 export interface HeaderProps {
   header: HeaderType;
@@ -22,7 +22,9 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
   return (
     <>
       <header className={clsx(styles.Header, className)} role="banner">
-        <div className={styles.HeaderLeft}>Shop Now</div>
+        <div className={styles.HeaderLeft}>
+          <Button label="Shop Now" appearance="light" variant="outline" />
+        </div>
         <div className={styles.HeaderCenter}>
           <div className={styles.HeaderLogo}>
             <Logo />
