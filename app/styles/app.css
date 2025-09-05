@@ -1,3 +1,5 @@
+@import 'open-props/style';
+
 @import './fonts.css';
 @import './base.css';
 @import './helpers.css';
