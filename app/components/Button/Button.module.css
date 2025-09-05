@@ -2,6 +2,7 @@
 .ButtonDarkSolid {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--color-white);
   background-color: var(--color-mills-river);
   border: 2px solid var(--color-mills-river);
@@ -17,6 +18,7 @@
 .ButtonDarkOutline {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: transparent;
   color: var(--color-mills-river);
   border: 2px solid var(--color-mills-river);
@@ -32,6 +34,7 @@
 .ButtonLightSolid {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: var(--color-foam-white);
   color: var(--color-mills-river);
   border: 2px solid var(--color-foam-white);
@@ -47,6 +50,7 @@
 .ButtonLightOutline {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: transparent;
   color: var(--color-foam-white);
   border: 2px solid var(--color-foam-white);
@@ -62,6 +66,7 @@
 .ButtonDarkRound {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--color-white);
   background-color: var(--color-mills-river);
   border: 2px solid var(--color-mills-river);
@@ -78,6 +83,7 @@
 .ButtonLightRound {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: var(--color-foam-white);
   color: var(--color-mills-river);
   border: 2px solid var(--color-foam-white);
@@ -94,6 +100,7 @@
 .ButtonDarkText {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: transparent;
   color: var(--color-mills-river);
   border: none;
@@ -111,6 +118,7 @@
 .ButtonLightText {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: transparent;
   color: var(--color-foam-white);
   border: none;
@@ -128,6 +136,7 @@
 .ButtonLightRoundOutline {
   font-size: var(--font-size-3);
   text-transform: uppercase;
+  white-space: nowrap;
   background-color: transparent;
   color: var(--color-foam-white);
   border: 2px solid var(--color-foam-white);
