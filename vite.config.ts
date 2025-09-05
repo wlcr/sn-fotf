@@ -51,4 +51,9 @@ export default defineConfig({
       ],
     },
   },
+  server: {
+    allowedHosts: [
+      'a2eaffbd06a2.ngrok-free.app', // Replace with your actual ngrok URL without protocol
+    ],
+  },
 });
