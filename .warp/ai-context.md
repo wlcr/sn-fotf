@@ -35,18 +35,21 @@ import clsx from 'clsx';
 - **Use**: Sanity CMS for content
 - **Avoid**: Shopify metafields
 
-### Sanity Studio Commands (CRITICAL)
+### Embedded Sanity Studio (CRITICAL)
 
 ```bash
-# ✅ ALWAYS use these npm scripts from project root
-npm run studio:dev      # Start studio development server
-npm run studio:restart  # Clear cache and restart (fixes "raw code" display)
-npm run studio:clean    # Clear cache only
-npm run studio:build    # Build for production
+# ✅ EMBEDDED STUDIO - Single development server
+npm run dev             # Starts both app AND embedded Studio
+# App: http://localhost:3000/
+# Studio: http://localhost:3000/studio
 
-# ❌ NEVER use direct sanity commands (causes cache conflicts)
-# cd studio && sanity start  ← DON'T DO THIS
-# sanity start --port 3333   ← DON'T DO THIS
+# ✅ Studio maintenance commands
+npm run studio:clean    # Clear studio cache only
+npm run sanity:codegen  # Generate types from schema
+
+# ❌ NEVER use separate studio commands (deprecated)
+# npm run studio:dev     ← NO LONGER EXISTS
+# npm run studio:restart ← NO LONGER EXISTS
 ```
 
 ## Project Context
@@ -92,11 +95,13 @@ npx shopify hydrogen env pull
 npm run dev
 ```
 
-### Development Servers
+### Development Server (Embedded Studio)
 
 ```bash
-npm run dev          # Hydrogen app (http://localhost:3000)
-npm run studio:dev   # Sanity Studio (http://localhost:3333)
+npm run dev          # Both Hydrogen app + embedded Studio
+# - App: http://localhost:3000/
+# - Studio: http://localhost:3000/studio
+# - SEO Tool: Available in Studio sidebar
 ```
 
 ### Pre-commit Quality Gates
@@ -111,9 +116,15 @@ npm run studio:dev   # Sanity Studio (http://localhost:3333)
 git commit --no-verify -m "message"  # Only when TypeScript errors are unrelated
 ```
 
-### SEO Testing
+### SEO Testing (Dual Approach)
 
 ```bash
+# ✅ Embedded Studio SEO Tool (Recommended for content managers)
+# 1. Navigate to http://localhost:3000/studio
+# 2. Click "SEO Testing" in Studio sidebar
+# 3. Run real-time tests with visual scorecard
+
+# ✅ Command Line SEO Tests (CI/CD & detailed analysis)
 npm run seo:test         # Production SEO checks
 npm run seo:test:local   # Local development SEO checks
 npm run seo:test:verbose # Detailed SEO analysis

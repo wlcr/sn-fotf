@@ -22,7 +22,7 @@ Our Sanity integration follows a **simple, reliable pattern** that works with Hy
 - **Type Generation**: Automatic TypeScript types from Sanity schema
 - **CDN Caching**: Uses Sanity's built-in CDN for performance
 - **Environment Variables**: Clean separation of secrets vs. configuration
-- **Studio Access**: Local development studio at localhost:3333
+- **Embedded Studio Access**: Integrated studio at localhost:3000/studio
 
 ### 🎯 Architecture Principles
 
@@ -42,7 +42,7 @@ export const sanityConfig = {
   projectId: 'rimuhevv', // Not sensitive - visible in API URLs
   dataset: 'production', // Public information
   apiVersion: '2025-01-01', // Version string
-  studioUrl: 'http://localhost:3333', // Development default
+  studioUrl: 'http://localhost:3000/studio', // Development default (embedded)
 };
 ```
 

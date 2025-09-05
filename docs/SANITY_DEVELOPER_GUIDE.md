@@ -35,7 +35,7 @@ npm install @sanity/client @sanity/image-url @sanity/react-loader
 SANITY_API_TOKEN=your-api-token
 SANITY_PREVIEW_SECRET=your-preview-secret
 SANITY_REVALIDATE_SECRET=your-revalidate-secret
-SANITY_STUDIO_URL=http://localhost:3333
+SANITY_STUDIO_URL=http://localhost:3000/studio
 ```
 
 **Note**: The Sanity project ID (`rimuhevv`) and dataset (`production`) are hardcoded in the application code since they're not sensitive information - project IDs are visible in API URLs and client requests.
@@ -73,12 +73,12 @@ export async function loader({context}: Route.LoaderArgs) {
 
 **Required Environment Variables (Secrets):**
 
-| Variable                   | Description                      | Required | Default        |
-| -------------------------- | -------------------------------- | -------- | -------------- |
-| `SANITY_API_TOKEN`         | Read token (for preview mode)    | ❌       | -              |
-| `SANITY_PREVIEW_SECRET`    | Secret for enabling preview mode | ❌       | -              |
-| `SANITY_REVALIDATE_SECRET` | Secret for content revalidation  | ❌       | -              |
-| `SANITY_STUDIO_URL`        | Studio development URL           | ❌       | localhost:3333 |
+| Variable                   | Description                      | Required | Default               |
+| -------------------------- | -------------------------------- | -------- | --------------------- |
+| `SANITY_API_TOKEN`         | Read token (for preview mode)    | ❌       | -                     |
+| `SANITY_PREVIEW_SECRET`    | Secret for enabling preview mode | ❌       | -                     |
+| `SANITY_REVALIDATE_SECRET` | Secret for content revalidation  | ❌       | -                     |
+| `SANITY_STUDIO_URL`        | Studio development URL           | ❌       | localhost:3000/studio |
 
 **Hardcoded Configuration (Not Sensitive):**
 
@@ -711,10 +711,10 @@ export async function loader({request, context}: Route.LoaderArgs) {
 
 ### Development Workflow
 
-1. **Start your development server**
-2. **Open Sanity Studio**
-3. **Edit content and click "Preview"**
-4. **See changes in real-time** on your site
+1. **Start the embedded development server**: `npm run dev` (serves both app and Studio)
+2. **Open embedded Studio**: Navigate to `http://localhost:3000/studio`
+3. **Edit content and click "Preview"**: Preview URLs automatically work with embedded setup
+4. **See changes in real-time** on your site (same origin, no CORS issues)
 5. **Exit preview mode** when done
 
 ### Troubleshooting Preview Mode
