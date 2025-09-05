@@ -1,8 +1,9 @@
 import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import {Aside} from './Aside';
-import {CartMain} from './Cart/CartMain';
+import {Aside} from '../Aside';
+import {CartMain} from '../Cart/CartMain';
+import styles from './CartAside.module.css';
 
 interface CartAsideProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -10,7 +11,7 @@ interface CartAsideProps {
 
 export function CartAside({cart}: CartAsideProps) {
   return (
-    <Aside type="cart" heading="CART">
+    <Aside className={styles.CartAside} type="cart" heading="CART">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {

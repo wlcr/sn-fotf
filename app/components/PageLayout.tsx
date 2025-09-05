@@ -5,10 +5,10 @@ import type {
   Settings,
 } from '~/studio/sanity.types';
 import {Aside} from '~/components/Aside';
-import {CartAside} from '~/components/CartAside';
-import {Footer} from '~/components/Footer';
-import {Header} from '~/components/Header';
-import {SearchAside} from '~/components/SearchAside';
+import {CartAside} from '~/components/CartAside/CartAside';
+import {Footer} from '~/components/Footer/Footer';
+import {Header} from '~/components/Header/Header';
+import {SearchAside} from '~/components/SearchAside/SearchAside';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;

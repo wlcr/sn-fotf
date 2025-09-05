@@ -1,13 +1,14 @@
 import {Link} from 'react-router';
 import {useId} from 'react';
-import {Aside} from './Aside';
-import {SEARCH_ENDPOINT, SearchFormPredictive} from './SearchFormPredictive';
-import {SearchResultsPredictive} from './SearchResultsPredictive';
+import {Aside} from '../Aside';
+import {SEARCH_ENDPOINT, SearchFormPredictive} from '../SearchFormPredictive';
+import {SearchResultsPredictive} from '../SearchResultsPredictive';
+import styles from './SearchAside.module.css';
 
 export function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside className={styles.SearchAside} type="search" heading="SEARCH">
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
