@@ -433,9 +433,6 @@ export type Settings = {
   showCookieConsent?: boolean;
   globalSeoControls?: {
     seoStrategy?: 'marketing' | 'private' | 'homepage_only' | 'custom';
-    impactPreview?: {
-      placeholder?: string;
-    };
     siteDiscoverable?: boolean;
     allowRobotsCrawling?: boolean;
     emergencyPrivateMode?: boolean;
@@ -816,9 +813,6 @@ export type SettingsQueryResult = {
   showCookieConsent?: boolean;
   globalSeoControls?: {
     seoStrategy?: 'custom' | 'homepage_only' | 'marketing' | 'private';
-    impactPreview?: {
-      placeholder?: string;
-    };
     siteDiscoverable?: boolean;
     allowRobotsCrawling?: boolean;
     emergencyPrivateMode?: boolean;

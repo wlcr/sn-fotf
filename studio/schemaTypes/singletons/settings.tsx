@@ -253,87 +253,34 @@ export const settings = defineType({
           options: {
             list: [
               {
-                title: '🎯 RECOMMENDED: Marketing Mode (Tease & Convert)',
+                title: '🎯 RECOMMENDED: Marketing Mode',
                 value: 'marketing',
               },
               {
-                title:
-                  '🔒 Private Mode (Members Find Us Through Other Channels)',
+                title: '🔒 Private Mode - Hide Everything',
                 value: 'private',
               },
               {
-                title: '🏠 Homepage Only (Just Landing Page Visible)',
+                title: '🏠 Homepage Only - Just Landing Page',
                 value: 'homepage_only',
               },
               {
-                title: '⚙️ Custom (Advanced - Set Individual Controls Below)',
+                title: '⚙️ Custom - Advanced Controls',
                 value: 'custom',
               },
             ],
             layout: 'radio',
           },
           description:
-            'Choose your SEO strategy. This automatically sets the technical controls below. "Marketing Mode" is recommended for member acquisition.',
+            'Choose your SEO strategy. Marketing Mode is recommended for member acquisition - it shows products to attract new members while keeping private areas hidden.',
           initialValue: 'marketing',
-        }),
-        defineField({
-          name: 'impactPreview',
-          title: '📊 What This Strategy Means',
-          type: 'object',
-          description:
-            'The impact preview will appear here based on your SEO strategy selection above',
-          fields: [
-            defineField({
-              name: 'marketingMode',
-              title: '🎯 Marketing Mode Impact',
-              type: 'text',
-              initialValue:
-                '✅ Visible: Homepage, Products, Collections, Future blog\n🔒 Hidden: Account pages, Cart/Checkout, Member sections\n🟢 Risk: LOW - Recommended for growing membership',
-              readOnly: true,
-              hidden: ({document}) =>
-                (document as any)?.globalSeoControls?.seoStrategy !==
-                'marketing',
-            }),
-            defineField({
-              name: 'privateMode',
-              title: '🔒 Private Mode Impact',
-              type: 'text',
-              initialValue:
-                '✅ Visible: Nothing - complete privacy\n🔒 Hidden: Everything\n🔴 Risk: HIGH - No organic discovery possible',
-              readOnly: true,
-              hidden: ({document}) =>
-                (document as any)?.globalSeoControls?.seoStrategy !== 'private',
-            }),
-            defineField({
-              name: 'homepageOnly',
-              title: '🏠 Homepage Only Impact',
-              type: 'text',
-              initialValue:
-                '✅ Visible: Homepage only\n🔒 Hidden: All products, collections, everything else\n🟡 Risk: MEDIUM - Limited discovery potential',
-              readOnly: true,
-              hidden: ({document}) =>
-                (document as any)?.globalSeoControls?.seoStrategy !==
-                'homepage_only',
-            }),
-            defineField({
-              name: 'customMode',
-              title: '⚙️ Custom Configuration Impact',
-              type: 'text',
-              initialValue:
-                '✅ Visible: Depends on technical settings below\n🔒 Hidden: Configure using controls below\n🟡 Risk: MEDIUM - Requires SEO knowledge',
-              readOnly: true,
-              hidden: ({document}) =>
-                (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
-            }),
-          ],
-          hidden: false,
         }),
         defineField({
           name: 'siteDiscoverable',
           title: '🔍 Technical: Site Indexing Control',
           type: 'boolean',
           description:
-            '✅ ON = Google can index and show your pages in search results\n❌ OFF = Google will NOT show any pages in search results (complete privacy)\n\n⚠️ IMPACT: Turning OFF removes ALL pages from Google search results within days.',
+            'Controls whether your site appears in Google search results.\n\n✅ ON = Your site pages can appear in Google search results\n❌ OFF = Your site will NOT appear in Google search results (complete privacy)\n\n⚠️ Turning OFF removes ALL pages from search within days.',
           initialValue: true,
           hidden: ({document}) =>
             (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
@@ -343,7 +290,7 @@ export const settings = defineType({
           title: '🤖 Technical: Search Engine Access Control',
           type: 'boolean',
           description:
-            '✅ ON = Google can visit and crawl all public pages\n❌ OFF = Google can only see your homepage, everything else is blocked\n\n⚠️ IMPACT: Turning OFF means only your homepage appears in search results.',
+            'Controls which pages Google can access and index.\n\n✅ ON = Google can access all your public pages\n❌ OFF = Google can only access your homepage\n\n⚠️ Turning OFF means only homepage appears in search results.',
           initialValue: true,
           hidden: ({document}) =>
             (document as any)?.globalSeoControls?.seoStrategy !== 'custom',

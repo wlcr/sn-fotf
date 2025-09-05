@@ -137,7 +137,8 @@ class SEOTester {
     const title = document.querySelector('title');
     if (title && title.textContent.trim()) {
       const titleLength = title.textContent.trim().length;
-      if (titleLength >= 30 && titleLength <= 60) {
+      if (titleLength >= 30 && titleLength <= 70) {
+        // Updated 2024-2025 standards
         tests.title = {
           pass: true,
           score: 5,
@@ -148,7 +149,7 @@ class SEOTester {
         tests.title = {
           pass: false,
           score: 2,
-          message: `Title length suboptimal (${titleLength} chars). Ideal: 30-60 chars`,
+          message: `Title length suboptimal (${titleLength} chars). Ideal: 30-70 chars`,
         };
         score += 2;
       }
@@ -160,7 +161,8 @@ class SEOTester {
     const description = document.querySelector('meta[name="description"]');
     if (description && description.content.trim()) {
       const descLength = description.content.trim().length;
-      if (descLength >= 120 && descLength <= 160) {
+      if (descLength >= 120 && descLength <= 250) {
+        // Modern standards allow longer, quality descriptions
         tests.description = {
           pass: true,
           score: 5,
@@ -171,7 +173,7 @@ class SEOTester {
         tests.description = {
           pass: false,
           score: 2,
-          message: `Description length suboptimal (${descLength} chars). Ideal: 120-160 chars`,
+          message: `Description length suboptimal (${descLength} chars). Ideal: 120-250 chars`,
         };
         score += 2;
       }

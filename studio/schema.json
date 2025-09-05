@@ -2925,22 +2925,6 @@
               },
               "optional": true
             },
-            "impactPreview": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "object",
-                "attributes": {
-                  "placeholder": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "string"
-                    },
-                    "optional": true
-                  }
-                }
-              },
-              "optional": true
-            },
             "siteDiscoverable": {
               "type": "objectAttribute",
               "value": {

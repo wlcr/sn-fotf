@@ -22,9 +22,17 @@
     "studio:build": "sanity build",
     "studio:clean": "rm -rf .sanity node_modules/.vite node_modules/.cache && echo '🧹 Sanity cache cleared'",
     "studio:restart": "npm run studio:clean && npm run studio:dev",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "test:seo": "vitest run tests/unit/seo tests/integration/seo",
+    "test:seo:watch": "vitest watch tests/unit/seo tests/integration/seo",
     "seo:test": "node scripts/seo-test.js",
     "seo:test:verbose": "node scripts/seo-test.js --verbose",
-    "seo:test:local": "node scripts/seo-test.js --url=http://localhost:3000"
+    "seo:test:local": "node scripts/seo-test.js --url=http://localhost:3000",
+    "seo:test:quick": "node tests/unit/seo/quick-strategy-test.js"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -74,6 +82,8 @@
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.41.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "commander": "^14.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -84,6 +94,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-vitest": "^0.5.4",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
@@ -98,7 +109,8 @@
     "typescript": "^5.2.2",
     "vite": "^6.2.4",
     "vite-plugin-svgr": "^4.3.0",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18.0.0"
