@@ -15,16 +15,31 @@
   right: 0;
   z-index: 10;
   padding: var(--size-5);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .HeaderLeft {
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .HeaderCenter {
+  display: flex;
+  justify-content: center;
+  @media (max-width: 768px) {
+  }
 }
 
 .HeaderRight {
   justify-self: end;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .HeaderUtilityList {
