@@ -31,6 +31,7 @@ import {Theme} from '@radix-ui/themes';
 import radixStyles from '@radix-ui/themes/styles.css?url';
 import themeStyles from './styles/themes.css?url';
 import variableStyles from './styles/variables.css?url';
+import {CUSTOMER_DETAILS_QUERY} from './graphql/customer-account/CustomerDetailsQuery';
 
 export type RootLoader = typeof loader;
 
@@ -91,7 +92,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const sanityEnv = validateSanityEnv(env);
   const sanityClient = createSanityClient(sanityEnv);
 
-  const [header, footer, settings] = await Promise.all([
+  const [header, footer, settings, customer] = await Promise.all([
     sanityServerQuery<SanityHeader>(
       sanityClient,
       HEADER_QUERY,
@@ -119,12 +120,18 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
         env: sanityEnv,
       },
     ),
+    // Fetch customer data to determine if they can access account features
+    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error) => {
+      console.error('error fetching customer', error);
+      return null;
+    }),
   ]);
 
   return {
     header: header || null,
     footer: footer || null,
     settings: settings || null,
+    customer: customer?.data?.customer || null,
   };
 }
 
@@ -155,6 +162,7 @@ export async function loader(args: LoaderFunctionArgs) {
     ...deferredData,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
+    eligibleToPurchaseTag: env.PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG || null,
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
