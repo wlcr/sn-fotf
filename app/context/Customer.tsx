@@ -38,7 +38,7 @@ export function useCustomer() {
   if (!context) {
     throw new Error('useCustomer must be used within a CustomerProvider');
   }
-  return context.customer;
+  return {customer: context.customer, isEligible: context.isEligible};
 }
 
 function customerIsEligibleToPurchase(
