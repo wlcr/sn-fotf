@@ -22,12 +22,20 @@ export default defineConfig({
       include: '**/*.svg',
     }),
   ],
+  define: {
+    // Browser globals needed for Sanity Studio
+    global: 'globalThis',
+    'process.env.NODE_ENV': JSON.stringify(
+      process.env.NODE_ENV || 'development',
+    ),
+  },
   build: {
     // Allow a strict Content-Security-Policy
     // withtout inlining assets as base64:
     assetsInlineLimit: 0,
   },
   ssr: {
+    external: ['happy-dom'],
     optimizeDeps: {
       /**
        * Include dependencies here if they throw CJS<>ESM errors.

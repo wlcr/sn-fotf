@@ -98,7 +98,6 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-  console.log('homepage', data.homepage);
   return (
     <div className="home">
       {/* Render Sanity homepage content if available */}

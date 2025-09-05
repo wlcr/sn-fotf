@@ -11,6 +11,7 @@ import {structureTool} from 'sanity/structure';
 import {visionTool} from '@sanity/vision';
 import {schemaTypes} from './schemaTypes';
 import {structure} from './structure';
+import SeoTestingTool from './tools/SeoTestingTool';
 // import StudioIcon from './components/StudioIcon';
 
 // Sanity Studio Configuration
@@ -28,21 +29,51 @@ export default defineConfig({
   dataset,
   apiVersion,
 
-  basePath: '/studio', // Studio will be available at /studio
+  // Set basePath for embedded setup - this ensures internal Studio routes
+  // are prefixed with /studio so they match our Remix route
+  basePath: '/studio',
 
   plugins: [
     structureTool({structure}),
     visionTool(), // GROQ query tool for development
+    {
+      name: 'seo-testing',
+      title: 'SEO Testing',
+      component: SeoTestingTool,
+    } as any, // Custom tool - types not fully supported yet
   ],
 
   schema: {
     types: schemaTypes,
   },
 
-  // Studio URL for preview functionality
+  // Studio URL for preview functionality (now embedded)
   studioUrl:
     (process.env as Record<string, string | undefined>).SANITY_STUDIO_URL ||
-    'http://localhost:3333',
+    'http://localhost:3000/studio',
+
+  // Modern preview configuration for embedded setup
+  document: {
+    productionUrl: async (prev, {document}) => {
+      const baseUrl =
+        (process.env as Record<string, string | undefined>)
+          .PUBLIC_STORE_DOMAIN || 'https://friends.sierranevada.com';
+
+      // Generate preview URLs for different document types
+      switch (document._type) {
+        case 'product':
+          return `${baseUrl}/products/${(document as any).handle?.current}`;
+        case 'collection':
+          return `${baseUrl}/collections/${(document as any).handle?.current}`;
+        case 'page':
+          return `${baseUrl}/${(document as any).slug?.current}`;
+        case 'settings':
+          return `${baseUrl}?preview=settings`;
+        default:
+          return baseUrl;
+      }
+    },
+  },
 });
 
 // Export config values for use in app
@@ -52,5 +83,5 @@ export const config = {
   apiVersion,
   studioUrl:
     (process.env as Record<string, string | undefined>).SANITY_STUDIO_URL ||
-    'http://localhost:3333',
+    'http://localhost:3000/studio',
 };
