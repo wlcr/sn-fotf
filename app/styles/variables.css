@@ -6,4 +6,15 @@
   --color-foam-white: #e8e6df;
   --color-white: #ffffff;
   --color-black: #181818;
+
+  --color-neutral-50: #f3f3f2;
+  --color-neutral-100: #dbdad7;
+  --color-neutral-200: #c2c1bc;
+  --color-neutral-300: #aaa8a2;
+  --color-neutral-400: #928f87;
+  --color-neutral-500: #78756d;
+  --color-neutral-600: #5d5b55;
+  --color-neutral-700: #43413d;
+  --color-neutral-800: #282724;
+  --color-neutral-900: #0d0d0c;
 }
