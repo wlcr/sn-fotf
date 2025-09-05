@@ -120,6 +120,43 @@ Before testing, ensure the following content is added in Sanity Studio:
   - [ ] Test pages without SEO data (should use fallbacks)
   - [ ] Test with missing images (should use defaults)
 
+### 7. Development Test Utilities
+
+- [ ] **Run Comprehensive SEO Test Script**
+
+  ```bash
+  npm run seo:test:local  # Test local development
+  npm run seo:test        # Test production
+  ```
+
+  - [ ] Verify 100-point scoring system results
+  - [ ] Check all test categories pass
+  - [ ] Review detailed analysis output
+
+- [ ] **Run OpenGraph Integration Test**
+
+  ```bash
+  npx tsx app/test-open-graph.ts
+  ```
+
+  - [ ] Verify step-by-step progress indicators
+  - [ ] Check OpenGraph data generation
+  - [ ] Validate meta tags integration
+  - [ ] Confirm sample tags display correctly
+
+- [ ] **Use SEO Route Debug Utility**
+  ```typescript
+  // Add to development code
+  import {debugSEORoutes} from '~/lib/seo/routes';
+  debugSEORoutes(globalSettings);
+  ```
+
+  - [ ] Review route-by-route SEO rules
+  - [ ] Verify site discoverability status
+  - [ ] Check noIndex reasons and robots directives
+
+---
+
 ---
 
 ## Tools for Testing 🛠️
@@ -181,6 +218,6 @@ Before testing, ensure the following content is added in Sanity Studio:
 - [ ] **Global controls working as expected**
 - [ ] **Performance impact acceptable**
 
-**Tested by**: ******\_\_\_******  
-**Date**: ******\_\_\_******  
-**Notes**: ******\_\_\_******
+**Tested by**: **\*\***\_\_\_**\*\***  
+**Date**: **\*\***\_\_\_**\*\***  
+**Notes**: **\*\***\_\_\_**\*\***

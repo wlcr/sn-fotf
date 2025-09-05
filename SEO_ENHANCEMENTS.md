@@ -123,9 +123,11 @@ const ROUTE_SEO_CONFIG = {
 - **Performance**: Parallel data fetching
 - **Standards Compliant**: Proper XML structure and priorities
 
-### ✅ SEO Testing & Validation (`/scripts/seo-test.js`)
+### ✅ SEO Testing & Validation
 
-#### 100-Point Scoring System:
+#### Comprehensive Testing Script (`/scripts/seo-test.js`)
+
+**100-Point Scoring System:**
 
 - **Meta Tags & Titles** (25 points): Length, presence, optimization
 - **Open Graph & Social Media** (20 points): Complete social tags
@@ -134,7 +136,7 @@ const ROUTE_SEO_CONFIG = {
 - **Accessibility** (10 points): ARIA, headings, focus management
 - **Members-Only Features** (10 points): Proper noindex, exclusive content
 
-#### Usage:
+**Usage:**
 
 ```bash
 # Test production site
@@ -143,12 +145,54 @@ npm run seo:test
 # Test with detailed output
 npm run seo:test:verbose
 
-# Test local development
+# Test local development site
 npm run seo:test:local
 
-# Test specific page
-npm run seo:test -- --page=/products/pale-ale
+# Test specific URL
+node scripts/seo-test.js --url=https://friends.sierranevada.com/products/pale-ale
 ```
+
+#### OpenGraph Integration Test (`/app/test-open-graph.ts`)
+
+**Development Utility** for testing OpenGraph implementation:
+
+- **Product OpenGraph Generation**: Tests direct generation from mock data
+- **Meta Tags Integration**: Validates SEO meta tags include OpenGraph
+- **Comprehensive Tag Generation**: Tests complete tag generation pipeline
+- **Error Handling**: Validates fallback mechanisms
+
+**Usage:**
+
+```bash
+# Run OpenGraph integration test
+npx tsx app/test-open-graph.ts
+
+# Expected output includes:
+# - Step-by-step test progress (🧪 1️⃣ 2️⃣ 3️⃣)
+# - OpenGraph data structure validation
+# - Meta tags count and verification
+# - Sample social media tags display
+```
+
+#### SEO Route Debug Utility (`/app/lib/seo/routes.ts`)
+
+**debugSEORoutes() Function** for development debugging:
+
+```typescript
+import {debugSEORoutes} from '~/lib/seo/routes';
+
+// In development, debug SEO route configuration
+if (process.env.NODE_ENV === 'development') {
+  debugSEORoutes(globalSettings);
+}
+```
+
+**Shows:**
+
+- Site discoverability status
+- Route-by-route SEO rules
+- noIndex reasons and robots directives
+- Priority and changefreq values
 
 ## 🎨 Content Editor Experience
 

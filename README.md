@@ -139,6 +139,39 @@ npm run lint            # ESLint with auto-fix
 npm run lint:fix        # ESLint with auto-fix
 ```
 
+### SEO Testing & Validation
+
+Comprehensive SEO testing utilities with 100-point scoring system:
+
+```bash
+# Test production site with detailed SEO analysis
+npm run seo:test
+
+# Test with verbose output and scoring breakdown
+npm run seo:test:verbose
+
+# Test local development server
+npm run seo:test:local
+
+# Test OpenGraph integration (development utility)
+npx tsx app/test-open-graph.ts
+```
+
+**Testing includes:**
+
+- ✅ **Meta Tags & Titles** (25 points): Length, presence, optimization
+- ✅ **Open Graph & Social Media** (20 points): Complete social tags
+- ✅ **Structured Data** (20 points): JSON-LD presence and validity
+- ✅ **Performance & Technical** (15 points): Headers, compression, viewport
+- ✅ **Accessibility** (10 points): ARIA, headings, focus management
+- ✅ **Members-Only Features** (10 points): Proper noindex, exclusive content
+
+**Documentation:**
+
+- 📋 `SEO_ENHANCEMENTS.md` - Complete SEO implementation guide
+- ✅ `SEO_TESTING_CHECKLIST.md` - Manual testing checklist
+- 🛠️ `CONTENT_SETUP_GUIDE.md` - Content preparation for testing
+
 ### Pre-commit Hooks
 
 Husky automatically runs quality checks before each commit:
