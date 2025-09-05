@@ -74,7 +74,7 @@ const mockShopData = {
  * @returns Promise<void> Logs results to console
  */
 async function testOpenGraphIntegration() {
-  // console.log('🧪 Testing Open Graph Integration\n');
+  console.log('🧪 Testing Open Graph Integration\n');
 
   try {
     // Import our utilities
@@ -83,7 +83,7 @@ async function testOpenGraphIntegration() {
       await import('./lib/seo.js');
 
     // Test 1: Generate Product Open Graph data directly
-    // console.log('1️⃣ Testing generateProductOpenGraph...');
+    console.log('1️⃣ Testing generateProductOpenGraph...');
     const ogData = generateProductOpenGraph(
       mockSettings,
       mockProductPageData,
@@ -96,17 +96,17 @@ async function testOpenGraphIntegration() {
       console.log('✅ OpenGraph data generated successfully');
     }
 
-    // console.log('Open Graph Data:', {
-    //   title: ogData?.title,
-    //   description: ogData?.description?.slice(0, 50) + '...',
-    //   siteName: ogData?.siteName,
-    //   type: ogData?.type,
-    //   hasImage: !!ogData?.image,
-    //   twitterCard: ogData?.twitterCard
-    // });
+    console.log('Open Graph Data:', {
+      title: ogData?.title,
+      description: ogData?.description?.slice(0, 50) + '...',
+      siteName: ogData?.siteName,
+      type: ogData?.type,
+      hasImage: !!ogData?.image,
+      twitterCard: ogData?.twitterCard,
+    });
 
     // Test 2: Generate SEO meta tags with Open Graph integration
-    // console.log('\n2️⃣ Testing integrated SEO meta tags...');
+    console.log('\n2️⃣ Testing integrated SEO meta tags...');
     const metaTags = generateProductMetaTags(
       mockSettings,
       mockProductPageData,
@@ -114,15 +114,15 @@ async function testOpenGraphIntegration() {
       mockShopData,
     );
 
-    // console.log('Meta Tags:', {
-    //   title: metaTags.title,
-    //   hasDescription: !!metaTags.description,
-    //   hasOpenGraph: !!metaTags.openGraph,
-    //   type: metaTags.type
-    // });
+    console.log('Meta Tags:', {
+      title: metaTags.title,
+      hasDescription: !!metaTags.description,
+      hasOpenGraph: !!metaTags.openGraph,
+      type: metaTags.type,
+    });
 
     // Test 3: Generate comprehensive SEO tags
-    // console.log('\n3️⃣ Testing comprehensive SEO tag generation...');
+    console.log('\n3️⃣ Testing comprehensive SEO tag generation...');
     const comprehensiveTags = generateComprehensiveSEOTags(
       metaTags,
       mockSettings,
@@ -135,21 +135,17 @@ async function testOpenGraphIntegration() {
         (tag as any).name?.startsWith('twitter:'),
     );
 
-    console.log(
-      `✅ Found ${ogTags.length} social media tags in ${comprehensiveTags.length} total tags`,
-    );
-
-    // console.log(`Generated ${comprehensiveTags.length} total meta tags`);
-    // console.log(`Found ${ogTags.length} Open Graph/Twitter tags`);
+    console.log(`Generated ${comprehensiveTags.length} total meta tags`);
+    console.log(`Found ${ogTags.length} Open Graph/Twitter tags`);
 
     // Show a few sample tags
-    // console.log('\nSample Open Graph tags:');
-    // ogTags.slice(0, 5).forEach(tag => {
-    //   const key = (tag as any).property || (tag as any).name;
-    //   console.log(`  ${key}: ${(tag as any).content}`);
-    // });
+    console.log('\nSample Open Graph tags:');
+    ogTags.slice(0, 5).forEach((tag) => {
+      const key = (tag as any).property || (tag as any).name;
+      console.log(`  ${key}: ${(tag as any).content}`);
+    });
 
-    // console.log('\n✅ Open Graph integration test completed successfully!');
+    console.log('\n✅ Open Graph integration test completed successfully!');
   } catch (error) {
     console.error(
       '❌ Test failed:',

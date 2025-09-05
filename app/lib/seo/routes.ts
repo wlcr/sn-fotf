@@ -378,19 +378,18 @@ export function debugSEORoutes(globalSettings: Settings | null = null): void {
     return;
   }
 
-  // Development debugging - commented to avoid lint warnings
-  // console.group('🔍 SEO Route Configuration');
-  // console.log('Global Site Discoverable:', isSiteDiscoverable(globalSettings));
+  console.group('🔍 SEO Route Configuration');
+  console.log('Global Site Discoverable:', isSiteDiscoverable(globalSettings));
 
   for (const [pathname, config] of Object.entries(ROUTE_SEO_CONFIG)) {
     const appliedConfig = getRouteSEOConfig(pathname, globalSettings);
-    // console.log(`${pathname}:`, {
-    //   noIndex: appliedConfig?.noIndex ?? false,
-    //   robots: appliedConfig?.robots,
-    //   reason: appliedConfig?.reason,
-    //   priority: config.priority
-    // });
+    console.log(`${pathname}:`, {
+      noIndex: appliedConfig?.noIndex ?? false,
+      robots: appliedConfig?.robots,
+      reason: appliedConfig?.reason,
+      priority: config.priority,
+    });
   }
 
-  // console.groupEnd();
+  console.groupEnd();
 }

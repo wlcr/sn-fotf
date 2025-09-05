@@ -264,9 +264,14 @@ export default [
       'react/prop-types': 'off',
     },
   },
-  // Test files - allow console statements
+  // Test files and development utilities - allow console statements
   {
-    files: ['**/test-*.{js,ts}', '**/*test*.{js,ts}', '**/scripts/**/*.js'],
+    files: [
+      '**/test-*.{js,ts}',
+      '**/*test*.{js,ts}',
+      '**/scripts/**/*.js',
+      '**/lib/seo/routes.ts', // SEO debug utilities
+    ],
     rules: {
       'no-console': 'off',
       'no-unused-vars': 'warn',
