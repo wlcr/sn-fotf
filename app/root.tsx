@@ -121,8 +121,8 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       },
     ),
     // Fetch customer data to determine if they can access account features
-    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error) => {
-      console.error('error fetching customer', error);
+    // It looks like this can error if the customer is not logged in
+    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch(() => {
       return null;
     }),
   ]);
