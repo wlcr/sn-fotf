@@ -59,6 +59,7 @@
     "sanity": "^4.6.0",
     "string-strip-html": "^13.4.13",
     "styled-components": "^6.1.19",
+    "ultrahtml": "^1.6.0",
     "what-input": "^5.2.12"
   },
   "devDependencies": {

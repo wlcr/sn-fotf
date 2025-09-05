@@ -35,7 +35,8 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   ssr: {
-    external: ['happy-dom'],
+    external: [],
+    noExternal: ['ultrahtml'],
     optimizeDeps: {
       /**
        * Include dependencies here if they throw CJS<>ESM errors.

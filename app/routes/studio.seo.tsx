@@ -6,7 +6,44 @@ import type {ActionFunctionArgs} from '@shopify/remix-oxygen';
  * This route handles SEO test requests from the embedded Studio tool.
  * It provides a simplified but comprehensive SEO analysis suitable for
  * content managers to understand and act upon.
+ *
+ * Uses ultrahtml for accurate DOM parsing and element selection.
  */
+
+// ultrahtml AST node types
+interface UltrahtmlNode {
+  type: 'element' | 'text' | 'comment';
+  name?: string;
+  attributes?: Record<string, string>;
+  children?: UltrahtmlNode[];
+  value?: string;
+}
+
+interface UltrahtmlAST {
+  type: 'root';
+  children: UltrahtmlNode[];
+}
+
+// Simplified DOM-like interfaces for SEO testing
+interface SimpleDOMElement {
+  textContent: string;
+  getAttribute: (attr: string) => string | null;
+}
+
+interface SimpleDOMElementList {
+  textContent: string;
+  text: string;
+  alt: string | null;
+  id: string | null;
+  getAttribute: (attr: string) => string | null;
+}
+
+interface SimpleDocument {
+  querySelector: (selector: string) => SimpleDOMElement | null;
+  querySelectorAll: (selector: string) => SimpleDOMElementList[];
+  documentElement: {lang: string | null};
+  body: {textContent: string};
+}
 
 interface SeoTestRequest {
   url?: string;
@@ -38,7 +75,7 @@ export async function action({request, context}: ActionFunctionArgs) {
   try {
     const requestData = (await request.json()) as SeoTestRequest;
     const testUrl = requestData.url || new URL(request.url).origin;
-    const testPages = ['/', '/products', '/collections'];
+    const testPages = ['/', '/collections'];
 
     // Get current Sanity settings (simplified for Studio use)
     const settings = await getSettings(context);
@@ -119,37 +156,135 @@ async function testPage(url: string) {
 
     const html = await response.text();
 
-    // Parse HTML using dynamic import to avoid bundling issues
-    let document: any;
-    let window: any;
+    // Parse HTML using ultrahtml for accurate DOM parsing
+    let document: SimpleDocument;
+    let window: {close: () => void};
 
     try {
-      // Dynamic import to avoid esbuild bundling Node.js dependencies
-      const {Window} = await import('happy-dom');
-      window = new Window();
-      window.document.write(html);
-      document = window.document;
-    } catch (error) {
-      console.warn(
-        'HappyDOM parsing failed, falling back to basic analysis:',
-        error,
-      );
-      // Fallback to a simple object that will work with our basic tests
-      document = {
-        querySelector: () => null,
-        querySelectorAll: () => [],
+      // Try ultrahtml - zero dependencies, runtime-agnostic HTML parser
+      const {parse} = await import('ultrahtml');
+      const ast = parse(html) as UltrahtmlAST;
+
+      // Create a document-like interface using ultrahtml AST
+      const matchesAttributeSelector = (
+        node: UltrahtmlNode,
+        selector: string,
+      ): boolean => {
+        // Simple attribute selector matching like meta[name="description"]
+        const match = selector.match(/(\w+)\[([^\]]+)\]/);
+        if (!match) return false;
+        const [, tagName, attrExpr] = match;
+        if (node.name !== tagName) return false;
+
+        if (!attrExpr) return false;
+        const attrMatch = attrExpr.match(/(\w+)=["']([^"']*)["']/);
+        if (!attrMatch) return false;
+        const [, attrName, attrValue] = attrMatch;
+
+        if (!attrName) return false;
+        return node.attributes?.[attrName] === attrValue;
       };
+
+      const findElement = (
+        nodes: UltrahtmlNode[] | UltrahtmlAST,
+        selector: string,
+      ): UltrahtmlNode | null => {
+        const nodeArray = Array.isArray(nodes) ? nodes : nodes?.children || [];
+        for (const node of nodeArray) {
+          if (node.type === 'element') {
+            if (
+              selector === node.name ||
+              (selector.includes('[') &&
+                selector.includes('=') &&
+                matchesAttributeSelector(node, selector))
+            ) {
+              return node;
+            }
+            const found = node.children
+              ? findElement(node.children, selector)
+              : null;
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+
+      const findElements = (
+        nodes: UltrahtmlNode[] | UltrahtmlAST,
+        selector: string,
+      ): UltrahtmlNode[] => {
+        const results: UltrahtmlNode[] = [];
+        const nodeArray = Array.isArray(nodes) ? nodes : nodes?.children || [];
+        for (const node of nodeArray) {
+          if (node.type === 'element') {
+            if (
+              selector === node.name ||
+              (selector.includes('[') &&
+                selector.includes('=') &&
+                matchesAttributeSelector(node, selector))
+            ) {
+              results.push(node);
+            }
+            if (node.children) {
+              results.push(...findElements(node.children, selector));
+            }
+          }
+        }
+        return results;
+      };
+
+      const getTextContent = (node: UltrahtmlNode | null): string => {
+        if (!node) return '';
+        if (node.type === 'text') return node.value || '';
+        if (node.children) {
+          return node.children.map(getTextContent).join('');
+        }
+        return '';
+      };
+
+      document = {
+        querySelector: (selector: string) => {
+          const element = findElement(ast, selector);
+          if (!element) return null;
+          return {
+            textContent: getTextContent(element),
+            getAttribute: (attr: string) => element.attributes?.[attr] || null,
+          };
+        },
+        querySelectorAll: (selector: string) => {
+          const elements = findElements(ast, selector);
+          return elements.map((el) => ({
+            textContent: getTextContent(el),
+            text: getTextContent(el),
+            alt: el.attributes?.alt || null,
+            id: el.attributes?.id || null,
+            getAttribute: (attr: string) => el.attributes?.[attr] || null,
+          }));
+        },
+        documentElement: {
+          lang: findElement(ast, 'html')?.attributes?.lang || null,
+        },
+        body: {
+          textContent:
+            getTextContent(findElement(ast, 'body')) ||
+            html.replace(/<[^>]*>/g, ''),
+        },
+      };
+      window = {close: () => {}};
+    } catch (error) {
+      // Fallback to regex-based parsing if ultrahtml fails
+      document = createRegexBasedDocument(html);
       window = {close: () => {}};
     }
 
-    // Run simplified test suite using DOM parsing
+    // Run SEO test suite using parsed DOM
     const categories = {
       metaTags: testMetaTags(document),
       openGraph: testOpenGraph(document),
       structuredData: testStructuredData(html),
       technical: testTechnical(response, document),
       accessibility: testAccessibility(document),
-      content: testContent(document),
+      content: testContent(document, html),
     };
 
     // Clean up happy-dom window
@@ -177,9 +312,108 @@ async function testPage(url: string) {
 }
 
 /**
+ * Create a minimal document-like object using regex parsing
+ * This is a fallback when HappyDOM is not available in SSR
+ */
+function createRegexBasedDocument(html: string): SimpleDocument {
+  return {
+    querySelector: (selector: string) => {
+      if (selector === 'title') {
+        const match = html.match(/<title[^>]*>([^<]*)</i);
+        return match
+          ? {textContent: match[1] || '', getAttribute: () => null}
+          : null;
+      }
+      if (selector === 'meta[name="description"]') {
+        const match = html.match(
+          /<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i,
+        );
+        return match
+          ? {
+              textContent: '',
+              getAttribute: (attr: string) =>
+                attr === 'content' ? match[1] || null : null,
+            }
+          : null;
+      }
+      if (selector === 'h1') {
+        const match = html.match(/<h1[^>]*>([^<]*)</i);
+        return match
+          ? {textContent: match[1] || '', getAttribute: () => null}
+          : null;
+      }
+      if (selector === 'link[rel="canonical"]') {
+        const match = html.match(
+          /<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)["'][^>]*>/i,
+        );
+        return match
+          ? {
+              textContent: '',
+              getAttribute: (attr: string) =>
+                attr === 'href' ? match[1] || null : null,
+            }
+          : null;
+      }
+      if (selector === 'meta[name="robots"]') {
+        const match = html.match(
+          /<meta[^>]*name=["']robots["'][^>]*content=["']([^"']*)["'][^>]*>/i,
+        );
+        return match
+          ? {
+              textContent: '',
+              getAttribute: (attr: string) =>
+                attr === 'content' ? match[1] || null : null,
+            }
+          : null;
+      }
+      return null;
+    },
+    querySelectorAll: (selector: string) => {
+      if (selector === 'img') {
+        const matches = html.match(/<img[^>]*>/gi) || [];
+        return matches.map((img) => ({
+          textContent: '',
+          text: '',
+          alt: null,
+          id: null,
+          getAttribute: (attr: string) => {
+            const attrMatch = img.match(
+              new RegExp(`${attr}=["']([^"']*)["']`, 'i'),
+            );
+            return attrMatch ? attrMatch[1] || null : null;
+          },
+        }));
+      }
+      if (selector === 'a[href]') {
+        const matches = html.match(/<a[^>]*href=[^>]*>/gi) || [];
+        return matches.map((link) => ({
+          textContent: '',
+          text: '',
+          alt: null,
+          id: null,
+          getAttribute: (attr: string) => {
+            const attrMatch = link.match(
+              new RegExp(`${attr}=["']([^"']*)["']`, 'i'),
+            );
+            return attrMatch ? attrMatch[1] || null : null;
+          },
+        }));
+      }
+      return [];
+    },
+    documentElement: {
+      lang: null,
+    },
+    body: {
+      textContent: html.replace(/<[^>]*>/g, ''),
+    },
+  };
+}
+
+/**
  * Test meta tags (simplified for Studio)
  */
-function testMetaTags(document: Document) {
+function testMetaTags(document: SimpleDocument) {
   let score = 0;
   const maxScore = TEST_CATEGORIES.metaTags.maxScore;
 
@@ -195,11 +429,10 @@ function testMetaTags(document: Document) {
   }
 
   // Meta description (8 points)
-  const description = document.querySelector(
-    'meta[name="description"]',
-  ) as HTMLMetaElement | null;
-  if (description?.getAttribute('content')?.trim()) {
-    const descLength = description.getAttribute('content')!.trim().length;
+  const description = document.querySelector('meta[name="description"]');
+  const descContent = description?.getAttribute('content')?.trim();
+  if (descContent) {
+    const descLength = descContent.length;
     if (descLength >= 120 && descLength <= 250) {
       score += 8;
     } else if (descLength > 0) {
@@ -214,17 +447,13 @@ function testMetaTags(document: Document) {
   }
 
   // Canonical (3 points)
-  const canonical = document.querySelector(
-    'link[rel="canonical"]',
-  ) as HTMLLinkElement | null;
+  const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical?.getAttribute('href')) {
     score += 3;
   }
 
   // Robots meta (2 points)
-  const robots = document.querySelector(
-    'meta[name="robots"]',
-  ) as HTMLMetaElement | null;
+  const robots = document.querySelector('meta[name="robots"]');
   if (robots?.getAttribute('content')?.trim()) {
     score += 2;
   }
@@ -235,25 +464,17 @@ function testMetaTags(document: Document) {
 /**
  * Test Open Graph tags
  */
-function testOpenGraph(document: Document) {
+function testOpenGraph(document: SimpleDocument) {
   let score = 0;
   const maxScore = TEST_CATEGORIES.openGraph.maxScore;
 
-  const ogTitle = document.querySelector(
-    'meta[property="og:title"]',
-  ) as HTMLMetaElement | null;
+  const ogTitle = document.querySelector('meta[property="og:title"]');
   const ogDescription = document.querySelector(
     'meta[property="og:description"]',
-  ) as HTMLMetaElement | null;
-  const ogImage = document.querySelector(
-    'meta[property="og:image"]',
-  ) as HTMLMetaElement | null;
-  const ogType = document.querySelector(
-    'meta[property="og:type"]',
-  ) as HTMLMetaElement | null;
-  const ogUrl = document.querySelector(
-    'meta[property="og:url"]',
-  ) as HTMLMetaElement | null;
+  );
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  const ogType = document.querySelector('meta[property="og:type"]');
+  const ogUrl = document.querySelector('meta[property="og:url"]');
 
   if (ogTitle?.getAttribute('content')) score += 4;
   if (ogDescription?.getAttribute('content')) score += 4;
@@ -309,14 +530,12 @@ function testStructuredData(html: string) {
 /**
  * Test technical SEO factors
  */
-function testTechnical(response: Response, document: Document) {
+function testTechnical(response: Response, document: SimpleDocument) {
   let score = 0;
   const maxScore = TEST_CATEGORIES.technical.maxScore;
 
   // Viewport meta tag (3 points)
-  const viewport = document.querySelector(
-    'meta[name="viewport"]',
-  ) as HTMLMetaElement | null;
+  const viewport = document.querySelector('meta[name="viewport"]');
   if (viewport?.getAttribute('content')) {
     score += 3;
   }
@@ -341,7 +560,7 @@ function testTechnical(response: Response, document: Document) {
 
   // Language declaration (2 points)
   const html = document.documentElement;
-  if (html.lang) {
+  if (html && html.lang) {
     score += 2;
   }
 
@@ -351,7 +570,7 @@ function testTechnical(response: Response, document: Document) {
 /**
  * Test accessibility factors relevant to SEO
  */
-function testAccessibility(document: Document) {
+function testAccessibility(document: SimpleDocument) {
   let score = 0;
   const maxScore = TEST_CATEGORIES.accessibility.maxScore;
 
@@ -390,12 +609,12 @@ function testAccessibility(document: Document) {
 /**
  * Test content quality factors
  */
-function testContent(document: Document) {
+function testContent(document: SimpleDocument, html?: string) {
   let score = 0;
   const maxScore = TEST_CATEGORIES.content.maxScore;
 
-  // Content length (4 points)
-  const textContent = document.body?.textContent?.trim() || '';
+  // Content length (4 points) - fallback to full HTML if body not available
+  const textContent = (document.body?.textContent || html || '').trim();
   if (textContent.length > 300) {
     score += 4;
   } else if (textContent.length > 100) {

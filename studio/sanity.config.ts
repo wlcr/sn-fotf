@@ -14,6 +14,20 @@ import {structure} from './structure';
 import SeoTestingTool from './tools/SeoTestingTool';
 // import StudioIcon from './components/StudioIcon';
 
+// Define SEO Testing plugin
+function seoTestingPlugin() {
+  return {
+    name: 'seo-testing',
+    tools: [
+      {
+        name: 'seo-testing',
+        title: 'SEO Testing',
+        component: SeoTestingTool,
+      },
+    ],
+  };
+}
+
 // Sanity Studio Configuration
 // Note: Project IDs are not sensitive - they're visible in API URLs and client requests
 // Only API tokens and secrets should be kept private
@@ -36,11 +50,7 @@ export default defineConfig({
   plugins: [
     structureTool({structure}),
     visionTool(), // GROQ query tool for development
-    {
-      name: 'seo-testing',
-      title: 'SEO Testing',
-      component: SeoTestingTool,
-    } as any, // Custom tool - types not fully supported yet
+    seoTestingPlugin(), // Custom SEO Testing tool
   ],
 
   schema: {
