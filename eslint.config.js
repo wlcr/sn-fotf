@@ -264,4 +264,12 @@ export default [
       'react/prop-types': 'off',
     },
   },
+  // Test files - allow console statements
+  {
+    files: ['**/test-*.{js,ts}', '**/*test*.{js,ts}', '**/scripts/**/*.js'],
+    rules: {
+      'no-console': 'off',
+      'no-unused-vars': 'warn',
+    },
+  },
 ];
