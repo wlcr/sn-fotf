@@ -8,6 +8,7 @@
   border: 2px solid var(--color-mills-river);
   padding: var(--size-3) var(--size-5);
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -24,6 +25,7 @@
   border: 2px solid var(--color-mills-river);
   padding: var(--size-3) var(--size-5);
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -40,6 +42,7 @@
   border: 2px solid var(--color-foam-white);
   padding: var(--size-3) var(--size-5);
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -56,6 +59,7 @@
   border: 2px solid var(--color-foam-white);
   padding: var(--size-3) var(--size-5);
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -73,6 +77,7 @@
   padding: var(--size-2) var(--size-3);
   border-radius: 360px;
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -90,6 +95,7 @@
   padding: var(--size-2) var(--size-3);
   border-radius: 360px;
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
@@ -105,6 +111,7 @@
   color: var(--color-mills-river);
   border: none;
   line-height: 1;
+  cursor: pointer;
   text-decoration: none;
 
   &:hover,
@@ -123,6 +130,7 @@
   color: var(--color-foam-white);
   border: none;
   line-height: 1;
+  cursor: pointer;
   text-decoration: none;
 
   &:hover,
@@ -143,6 +151,7 @@
   padding: var(--size-3) var(--size-5);
   border-radius: 50px;
   line-height: 1;
+  cursor: pointer;
 
   &:hover,
   &:active {
