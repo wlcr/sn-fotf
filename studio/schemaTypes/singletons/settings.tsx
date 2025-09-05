@@ -1,8 +1,5 @@
 import {CogIcon} from '@sanity/icons';
-import {defineField, defineType, useFormValue} from 'sanity';
-import React from 'react';
-
-import {SeoImpactPreview} from '../../components/SeoImpactPreview';
+import {defineField, defineType} from 'sanity';
 
 /**
  * Site Settings schema - Global configuration for SEO, analytics, branding, and company info.
@@ -281,40 +278,54 @@ export const settings = defineType({
         }),
         defineField({
           name: 'impactPreview',
-          title: '📊 Impact Preview',
+          title: '📊 What This Strategy Means',
           type: 'object',
-          description: 'Real-time preview of what your SEO strategy means',
+          description:
+            'The impact preview will appear here based on your SEO strategy selection above',
           fields: [
-            {
-              name: 'placeholder',
-              type: 'string',
-              hidden: true,
-            },
+            defineField({
+              name: 'marketingMode',
+              title: '🎯 Marketing Mode Impact',
+              type: 'text',
+              initialValue:
+                '✅ Visible: Homepage, Products, Collections, Future blog\n🔒 Hidden: Account pages, Cart/Checkout, Member sections\n🟢 Risk: LOW - Recommended for growing membership',
+              readOnly: true,
+              hidden: ({document}) =>
+                (document as any)?.globalSeoControls?.seoStrategy !==
+                'marketing',
+            }),
+            defineField({
+              name: 'privateMode',
+              title: '🔒 Private Mode Impact',
+              type: 'text',
+              initialValue:
+                '✅ Visible: Nothing - complete privacy\n🔒 Hidden: Everything\n🔴 Risk: HIGH - No organic discovery possible',
+              readOnly: true,
+              hidden: ({document}) =>
+                (document as any)?.globalSeoControls?.seoStrategy !== 'private',
+            }),
+            defineField({
+              name: 'homepageOnly',
+              title: '🏠 Homepage Only Impact',
+              type: 'text',
+              initialValue:
+                '✅ Visible: Homepage only\n🔒 Hidden: All products, collections, everything else\n🟡 Risk: MEDIUM - Limited discovery potential',
+              readOnly: true,
+              hidden: ({document}) =>
+                (document as any)?.globalSeoControls?.seoStrategy !==
+                'homepage_only',
+            }),
+            defineField({
+              name: 'customMode',
+              title: '⚙️ Custom Configuration Impact',
+              type: 'text',
+              initialValue:
+                '✅ Visible: Depends on technical settings below\n🔒 Hidden: Configure using controls below\n🟡 Risk: MEDIUM - Requires SEO knowledge',
+              readOnly: true,
+              hidden: ({document}) =>
+                (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
+            }),
           ],
-          components: {
-            input: () => {
-              const Component = () => {
-                const parentValue = (useFormValue([]) as any) || {};
-                const globalSeoControls = parentValue.globalSeoControls || {};
-
-                const strategy = globalSeoControls.seoStrategy || 'marketing';
-                const emergencyMode =
-                  globalSeoControls.emergencyPrivateMode || false;
-                const siteDiscoverable = globalSeoControls.siteDiscoverable;
-                const allowRobotsCrawling =
-                  globalSeoControls.allowRobotsCrawling;
-
-                return React.createElement(SeoImpactPreview, {
-                  strategy,
-                  emergencyMode,
-                  siteDiscoverable,
-                  allowRobotsCrawling,
-                });
-              };
-
-              return React.createElement(Component);
-            },
-          },
           hidden: false,
         }),
         defineField({
@@ -324,7 +335,8 @@ export const settings = defineType({
           description:
             '✅ ON = Google can index and show your pages in search results\n❌ OFF = Google will NOT show any pages in search results (complete privacy)\n\n⚠️ IMPACT: Turning OFF removes ALL pages from Google search results within days.',
           initialValue: true,
-          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
         }),
         defineField({
           name: 'allowRobotsCrawling',
@@ -333,7 +345,8 @@ export const settings = defineType({
           description:
             '✅ ON = Google can visit and crawl all public pages\n❌ OFF = Google can only see your homepage, everything else is blocked\n\n⚠️ IMPACT: Turning OFF means only your homepage appears in search results.',
           initialValue: true,
-          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
         }),
         defineField({
           name: 'emergencyPrivateMode',
@@ -361,7 +374,8 @@ export const settings = defineType({
           options: {
             layout: 'tags',
           },
-          hidden: ({parent}) => parent?.seoStrategy !== 'custom',
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
         }),
       ],
     }),
