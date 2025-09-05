@@ -17,3 +17,7 @@ studio/.sanity/
 # Vite cache
 node_modules/.vite/
 node_modules/.cache/
+
+# Development test files
+app/test-*.ts
+scripts/*-test.js

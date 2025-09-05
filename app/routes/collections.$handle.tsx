@@ -14,13 +14,22 @@ import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 // SEO integration
 import {
   generateCollectionMetaTags,
-  seoMetaTagsToRemixMeta,
+  generateComprehensiveSEOTags,
   pageHasNonIndexableCollections,
 } from '~/lib/seo';
+import {shouldNoIndex} from '~/lib/seo/routes';
 import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
 import type {Settings} from '~/studio/sanity.types';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+// Structured data integration
+import {
+  generateSiteStructuredData,
+  generateBreadcrumbData,
+  combineStructuredData,
+} from '~/lib/seo/structured-data';
+import StructuredData from '~/components/StructuredData';
+
+export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   if (!data?.collection) {
     return [{title: 'Collection Not Found'}];
   }
@@ -33,6 +42,11 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
       title: data.collection.title,
       description: data.collection.description,
       handle: data.collection.handle,
+      image: data.collection.image?.url,
+    },
+    {
+      name: data.shopData?.name,
+      primaryDomain: data.shopData?.primaryDomain,
     },
   );
 
@@ -41,12 +55,34 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     ? pageHasNonIndexableCollections(data.sanityCollectionPage.pageBuilder)
     : false;
 
-  // Override robots directive if page contains non-indexable collections
-  if (hasNonIndexableCollections && metaTags.robots) {
+  // Check route-based SEO rules
+  const routeShouldNoIndex = shouldNoIndex(location.pathname, data.settings);
+
+  // Override robots directive if page contains non-indexable collections or route rules apply
+  if ((hasNonIndexableCollections || routeShouldNoIndex) && metaTags.robots) {
     metaTags.robots = 'noindex, nofollow';
   }
 
-  return seoMetaTagsToRemixMeta(metaTags);
+  // Generate comprehensive meta tags with enhanced Open Graph and Twitter Cards
+  const enhancedMetaTags = {
+    ...metaTags,
+    type: 'website' as const,
+    image: data.collection.image?.url,
+    keywords: [
+      data.collection.title,
+      'collection',
+      'Sierra Nevada',
+      'brewery products',
+    ]
+      .filter(Boolean)
+      .slice(0, 10),
+  };
+
+  return generateComprehensiveSEOTags(enhancedMetaTags, data.settings, {
+    name: data.shopData?.name,
+    primaryDomain: data.shopData?.primaryDomain,
+    brand: data.shopData?.brand,
+  });
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -109,8 +145,8 @@ async function loadCriticalData({
     collectionHandle = sanityCollectionPage.collectionHandle;
   }
 
-  // Step 3: Load Shopify collection and settings in parallel
-  const [shopifyRes, settings] = await Promise.all([
+  // Step 3: Load Shopify collection, settings, and shop data in parallel
+  const [shopifyRes, settings, shopData] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
       variables: {handle: collectionHandle, ...paginationVariables},
     }),
@@ -127,6 +163,14 @@ async function loadCriticalData({
       // Log Settings query errors for debugging, but don't fail the page
       console.warn(
         'Failed to load Settings from Sanity:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
+    // Load shop data for comprehensive SEO and structured data
+    storefront.query(SHOP_SEO_QUERY).catch((error) => {
+      console.warn(
+        'Failed to load shop data for SEO:',
         error instanceof Error ? error.message : String(error),
       );
       return null;
@@ -150,6 +194,7 @@ async function loadCriticalData({
     collection,
     sanityCollectionPage, // May be null if no CollectionPage exists
     settings, // For SEO meta tag generation
+    shopData: shopData?.shop || null, // For comprehensive SEO and structured data
   };
 }
 
@@ -163,15 +208,41 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
-  const {collection, sanityCollectionPage} = useLoaderData<typeof loader>();
+  const {collection, sanityCollectionPage, settings, shopData} =
+    useLoaderData<typeof loader>();
 
   // Use name and description overrides from Sanity if available
   const displayTitle = sanityCollectionPage?.nameOverride || collection.title;
   const displayDescription =
     sanityCollectionPage?.descriptionOverride || collection.description;
 
+  // Generate structured data for this collection
+  const baseUrl =
+    shopData?.primaryDomain?.url || 'https://friends.sierranevada.com';
+
+  const siteStructuredData = generateSiteStructuredData(settings, shopData);
+  const breadcrumbData = generateBreadcrumbData(
+    [
+      {name: 'Home', url: '/'},
+      {name: 'Collections', url: '/collections'},
+      {name: displayTitle, url: `/collections/${collection.handle}`},
+    ],
+    baseUrl,
+  );
+
+  const allStructuredData = combineStructuredData(
+    ...siteStructuredData,
+    breadcrumbData,
+  );
+
   return (
     <>
+      {/* Structured Data */}
+      <StructuredData
+        data={allStructuredData}
+        id="collection-structured-data"
+      />
+
       <div className="collection">
         <h1>{displayTitle}</h1>
         {displayDescription && (
@@ -183,8 +254,8 @@ export default function Collection() {
         >
           {({node: product, index}) => (
             <ProductItem
-              key={product.id}
-              product={product}
+              key={(product as any).id}
+              product={product as any}
               loading={index < 8 ? 'eager' : undefined}
             />
           )}
@@ -258,6 +329,10 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        url
+        altText
+      }
       products(
         first: $first,
         last: $last,
@@ -272,6 +347,44 @@ const COLLECTION_QUERY = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+    }
+  }
+` as const;
+
+const SHOP_SEO_QUERY = `#graphql
+  query ShopSEO($country: CountryCode, $language: LanguageCode)
+   @inContext(country: $country, language: $language) {
+    shop {
+      id
+      name
+      description
+      primaryDomain {
+        url
+      }
+      brand {
+        logo {
+          image {
+            url
+          }
+        }
+        coverImage {
+          image {
+            url
+          }
+        }
+        squareLogo {
+          image {
+            url
+          }
+        }
+        shortDescription
+        slogan
+        colors {
+          primary {
+            background
+          }
         }
       }
     }

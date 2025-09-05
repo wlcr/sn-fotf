@@ -39,6 +39,10 @@ export const settings = defineType({
       title: 'Social Media',
     },
     {
+      name: 'opengraph',
+      title: 'Open Graph / Social Sharing',
+    },
+    {
       name: 'legal',
       title: 'Legal & Compliance',
     },
@@ -89,33 +93,13 @@ export const settings = defineType({
       },
       group: 'seo',
     }),
+    // Open Graph / Social Sharing settings (comprehensive)
     defineField({
-      name: 'ogImage',
-      title: 'Default Social Share Image',
-      type: 'image',
-      description:
-        'Default image for social media sharing and search results (1200x630px recommended)',
-      group: 'seo',
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alternative Text',
-          type: 'string',
-          description: 'Describe the image for accessibility and SEO',
-          validation: (rule) => {
-            return rule.custom((alt, context) => {
-              // Check if image is selected and alt text is missing
-              if (context.document && context.document.ogImage && !alt) {
-                return 'Alternative text is required when an image is selected';
-              }
-              return true;
-            });
-          },
-        }),
-      ],
+      name: 'openGraph',
+      title: 'Open Graph / Social Sharing Settings',
+      type: 'globalOpenGraph',
+      description: 'Default social media sharing settings for the entire site',
+      group: 'opengraph',
     }),
 
     // Analytics & Tracking Group

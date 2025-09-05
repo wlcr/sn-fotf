@@ -79,6 +79,13 @@ export const productPage = defineType({
       ],
     }),
     defineField({
+      name: 'openGraph',
+      title: 'Open Graph / Social Media',
+      type: 'openGraph',
+      description:
+        'Custom social media sharing settings for this product. If not set, defaults will be used.',
+    }),
+    defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',

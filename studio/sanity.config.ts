@@ -11,6 +11,7 @@ import {structureTool} from 'sanity/structure';
 import {visionTool} from '@sanity/vision';
 import {schemaTypes} from './schemaTypes';
 import {structure} from './structure';
+// import StudioIcon from './components/StudioIcon';
 
 // Sanity Studio Configuration
 // Note: Project IDs are not sensitive - they're visible in API URLs and client requests

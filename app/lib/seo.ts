@@ -1,29 +1,78 @@
 /**
- * SEO Meta Tag Utilities
+ * SEO Meta Tag Utilities for Sierra Nevada Friends of the Family
  *
- * Utilities for generating appropriate meta tags based on global settings,
- * product-specific SEO controls, and collection SEO controls.
+ * Enhanced SEO utilities with automatic validation, length optimization,
+ * and comprehensive meta tag generation. Integrates with Sanity CMS global
+ * SEO controls for the members-only brewery storefront.
  *
- * Designed specifically for the Friends of the Family members-only site
- * where SEO discoverability needs careful control.
+ * Adapted from Rubato Wines implementation with Sanity CMS integration.
  */
 
+import type {MetaDescriptor} from 'react-router';
 import type {
   Settings,
   ProductPage,
   CollectionPage,
 } from '~/studio/sanity.types';
-
 import {
   isSiteDiscoverable,
   isRobotsCrawlingAllowed,
 } from '~/lib/sanity/queries/settings';
+import {
+  generateProductOpenGraph,
+  generateCollectionOpenGraph,
+  generatePageOpenGraph,
+  openGraphToMetaTags,
+  debugOpenGraph,
+  type OpenGraphData,
+} from './seo/open-graph';
 
+/**
+ * SEO validation limits based on current best practices
+ */
+export const SEO_LIMITS = {
+  title: {min: 30, max: 60, optimal: 50},
+  description: {min: 120, max: 160, optimal: 155},
+  keywords: {max: 10},
+} as const;
+
+/**
+ * Enhanced SEO meta tags interface
+ */
 export interface SeoMetaTags {
   title: string;
   description?: string;
   robots?: string;
   canonical?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'product';
+  keywords?: string[];
+  openGraph?: OpenGraphData | null;
+}
+
+/**
+ * Validate and optimize SEO text content with automatic truncation
+ */
+function validateSEOText(
+  text: string | undefined,
+  type: keyof typeof SEO_LIMITS,
+): string | undefined {
+  if (!text) return undefined;
+
+  const trimmed = text.trim();
+  if (!trimmed) return undefined;
+
+  const limits = SEO_LIMITS[type];
+  if (trimmed.length > limits.max) {
+    // Truncate at word boundary near the limit
+    const truncated = trimmed.substring(0, limits.max);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > limits.max * 0.8
+      ? truncated.substring(0, lastSpace) + '...'
+      : truncated + '...';
+  }
+
+  return trimmed;
 }
 
 /**
@@ -72,13 +121,34 @@ export function generatePageMetaTags(
     title: string;
     description?: string;
     canonical?: string;
+    url?: string;
   },
+  pageOpenGraph?: any | null,
+  shopData?: {
+    name?: string;
+    primaryDomain?: {url: string};
+  } | null,
 ): SeoMetaTags {
+  // Generate Open Graph data for generic pages
+  const openGraph = pageData.url
+    ? generatePageOpenGraph(
+        globalSettings,
+        pageOpenGraph,
+        {
+          title: pageData.title,
+          description: pageData.description,
+          url: pageData.url,
+        },
+        shopData,
+      )
+    : null;
+
   return {
     title: pageData.title,
     description: pageData.description,
     robots: generateRobotsDirective(globalSettings),
     canonical: pageData.canonical,
+    openGraph,
   };
 }
 
@@ -92,7 +162,12 @@ export function generateProductMetaTags(
     title: string;
     description?: string;
     handle: string;
+    image?: string;
   },
+  shopData?: {
+    name?: string;
+    primaryDomain?: {url: string};
+  } | null,
 ): SeoMetaTags {
   // Use custom meta description if provided, otherwise fall back to product description
   const description =
@@ -103,6 +178,14 @@ export function generateProductMetaTags(
   const indexable = productPageData?.seoControls?.indexable ?? true;
   const followable = productPageData?.seoControls?.followable ?? true;
 
+  // Generate Open Graph data using Sanity-first approach
+  const openGraph = generateProductOpenGraph(
+    globalSettings,
+    productPageData,
+    productData,
+    shopData,
+  );
+
   return {
     title: productPageData?.nameOverride || productData.title,
     description,
@@ -111,6 +194,9 @@ export function generateProductMetaTags(
       followable,
     }),
     canonical: `/products/${productData.handle}`,
+    image: productData.image,
+    type: 'product',
+    openGraph,
   };
 }
 
@@ -124,7 +210,12 @@ export function generateCollectionMetaTags(
     title: string;
     description?: string;
     handle: string;
+    image?: string;
   },
+  shopData?: {
+    name?: string;
+    primaryDomain?: {url: string};
+  } | null,
   options?: {
     preventIndexing?: boolean;
   },
@@ -139,6 +230,14 @@ export function generateCollectionMetaTags(
   const indexable = collectionPageData?.seoControls?.indexable ?? true;
   const followable = collectionPageData?.seoControls?.followable ?? true;
 
+  // Generate Open Graph data using Sanity-first approach
+  const openGraph = generateCollectionOpenGraph(
+    globalSettings,
+    collectionPageData,
+    collectionData,
+    shopData,
+  );
+
   return {
     title:
       collectionPageData?.nameOverride || `${collectionData.title} Collection`,
@@ -149,11 +248,140 @@ export function generateCollectionMetaTags(
       preventIndexing: options?.preventIndexing,
     }),
     canonical: `/collections/${collectionData.handle}`,
+    image: collectionData.image,
+    type: 'website',
+    openGraph,
   };
 }
 
 /**
- * Convert SEO meta tags to Remix MetaFunction format
+ * Generate comprehensive SEO meta tags with automatic validation and optimization
+ * Includes Open Graph, Twitter Cards, and other social media tags
+ * Now integrates with Sanity-first Open Graph utilities
+ */
+export function generateComprehensiveSEOTags(
+  seoData: SeoMetaTags,
+  globalSettings: Settings | null,
+  shopData?: {
+    name?: string;
+    primaryDomain?: {url: string};
+    brand?: {
+      logo?: {image?: {url?: string}};
+      coverImage?: {image?: {url?: string}};
+      squareLogo?: {image?: {url?: string}};
+      colors?: {primary?: Array<{background?: string}>};
+    };
+  } | null,
+): MetaDescriptor[] {
+  const tags: MetaDescriptor[] = [];
+
+  // Validate and optimize content
+  const validatedTitle =
+    validateSEOText(seoData.title, 'title') || seoData.title;
+  const validatedDescription = validateSEOText(
+    seoData.description,
+    'description',
+  );
+  const validatedKeywords = seoData.keywords?.slice(0, SEO_LIMITS.keywords.max);
+
+  // Basic meta tags
+  tags.push({title: validatedTitle});
+
+  if (validatedDescription) {
+    tags.push({name: 'description', content: validatedDescription});
+  }
+
+  if (seoData.canonical) {
+    tags.push({tagName: 'link', rel: 'canonical', href: seoData.canonical});
+  }
+
+  if (validatedKeywords?.length) {
+    tags.push({name: 'keywords', content: validatedKeywords.join(', ')});
+  }
+
+  // Robots meta tag
+  if (seoData.robots) {
+    tags.push({name: 'robots', content: seoData.robots});
+  }
+
+  // Use Sanity-first Open Graph data if available, otherwise fallback to legacy method
+  if (seoData.openGraph) {
+    // Debug Open Graph data in development
+    debugOpenGraph(seoData.openGraph);
+
+    // Convert Open Graph data to meta tags
+    const ogTags = openGraphToMetaTags(seoData.openGraph);
+    ogTags.forEach((tag) => {
+      if (tag.property) {
+        tags.push({property: tag.property, content: tag.content});
+      } else if (tag.name) {
+        tags.push({name: tag.name, content: tag.content});
+      }
+    });
+  } else {
+    // Legacy fallback Open Graph generation
+    tags.push({property: 'og:title', content: validatedTitle});
+    tags.push({property: 'og:type', content: seoData.type || 'website'});
+
+    if (shopData?.name || globalSettings?.title) {
+      tags.push({
+        property: 'og:site_name',
+        content: shopData?.name || globalSettings?.title || '',
+      });
+    }
+
+    if (validatedDescription) {
+      tags.push({property: 'og:description', content: validatedDescription});
+    }
+
+    if (seoData.canonical) {
+      tags.push({property: 'og:url', content: seoData.canonical});
+    }
+
+    // Image (prefer provided image, fallback to shop brand images)
+    const image =
+      seoData.image ||
+      shopData?.brand?.coverImage?.image?.url ||
+      shopData?.brand?.squareLogo?.image?.url ||
+      shopData?.brand?.logo?.image?.url;
+
+    if (image) {
+      tags.push({property: 'og:image', content: image});
+      tags.push({name: 'twitter:image', content: image});
+      // Add image alt text for accessibility
+      tags.push({
+        property: 'og:image:alt',
+        content: `${validatedTitle} - ${shopData?.name || globalSettings?.title || 'Sierra Nevada Friends of the Family'}`,
+      });
+    }
+
+    // Twitter tags (fallback)
+    tags.push({name: 'twitter:card', content: 'summary_large_image'});
+    tags.push({name: 'twitter:title', content: validatedTitle});
+
+    if (validatedDescription) {
+      tags.push({name: 'twitter:description', content: validatedDescription});
+    }
+  }
+
+  // Theme color from shop brand or default brewery color
+  const themeColor =
+    shopData?.brand?.colors?.primary?.[0]?.background || '#C8102E'; // Sierra Nevada red
+  tags.push({name: 'theme-color', content: themeColor});
+
+  // Additional SEO tags for brewery/members site
+  tags.push({name: 'format-detection', content: 'telephone=no'});
+  tags.push({name: 'apple-mobile-web-app-capable', content: 'yes'});
+  tags.push({
+    name: 'apple-mobile-web-app-status-bar-style',
+    content: 'black-translucent',
+  });
+
+  return tags;
+}
+
+/**
+ * Convert SEO meta tags to Remix MetaFunction format (legacy support)
  */
 export function seoMetaTagsToRemixMeta(metaTags: SeoMetaTags) {
   const meta: Array<

@@ -88,6 +88,13 @@ export const collectionPage = defineType({
       ],
     }),
     defineField({
+      name: 'openGraph',
+      title: 'Open Graph / Social Media',
+      type: 'openGraph',
+      description:
+        'Custom social media sharing settings for this collection. If not set, defaults will be used.',
+    }),
+    defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',

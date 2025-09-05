@@ -328,6 +328,7 @@ export type CollectionPage = {
     customMetaDescription?: string;
     seoNotes?: string;
   };
+  openGraph?: OpenGraph;
   pageBuilder?: Array<
     | ({
         _key: string;
@@ -362,6 +363,7 @@ export type ProductPage = {
     customMetaDescription?: string;
     seoNotes?: string;
   };
+  openGraph?: OpenGraph;
   pageBuilder?: Array<
     | ({
         _key: string;
@@ -381,16 +383,11 @@ export type ProductPage = {
   >;
 };
 
-export type Settings = {
-  _id: string;
-  _type: 'settings';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
+export type OpenGraph = {
+  _type: 'openGraph';
+  title?: string;
   description?: string;
-  keywords?: Array<string>;
-  ogImage?: {
+  image?: {
     asset?: {
       _ref: string;
       _type: 'reference';
@@ -400,9 +397,24 @@ export type Settings = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt?: string;
+    alt: string;
     _type: 'image';
   };
+  type?: 'website' | 'article' | 'product';
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+  noIndex?: boolean;
+};
+
+export type Settings = {
+  _id: string;
+  _type: 'settings';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  description?: string;
+  keywords?: Array<string>;
+  openGraph?: GlobalOpenGraph;
   gtmContainerId?: string;
   ga4MeasurementId?: string;
   facebookPixelId?: string;
@@ -425,6 +437,26 @@ export type Settings = {
     customRobotsDirectives?: Array<string>;
     seoNote?: string;
   };
+};
+
+export type GlobalOpenGraph = {
+  _type: 'globalOpenGraph';
+  siteName: string;
+  defaultImage?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  twitterHandle?: string;
+  facebookAppId?: string;
 };
 
 export type Homepage = {
@@ -709,7 +741,9 @@ export type AllSanitySchemaTypes =
   | BlockContent
   | CollectionPage
   | ProductPage
+  | OpenGraph
   | Settings
+  | GlobalOpenGraph
   | Homepage
   | Page
   | MediaVimeo
@@ -758,19 +792,7 @@ export type SettingsQueryResult = {
   title: string;
   description?: string;
   keywords?: Array<string>;
-  ogImage?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: 'image';
-  };
+  openGraph?: GlobalOpenGraph;
   gtmContainerId?: string;
   ga4MeasurementId?: string;
   facebookPixelId?: string;

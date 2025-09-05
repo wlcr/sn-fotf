@@ -21,6 +21,7 @@ import {specialComponentBlock} from './objects/specialComponentBlock';
 import {newsletterBlock} from './objects/newsletterBlock';
 import {mediaVimeo} from './objects/mediaVimeo';
 import {pageSection} from './objects/pageSection';
+import {openGraph, globalOpenGraph} from './objects/openGraph';
 
 export const schemaTypes = [
   // Singletons
@@ -40,6 +41,8 @@ export const schemaTypes = [
   mediaImage,
   mediaVimeo,
   menu,
+  openGraph,
+  globalOpenGraph,
   // Block Arrays + Blocks
   pageSection,
   collectionBlock,

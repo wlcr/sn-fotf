@@ -22,13 +22,23 @@ import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 // SEO integration
 import {
   generateProductMetaTags,
-  seoMetaTagsToRemixMeta,
+  generateComprehensiveSEOTags,
   pageHasNonIndexableCollections,
 } from '~/lib/seo';
+import {shouldNoIndex} from '~/lib/seo/routes';
 import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
 import type {Settings} from '~/studio/sanity.types';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+// Structured data integration
+import {
+  generateSiteStructuredData,
+  generateProductData,
+  generateBreadcrumbData,
+  combineStructuredData,
+} from '~/lib/seo/structured-data';
+import StructuredData from '~/components/StructuredData';
+
+export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   if (!data?.product) {
     return [{title: 'Product Not Found'}];
   }
@@ -42,6 +52,11 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
       description:
         data.product.description || data.product.seo?.description || undefined,
       handle: data.product.handle,
+      image: data.product.selectedOrFirstAvailableVariant?.image?.url,
+    },
+    {
+      name: data.shopData?.name,
+      primaryDomain: data.shopData?.primaryDomain,
     },
   );
 
@@ -50,12 +65,34 @@ export const meta: MetaFunction<typeof loader> = ({data}) => {
     ? pageHasNonIndexableCollections(data.sanityProductPage.pageBuilder)
     : false;
 
-  // Override robots directive if page contains non-indexable collections
-  if (hasNonIndexableCollections && metaTags.robots) {
+  // Check route-based SEO rules
+  const routeShouldNoIndex = shouldNoIndex(location.pathname, data.settings);
+
+  // Override robots directive if page contains non-indexable collections or route rules apply
+  if ((hasNonIndexableCollections || routeShouldNoIndex) && metaTags.robots) {
     metaTags.robots = 'noindex, nofollow';
   }
 
-  return seoMetaTagsToRemixMeta(metaTags);
+  // Generate comprehensive meta tags with enhanced Open Graph and Twitter Cards
+  const enhancedMetaTags = {
+    ...metaTags,
+    type: 'product' as const,
+    image: data.product.selectedOrFirstAvailableVariant?.image?.url,
+    keywords: [
+      data.product.title,
+      data.product.vendor || 'Sierra Nevada',
+      data.product.productType,
+      ...(data.product.tags || []),
+    ]
+      .filter(Boolean)
+      .slice(0, 10),
+  };
+
+  return generateComprehensiveSEOTags(enhancedMetaTags, data.settings, {
+    name: data.shopData?.name,
+    primaryDomain: data.shopData?.primaryDomain,
+    brand: data.shopData?.brand,
+  });
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -115,8 +152,8 @@ async function loadCriticalData({
     productHandle = sanityProductPage.productHandle;
   }
 
-  // Step 3: Load Shopify product and settings in parallel
-  const [shopifyRes, settings] = await Promise.all([
+  // Step 3: Load Shopify product and settings in parallel, plus shop data for SEO
+  const [shopifyRes, settings, shopData] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {
         handle: productHandle,
@@ -140,6 +177,14 @@ async function loadCriticalData({
       );
       return null;
     }),
+    // Load shop data for comprehensive SEO and structured data
+    storefront.query(SHOP_SEO_QUERY).catch((error) => {
+      console.warn(
+        'Failed to load shop data for SEO:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
   ]);
 
   const product = shopifyRes.product;
@@ -154,6 +199,7 @@ async function loadCriticalData({
     product,
     sanityProductPage, // May be null if no ProductPage exists
     settings, // For SEO meta tag generation
+    shopData: shopData?.shop || null, // For comprehensive SEO and structured data
   };
 }
 
@@ -170,7 +216,8 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
-  const {product, sanityProductPage} = useLoaderData<typeof loader>();
+  const {product, sanityProductPage, settings, shopData} =
+    useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -193,8 +240,48 @@ export default function Product() {
   // Use name override from Sanity if available
   const displayTitle = sanityProductPage?.nameOverride || title;
 
+  // Generate structured data for this product
+  const baseUrl =
+    shopData?.primaryDomain?.url || 'https://friends.sierranevada.com';
+
+  const siteStructuredData = generateSiteStructuredData(settings, shopData);
+  const productStructuredData = generateProductData(
+    {
+      name: displayTitle,
+      description: product.description,
+      image: selectedVariant?.image?.url,
+      brand: product.vendor || 'Sierra Nevada Brewing Co.',
+      sku: selectedVariant?.sku || undefined,
+      price: selectedVariant?.price?.amount,
+      currency: selectedVariant?.price?.currencyCode,
+      availability: selectedVariant?.availableForSale
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      url: `${baseUrl}/products/${product.handle}`,
+    },
+    settings,
+  );
+
+  const breadcrumbData = generateBreadcrumbData(
+    [
+      {name: 'Home', url: '/'},
+      {name: 'Products', url: '/products'},
+      {name: displayTitle, url: `/products/${product.handle}`},
+    ],
+    baseUrl,
+  );
+
+  const allStructuredData = combineStructuredData(
+    ...siteStructuredData,
+    productStructuredData,
+    breadcrumbData,
+  );
+
   return (
     <>
+      {/* Structured Data */}
+      <StructuredData data={allStructuredData} id="product-structured-data" />
+
       <div className="product">
         <ProductImage image={selectedVariant?.image} />
         <div className="product-main">
@@ -294,6 +381,8 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    productType
+    tags
     encodedVariantExistence
     encodedVariantAvailability
     options {
@@ -339,4 +428,42 @@ const PRODUCT_QUERY = `#graphql
     }
   }
   ${PRODUCT_FRAGMENT}
+` as const;
+
+const SHOP_SEO_QUERY = `#graphql
+  query ShopSEO($country: CountryCode, $language: LanguageCode)
+   @inContext(country: $country, language: $language) {
+    shop {
+      id
+      name
+      description
+      primaryDomain {
+        url
+      }
+      brand {
+        logo {
+          image {
+            url
+          }
+        }
+        coverImage {
+          image {
+            url
+          }
+        }
+        squareLogo {
+          image {
+            url
+          }
+        }
+        shortDescription
+        slogan
+        colors {
+          primary {
+            background
+          }
+        }
+      }
+    }
+  }
 ` as const;
