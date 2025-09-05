@@ -107,6 +107,15 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
       },
     },
+    // Test files
+    {
+      files: ['**/*test*.{js,ts}', '**/test-*.{js,ts}', 'scripts/**/*.js'],
+      rules: {
+        'no-console': 'off', // Allow console in test files
+        '@typescript-eslint/no-unused-vars': 'warn', // Relax for test files
+        '@typescript-eslint/no-explicit-any': 'warn', // Relax for test files
+      },
+    },
   ],
   ignorePatterns: [
     'node_modules/',
@@ -115,7 +124,5 @@ module.exports = {
     '.cache/',
     'public/build/',
     '*.min.js',
-    'app/test-*.ts',
-    'scripts/seo-test.js',
   ],
 };
