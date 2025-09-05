@@ -1,0 +1,63 @@
+.body {
+  font-family: 'Gotham Book Regular';
+}
+
+.body-large {
+  font-family: 'Gotham Book Regular';
+  font-size: var(--font-size-2-5);
+}
+
+.body-default {
+  font-family: 'Gotham Book Regular';
+  font-size: var(--font-size-2);
+}
+
+.body-small {
+  font-family: 'Gotham Book Regular';
+  font-size: var(--font-size-1-5);
+}
+
+.heading {
+  font-family: 'ABC Arizona Flare';
+}
+
+.heading-1,
+.h1 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-8);
+}
+
+.heading-2,
+.h2 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-7);
+}
+
+.heading-3,
+.h3 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-6);
+}
+
+.heading-4,
+.h4 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-4);
+}
+
+.heading-5,
+.h5 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-3);
+}
+
+.heading-6,
+.h6 {
+  font-family: 'ABC Arizona Flare';
+  font-size: var(--font-size-1);
+}
+
+.accent {
+  font-family: 'Liberator Medium';
+  font-size: var(--font-size-1);
+}
