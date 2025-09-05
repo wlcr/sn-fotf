@@ -3,7 +3,7 @@ import styles from './Button.module.css';
 export type ButtonProps = {
   label: string;
   appearance: 'light' | 'dark';
-  variant: 'solid' | 'outline' | 'round' | 'text';
+  variant: 'solid' | 'outline' | 'round' | 'text' | 'round-outline';
 };
 
 export default function Button({label, appearance, variant}: ButtonProps) {
@@ -32,6 +32,9 @@ export default function Button({label, appearance, variant}: ButtonProps) {
       break;
     case 'light-text':
       className = styles.ButtonLightText;
+      break;
+    case 'light-round-outline':
+      className = styles.ButtonLightRoundOutline;
       break;
     default:
       break;

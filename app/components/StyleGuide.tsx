@@ -70,6 +70,11 @@ export default function StyleGuide() {
                   variant="round"
                 />
                 <Button label="Light Text" appearance="light" variant="text" />
+                <Button
+                  label="Light Round Outline"
+                  appearance="light"
+                  variant="round-outline"
+                />
               </Flex>
             </div>
           </Flex>
