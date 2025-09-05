@@ -1,37 +1,38 @@
 import {
   Box,
-  Button,
   Card,
   Container,
-  Dialog,
   Flex,
   Grid,
-  Heading,
   Section,
-  Separator,
-  Select,
-  Tabs,
-  Text,
+  Theme,
 } from '@radix-ui/themes';
+import Button from './Button/Button';
 
 export default function StyleGuide() {
   return (
     <Container size="4" py="6" px="6">
       <Section>
-        <div>
-          <div className="body">Body Text</div>
-          <div className="body-large">Body Large Text</div>
-          <div className="body-default">Body Default Text</div>
-          <div className="body-small">Body Small Text</div>
-          <div className="heading">Heading</div>
-          <div className="heading-1">Heading 1</div>
-          <div className="heading-2">Heading 2</div>
-          <div className="heading-3">Heading 3</div>
-          <div className="heading-4">Heading 4</div>
-          <div className="heading-5">Heading 5</div>
-          <div className="heading-6">Heading 6</div>
-          <div className="accent">Accent Text</div>
-        </div>
+        <Flex direction="column" gap="4">
+          <Flex gap="2" p="2">
+            <Button label="Dark Solid" appearance="dark" variant="solid" />
+            <Button label="Dark Outline" appearance="dark" variant="outline" />
+            <Button label="Dark Round" appearance="dark" variant="round" />
+            <Button label="Dark Text" appearance="dark" variant="text" />
+          </Flex>
+          <div style={{backgroundColor: 'var(--color-mills-river)'}}>
+            <Flex gap="2" p="2">
+              <Button label="Light Solid" appearance="light" variant="solid" />
+              <Button
+                label="Light Outline"
+                appearance="light"
+                variant="outline"
+              />
+              <Button label="Light Round" appearance="light" variant="round" />
+              <Button label="Light Text" appearance="light" variant="text" />
+            </Flex>
+          </div>
+        </Flex>
       </Section>
     </Container>
   );
