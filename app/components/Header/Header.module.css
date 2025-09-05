@@ -1,17 +1,40 @@
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .header {
-    border-bottom: 2px solid;
-  }
-
-  .utilityLink:focus {
-    outline: 3px solid;
-  }
+:root {
+  --header-height: 128px;
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .utilityLink {
-    transition: none;
-  }
+.Header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-gap: var(--size-5);
+  align-items: center;
+  background-color: var(--color-mills-river);
+  color: var(--color-white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--size-5);
+}
+
+.HeaderLeft {
+}
+
+.HeaderCenter {
+}
+
+.HeaderRight {
+  justify-self: end;
+}
+
+.HeaderUtilityList {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  grid-gap: var(--size-5);
+  justify-content: end;
+}
+
+.HeaderLogo {
+  color: var(--color-dry-malt);
+  max-width: 192px;
 }
