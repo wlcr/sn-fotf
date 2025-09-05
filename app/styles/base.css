@@ -3,6 +3,10 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  padding-top: var(--header-height);
+}
+
 /* Respect users' motion preferences */
 @media (prefers-reduced-motion: reduce) {
   html {
