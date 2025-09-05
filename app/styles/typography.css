@@ -1,0 +1,81 @@
+:root {
+  --font-body: 'Gotham Book Regular', monospace;
+  --font-heading: 'ABC Arizona Flare', monospace;
+  --font-accent: 'Liberator Medium', monospace;
+}
+
+.body {
+  font-family: var(--font-body);
+  line-height: 150%;
+}
+
+.body-large {
+  font-family: var(--font-body);
+  font-size: var(--font-size-2-5);
+  line-height: 150%;
+}
+
+.body-default {
+  font-family: var(--font-body);
+  font-size: var(--font-size-2);
+  line-height: 150%;
+}
+
+.body-small {
+  font-family: var(--font-body);
+  font-size: var(--font-size-1-5);
+  line-height: 150%;
+}
+
+.heading {
+  font-family: var(--font-heading);
+  line-height: 120%;
+}
+
+.heading-1,
+.h1 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-8);
+  line-height: 120%;
+}
+
+.heading-2,
+.h2 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-7);
+  line-height: 120%;
+}
+
+.heading-3,
+.h3 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-6);
+  line-height: 120%;
+}
+
+.heading-4,
+.h4 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-4);
+  line-height: 140%;
+}
+
+.heading-5,
+.h5 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-3);
+  line-height: 140%;
+}
+
+.heading-6,
+.h6 {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-1);
+  line-height: 140%;
+}
+
+.accent {
+  font-family: var(--font-accent);
+  font-size: var(--font-size-1);
+  line-height: 130%;
+}

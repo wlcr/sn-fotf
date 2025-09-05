@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import {
   createContext,
   type ReactNode,
@@ -24,10 +25,12 @@ type AsideContextValue = {
  * ```
  */
 export function Aside({
+  className,
   children,
   heading,
   type,
 }: {
+  className?: string;
   children?: React.ReactNode;
   type: AsideType;
   heading: React.ReactNode;
@@ -55,7 +58,7 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
+      className={clsx(`overlay ${expanded ? 'expanded' : ''}`, className)}
       role="dialog"
     >
       <button className="close-outside" onClick={close} />

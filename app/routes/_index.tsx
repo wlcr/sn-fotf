@@ -101,7 +101,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <>
-      <StyleGuide />
+      <StyleGuide></StyleGuide>
       <div className="home">
         {/* Render Sanity homepage content if available */}
         {data.homepage?.pageBuilder && (
