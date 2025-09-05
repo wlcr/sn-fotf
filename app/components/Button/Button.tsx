@@ -2,8 +2,8 @@ import styles from './Button.module.css';
 
 export type ButtonProps = {
   label: string;
-  appearance: 'light' | 'dark';
-  variant: 'solid' | 'outline' | 'round' | 'text' | 'round-outline';
+  appearance?: 'light' | 'dark';
+  variant?: 'solid' | 'outline' | 'round' | 'text' | 'round-outline';
 };
 
 export default function Button({label, appearance, variant}: ButtonProps) {
