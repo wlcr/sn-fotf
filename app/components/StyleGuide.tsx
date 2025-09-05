@@ -41,7 +41,7 @@ export default function StyleGuide() {
             <div className="accent">Accent Text - Liberator Medium</div>
           </Flex>
 
-          <Flex direction="column" gap="4">
+          <Flex direction="column" gap="4" wrap="wrap">
             <Flex gap="2" p="2">
               <Button label="Dark Solid" appearance="dark" variant="solid" />
               <Button
@@ -53,7 +53,7 @@ export default function StyleGuide() {
               <Button label="Dark Text" appearance="dark" variant="text" />
             </Flex>
             <div style={{backgroundColor: 'var(--color-mills-river)'}}>
-              <Flex gap="2" p="2">
+              <Flex gap="2" p="2" wrap="wrap">
                 <Button
                   label="Light Solid"
                   appearance="light"
