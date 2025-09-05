@@ -9,8 +9,6 @@ export function linkResolver(link: Link | undefined) {
     link.linkType = 'href';
   }
 
-  console.log('link!!!', link);
-
   switch (link.linkType) {
     case 'home':
       return '/';

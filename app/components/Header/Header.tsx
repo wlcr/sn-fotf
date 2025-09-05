@@ -7,6 +7,8 @@ import {useAside} from '~/components/Aside';
 import type {Header as HeaderType} from '~/studio/sanity.types';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
+import Logo from '../Icons/Logo';
+import Button from '../Button/Button';
 
 export interface HeaderProps {
   header: HeaderType;
@@ -19,120 +21,21 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
 
   return (
     <>
-      {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className={styles.skipLink} tabIndex={0}>
-        Skip to main content
-      </a>
-
-      {/* Announcement Bar */}
-      {announcementBar?.enabled && announcementBar.text && (
-        <div className={styles.announcementBar} role="banner">
-          {announcementBar.link ? (
-            <Link
-              to={announcementBar.link.href || '#'}
-              className={styles.announcementLink}
-              {...(announcementBar.link.openInNewTab && {
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              })}
-            >
-              {announcementBar.text}
-            </Link>
-          ) : (
-            <span className={styles.announcementText}>
-              {announcementBar.text}
-            </span>
-          )}
+      <header className={clsx(styles.Header, className)} role="banner">
+        <div className={styles.HeaderLeft}>
+          <Button label="Shop Now" appearance="light" variant="outline" />
         </div>
-      )}
-
-      {/* Main Header */}
-      <header className={clsx(styles.header, className)} role="banner">
-        <div className={styles.headerContainer}>
-          {/* CTA Button - Desktop: Left, Mobile: First in bottom row */}
-          {ctaButton?.enabled && ctaButton.text && ctaButton.link && (
-            <div className={styles.ctaButtonWrapper}>
-              <Link
-                to={ctaButton.link.href || '#'}
-                className={clsx(styles.ctaButton, 'button')}
-                {...(ctaButton.link.openInNewTab && {
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                })}
-              >
-                {ctaButton.text}
-              </Link>
-            </div>
-          )}
-
-          {/* Logo - Always centered */}
-          <div className={styles.logoWrapper}>
-            {logo ? (
-              <Link
-                to="/"
-                className={styles.logoLink}
-                aria-label="Go to homepage"
-              >
-                <img
-                  src={
-                    urlForImage(logo)
-                      ?.width(200)
-                      .height(80)
-                      .auto('format')
-                      .url() || ''
-                  }
-                  alt={logo.alt || 'Site logo'}
-                  className={styles.logo}
-                  width={200}
-                  height={80}
-                />
-              </Link>
-            ) : (
-              <Link
-                to="/"
-                className={styles.logoTextLink}
-                aria-label="Go to homepage"
-              >
-                <span className={styles.logoText}>Sierra Nevada</span>
-              </Link>
-            )}
+        <div className={styles.HeaderCenter}>
+          <div className={styles.HeaderLogo}>
+            <Logo />
           </div>
-
-          {/* Utility Links - Desktop: Right, Mobile: Second in bottom row */}
-          <nav
-            className={styles.utilityNav}
-            aria-label="Account and cart navigation"
-          >
-            <ul className={styles.utilityList}>
-              <li className={styles.utilityItem}>
-                <NavLink
-                  to="/account"
-                  className={({isActive}) =>
-                    clsx(
-                      styles.utilityLink,
-                      isActive && styles.utilityLinkActive,
-                    )
-                  }
-                  aria-label="Go to your account"
-                >
-                  <span className={styles.utilityText}>Account</span>
-                  <AccountIcon
-                    className={styles.utilityIcon}
-                    aria-hidden={true}
-                  />
-                </NavLink>
-              </li>
-              <li className={styles.utilityItem}>
-                {cart ? (
-                  <Suspense fallback={<CartToggleFallback />}>
-                    <Await resolve={cart}>
-                      {(resolvedCart) => <CartToggle cart={resolvedCart} />}
-                    </Await>
-                  </Suspense>
-                ) : (
-                  <CartToggleFallback />
-                )}
-              </li>
+        </div>
+        <div className={styles.HeaderRight}>
+          <nav>
+            <ul className={styles.HeaderUtilityList}>
+              <li>How it works</li>
+              <li>FAQ</li>
+              <li>Cart</li>
             </ul>
           </nav>
         </div>
