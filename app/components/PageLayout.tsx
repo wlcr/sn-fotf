@@ -9,6 +9,7 @@ import {CartAside} from '~/components/CartAside/CartAside';
 import {Footer} from '~/components/Footer/Footer';
 import {Header} from '~/components/Header/Header';
 import {SearchAside} from '~/components/SearchAside/SearchAside';
+import {SkipLink} from '~/components/SkipLink';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -33,6 +34,7 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <SearchAside />
+      <SkipLink />
       {header && <Header header={header} cart={cart} />}
       <main id="main-content">{children}</main>
       {footer && <Footer footer={footer} />}

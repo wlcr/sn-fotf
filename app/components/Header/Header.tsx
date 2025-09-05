@@ -19,12 +19,6 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
 
   return (
     <>
-      {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className={styles.skipLink} tabIndex={0}>
-        Skip to main content
-      </a>
-
-      {/* Main Header */}
       <header className={clsx(styles.header, className)} role="banner"></header>
     </>
   );

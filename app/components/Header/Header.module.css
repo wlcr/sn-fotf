@@ -1,23 +1,3 @@
-/* Skip to main content link - accessibility */
-.skipLink {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--color-dark, #000);
-  color: var(--color-light, #fff);
-  padding: 8px 12px;
-  text-decoration: none;
-  z-index: 9999;
-  border-radius: 0 0 4px 4px;
-  font-size: 14px;
-  font-weight: 600;
-  transition: top 0.2s ease;
-}
-
-.skipLink:focus {
-  top: 0;
-}
-
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .header {
@@ -27,18 +7,10 @@
   .utilityLink:focus {
     outline: 3px solid;
   }
-
-  .skipLink:focus {
-    outline: 3px solid var(--color-light, #fff);
-  }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .skipLink {
-    transition: none;
-  }
-
   .utilityLink {
     transition: none;
   }
