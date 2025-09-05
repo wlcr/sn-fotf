@@ -9,6 +9,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
 import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
+import {useCustomer} from '~/context/Customer';
 
 export interface HeaderProps {
   header: HeaderType;
@@ -18,6 +19,7 @@ export interface HeaderProps {
 
 export const Header: FC<HeaderProps> = ({header, cart, className}) => {
   const {logo, ctaButton, announcementBar} = header;
+  const {customer, isEligible} = useCustomer();
 
   return (
     <>
@@ -36,6 +38,15 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
           <nav>
             <ul className={styles.HeaderUtilityList}>
               <li>How it works</li>
+              {/* TODO: remove example code */}
+              {customer ? (
+                <li style={{color: 'green'}}>
+                  Welcome, {customer.id}{' '}
+                  {isEligible ? 'can purchase' : 'cannot purchase'}
+                </li>
+              ) : (
+                <NavLink to="/account">Login</NavLink>
+              )}
               <li>FAQ</li>
               <li>Cart</li>
             </ul>
