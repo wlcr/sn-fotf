@@ -46,6 +46,7 @@ declare global {
 
     // Other environment variables
     PUBLIC_BASE_URL?: string;
+    PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG?: string;
   }
 }
 
