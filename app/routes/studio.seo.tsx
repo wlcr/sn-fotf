@@ -287,7 +287,7 @@ async function testPage(url: string) {
       content: testContent(document, html),
     };
 
-    // Clean up happy-dom window
+    // Clean up window reference
     window.close();
 
     const score = Object.values(categories).reduce(
@@ -313,7 +313,7 @@ async function testPage(url: string) {
 
 /**
  * Create a minimal document-like object using regex parsing
- * This is a fallback when HappyDOM is not available in SSR
+ * This is a fallback when ultrahtml parsing fails
  */
 function createRegexBasedDocument(html: string): SimpleDocument {
   return {

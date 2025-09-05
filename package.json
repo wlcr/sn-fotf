@@ -47,7 +47,6 @@
     "clsx": "^2.1.1",
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
-    "happy-dom": "^18.0.1",
     "isbot": "^5.1.22",
     "js-cookie": "^3.0.5",
     "motion": "^12.23.12",
