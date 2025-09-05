@@ -9,3 +9,11 @@ node_modules
 .react-router
 
 .DS_Store
+
+# Sanity Studio cache
+.sanity/
+studio/.sanity/
+
+# Vite cache
+node_modules/.vite/
+node_modules/.cache/

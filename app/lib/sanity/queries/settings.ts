@@ -16,9 +16,14 @@ export const SETTINGS_QUERY = `
     title,
     description,
     keywords,
-    ogImage {
-      asset,
-      alt
+    openGraph {
+      siteName,
+      defaultImage {
+        asset,
+        alt
+      },
+      twitterHandle,
+      facebookAppId
     },
     
     // Analytics & Tracking
@@ -70,7 +75,7 @@ export function getSeoSettings(settings: Settings | null) {
     title: settings.title,
     description: settings.description,
     keywords: settings.keywords,
-    ogImage: settings.ogImage,
+    openGraph: settings.openGraph,
   };
 }
 
