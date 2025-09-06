@@ -13,6 +13,8 @@ import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {Container, Grid} from '@radix-ui/themes';
+import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGallery';
+import ProductQuery from '~/graphql/queries/ProductQuery';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -51,7 +53,7 @@ async function loadCriticalData({
   }
 
   const [{product}] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
+    storefront.query(ProductQuery, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
@@ -105,7 +107,8 @@ export default function Product() {
   return (
     <Container px={{initial: '4', sm: '6'}} py={{initial: '6', sm: '9'}}>
       <Grid columns={{initial: '1', sm: '2'}}>
-        <ProductImage image={selectedVariant?.image} />
+        <ProductMediaGallery image={selectedVariant?.image} />
+
         <div className="product-main">
           <h1>{title}</h1>
           <ProductPrice
@@ -145,95 +148,3 @@ export default function Product() {
     </Container>
   );
 }
-
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-  }
-` as const;
-
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    encodedVariantExistence
-    encodedVariantAvailability
-    options {
-      name
-      optionValues {
-        name
-        firstSelectableVariant {
-          ...ProductVariant
-        }
-        swatch {
-          color
-          image {
-            previewImage {
-              url
-            }
-          }
-        }
-      }
-    }
-    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-      ...ProductVariant
-    }
-    adjacentVariants (selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    seo {
-      description
-      title
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-` as const;
