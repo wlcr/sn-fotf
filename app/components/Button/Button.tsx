@@ -6,6 +6,7 @@ export type ButtonProps = {
   onClick?: () => void;
   appearance?: 'light' | 'dark';
   variant?: 'solid' | 'outline' | 'round' | 'text' | 'round-outline';
+  width?: 'auto' | 'full';
   children?: React.ReactNode;
 };
 
@@ -13,6 +14,7 @@ export default function Button({
   disabled,
   appearance = 'dark',
   variant = 'solid',
+  width = 'auto',
   children,
 }: ButtonProps) {
   let className = styles.Button;
@@ -48,8 +50,11 @@ export default function Button({
       break;
   }
 
+  const widthClass = width === 'full' ? styles.ButtonFullWidth : '';
+  const finalClassName = `${className} ${widthClass}`.trim();
+
   return (
-    <button className={className} disabled={disabled}>
+    <button className={finalClassName} disabled={disabled}>
       {children}
     </button>
   );
