@@ -8,7 +8,7 @@ import {ProductItem} from '~/components/ProductItem';
 // Sanity integration
 import {collectionPageQuery} from 'studio/queries';
 import PageBuilder from '~/components/sanity/PageBuilder';
-import {CollectionPage} from '~/studio/sanity.types';
+import {CollectionPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
 // SEO integration
@@ -19,7 +19,7 @@ import {
 } from '~/lib/seo';
 import {shouldNoIndex} from '~/lib/seo/routes';
 import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 // Structured data integration
 import {

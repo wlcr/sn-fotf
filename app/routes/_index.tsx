@@ -14,7 +14,7 @@ import type {
   Homepage,
   SettingsQueryResult,
   PageBuilderResult,
-} from '~/studio/sanity.types';
+} from '~/types/sanity';
 import PageBuilder from '~/components/sanity/PageBuilder';
 import {homeQuery, settingsQuery} from '~/studio/queries/index';
 import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';

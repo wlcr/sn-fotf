@@ -8,7 +8,7 @@
  * Adapted from Rubato Wines implementation with Sanity integration.
  */
 
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 import {isSiteDiscoverable} from '~/lib/sanity/queries/settings';
 
 /**

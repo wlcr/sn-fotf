@@ -14,7 +14,7 @@ import {
   isSiteDiscoverable,
 } from '~/lib/sanity/queries/settings';
 import {shouldNoIndex} from '~/lib/seo/routes';
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 export async function loader({context}: LoaderFunctionArgs) {
   try {

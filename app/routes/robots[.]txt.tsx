@@ -11,7 +11,7 @@ import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
 import {generateRobotsTxt} from '~/lib/seo';
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 export async function loader({context}: LoaderFunctionArgs) {
   try {

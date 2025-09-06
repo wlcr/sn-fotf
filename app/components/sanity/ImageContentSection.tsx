@@ -1,5 +1,5 @@
 import {clsx} from 'clsx';
-import {ImageContentBlock} from 'studio/sanity.types';
+import {ImageContentBlock} from '~/types/sanity';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';

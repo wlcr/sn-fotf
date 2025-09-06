@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {NewsletterBlock} from '~/studio/sanity.types';
+import {NewsletterBlock} from '~/types/sanity';
 
 type NewsletterBlockProps = {
   block: NewsletterBlock;

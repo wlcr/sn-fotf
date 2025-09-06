@@ -23,7 +23,7 @@ import type {
   Header as SanityHeader,
   Footer as FooterType,
   Settings,
-} from '~/studio/sanity.types';
+} from '~/types/sanity';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';

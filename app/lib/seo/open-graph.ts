@@ -5,11 +5,7 @@
  * Provides content editors complete control over social media sharing appearance.
  */
 
-import type {
-  Settings,
-  ProductPage,
-  CollectionPage,
-} from '~/studio/sanity.types';
+import type {Settings, ProductPage, CollectionPage} from '~/types/sanity';
 import {isSiteDiscoverable} from '~/lib/sanity/queries/settings';
 import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 

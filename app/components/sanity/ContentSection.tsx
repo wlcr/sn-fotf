@@ -1,5 +1,5 @@
 import PortableText from './PortableText';
-import {ContentBlock} from 'studio/sanity.types';
+import {ContentBlock} from '~/types/sanity';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import styles from './ContentSection.module.css';

@@ -1,4 +1,4 @@
-import {CtaBlock} from 'studio/sanity.types';
+import {CtaBlock} from '~/types/sanity';
 import styles from './SideBySideCtaSection.module.css';
 import Cta from './Cta';
 

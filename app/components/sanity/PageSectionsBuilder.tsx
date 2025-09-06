@@ -1,4 +1,4 @@
-import {PageSection} from 'studio/sanity.types';
+import {PageSection} from '~/types/sanity';
 import PageBuilder from './PageBuilder';
 import styles from './Sections.module.css';
 import {clsx} from 'clsx';

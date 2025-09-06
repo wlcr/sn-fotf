@@ -3,7 +3,7 @@
  *
  * GROQ queries for global site settings including site metadata, contact info, and branding.
  */
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 /**
  * Settings query - gets global site settings

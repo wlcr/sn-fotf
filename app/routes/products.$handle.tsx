@@ -16,7 +16,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 // Sanity integration
 import {productPageQuery} from 'studio/queries';
 import PageBuilder from '~/components/sanity/PageBuilder';
-import {ProductPage} from '~/studio/sanity.types';
+import {ProductPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
 // SEO integration
@@ -27,7 +27,7 @@ import {
 } from '~/lib/seo';
 import {shouldNoIndex} from '~/lib/seo/routes';
 import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 // Structured data integration
 import {

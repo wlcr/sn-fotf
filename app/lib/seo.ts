@@ -9,11 +9,7 @@
  */
 
 import type {MetaDescriptor} from 'react-router';
-import type {
-  Settings,
-  ProductPage,
-  CollectionPage,
-} from '~/studio/sanity.types';
+import type {Settings, ProductPage, CollectionPage} from '~/types/sanity';
 import {
   isSiteDiscoverable,
   isRobotsCrawlingAllowed,

@@ -1,4 +1,4 @@
-import {Link} from 'studio/sanity.types';
+import {Link} from '~/types/sanity';
 
 // Depending on the type of link, we need to fetch the corresponding page, post, or URL.  Otherwise return null.
 export function linkResolver(link: Link | undefined) {

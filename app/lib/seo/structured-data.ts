@@ -7,7 +7,7 @@
  * Adapted from Rubato Wines implementation with Sanity CMS integration.
  */
 
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 import {
   isSiteDiscoverable,
   isRobotsCrawlingAllowed,
