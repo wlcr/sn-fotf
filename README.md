@@ -193,6 +193,7 @@ npx tsx app/test-open-graph.ts
 - 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 - 📦 **[Bundle Optimization](./docs/BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
+- 🛡️ **[Bundle Size Monitoring](./docs/BUNDLE_SIZE_MONITORING.md)** - **CRITICAL**: Prevent deployment failures with automated monitoring
 
 ### Pre-commit Hooks
 

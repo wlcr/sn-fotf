@@ -10,6 +10,7 @@
 - **[🤖 AI Development](./AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
 - **[📦 Bundle Optimization](./BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
+- **[🛡️ Bundle Size Monitoring](./BUNDLE_SIZE_MONITORING.md)** - **CRITICAL**: Automated monitoring to prevent deployment failures
 
 ## 🎯 Feature Guides
 
@@ -28,7 +29,11 @@
 ```bash
 # Development
 npm run dev              # Start app + embedded Studio
-npm run quality-check    # TypeScript + ESLint validation
+npm run quality-check    # TypeScript + ESLint + bundle size validation
+
+# Bundle Size Monitoring (CRITICAL)
+npm run bundle:check     # Quick bundle size check
+npm run bundle:analyze   # Visual bundle analyzer
 
 # Testing
 npm run seo:test         # Full SEO testing suite

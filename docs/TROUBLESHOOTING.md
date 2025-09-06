@@ -59,6 +59,68 @@ ls -lh dist/server/index.js  # Should be ~1.4MB
 
 ---
 
+## 🚀 Pre-Deployment Quality Checks
+
+### Essential Checklist Before Any Deployment
+
+```bash
+echo "=== PRE-DEPLOYMENT QUALITY CHECKS ==="
+
+# 1. TypeScript validation
+echo "1. TypeScript check:"
+npm run typecheck
+if [ $? -ne 0 ]; then echo "❌ TypeScript errors - fix before deploying"; exit 1; fi
+
+# 2. Build validation
+echo "2. Build check:"
+npm run build
+if [ $? -ne 0 ]; then echo "❌ Build failed - fix before deploying"; exit 1; fi
+
+# 3. Test suite
+echo "3. Running tests:"
+npm test
+if [ $? -ne 0 ]; then echo "❌ Tests failed - fix before deploying"; exit 1; fi
+
+# 4. Bundle size check
+echo "4. Bundle size check:"
+BUNDLE_SIZE=$(ls -l dist/server/index.js | awk '{print $5}')
+if [ $BUNDLE_SIZE -gt 2097152 ]; then echo "❌ Server bundle too large: $BUNDLE_SIZE bytes (max 2MB)"; exit 1; fi
+echo "✅ Server bundle size OK: $BUNDLE_SIZE bytes"
+
+# 5. Studio loading test
+echo "5. Studio functionality test:"
+echo "   - Start dev server: npm run dev"
+echo "   - Open http://localhost:3000/studio"
+echo "   - Should load in < 10 seconds with full schema"
+echo "   - Check that SEO plugin appears in sidebar"
+
+echo "✅ All quality checks passed - ready for deployment!"
+```
+
+### Studio-Specific Checks
+
+```bash
+# Verify studio schema loading works
+echo "Testing studio schema loading..."
+node -e "
+  (async () => {
+    try {
+      const {schemaTypes} = await import('./studio/schemaTypes/index.js');
+      console.log('✅ Schema types loaded:', schemaTypes.length, 'types');
+      if (schemaTypes.length < 10) throw new Error('Too few schema types');
+    } catch (err) {
+      console.error('❌ Schema loading failed:', err.message);
+      process.exit(1);
+    }
+  })()"
+
+# Verify no circular dependencies in schema imports
+echo "Checking for schema import issues..."
+grep -r "import.*schemaTypes" studio/schemaTypes/ && echo "⚠️  Found internal schema imports - check for circular deps" || echo "✅ No internal schema imports found"
+```
+
+---
+
 ## 🔧 Development Issues
 
 ### Environment Setup
@@ -162,7 +224,51 @@ export async function loader({request, context}: Route.LoaderArgs) {
 3. **Verify Sanity account has project access**
 4. **Check network connectivity to sanity.io**
 
-#### Studio Not Loading
+### Studio Not Loading
+
+#### Studio Hanging/Infinite Loading (Critical Issue)
+
+**Symptoms:**
+
+- Studio route loads indefinitely at `/studio`
+- No error messages in console
+- Dev server appears to hang on studio requests
+- Browser shows loading spinner forever
+
+**Root Cause:** Complex schema import patterns causing circular dependencies
+
+**Quick Fix:**
+
+```bash
+# 1. Stop any hung dev servers
+pkill -f "npm run dev"
+
+# 2. Clean ports and cache
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+rm -rf dist/ .cache/ node_modules/.cache/
+
+# 3. Restart clean
+npm run dev
+
+# 4. Test studio loads in < 10 seconds
+# Open http://localhost:3000/studio
+```
+
+**If Still Hanging:** Check `app/lib/studio-schema.client.ts` uses simple pattern:
+
+```typescript
+// ✅ CORRECT - Simple index import
+const {schemaTypes} = await import('../../studio/schemaTypes');
+
+// ❌ WRONG - Individual schema imports (causes hanging)
+const [{page}, {productPage}] = await Promise.all([
+  import('../../studio/schemaTypes/documents/page'),
+  import('../../studio/schemaTypes/documents/productPage'),
+]);
+```
+
+#### General Studio Loading Issues
 
 ```bash
 # Verify development server is running
