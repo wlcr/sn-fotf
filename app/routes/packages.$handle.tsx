@@ -143,7 +143,7 @@ export default function Product() {
 
   return (
     <Container px={{initial: '4', sm: '6'}} py={{initial: '6', sm: '9'}}>
-      <Grid columns={{initial: '1', sm: '2'}}>
+      <Grid columns={{initial: '1', sm: '2'}} gap="8">
         <ProductMediaGallery media={product.media} />
 
         <div className="product-main">
