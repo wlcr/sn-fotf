@@ -17,6 +17,8 @@ import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/studio/sanity.types';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 import ProductQuery from '~/graphql/queries/ProductQuery';
+import {Container, Grid} from '@radix-ui/themes';
+import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGallery';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -140,15 +142,12 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <>
-      <div className="product">
-        <ProductImage image={selectedVariant?.image} />
+    <Container px={{initial: '4', sm: '6'}} py={{initial: '6', sm: '9'}}>
+      <Grid columns={{initial: '1', sm: '2'}}>
+        <ProductMediaGallery media={product.media} />
+
         <div className="product-main">
-          <h1>
-            {sanityProductPage?.nameOverride
-              ? sanityProductPage.nameOverride
-              : title}
-          </h1>
+          <h1>{title}</h1>
           <ProductPrice
             price={selectedVariant?.price}
             compareAtPrice={selectedVariant?.compareAtPrice}
@@ -182,17 +181,7 @@ export default function Product() {
             ],
           }}
         />
-      </div>
-      {sanityProductPage.pageBuilder &&
-        sanityProductPage.pageBuilder.length > 0 && (
-          <PageBuilder
-            parent={{
-              _id: sanityProductPage._id,
-              _type: sanityProductPage._type,
-            }}
-            pageBuilder={sanityProductPage.pageBuilder}
-          />
-        )}
-    </>
+      </Grid>
+    </Container>
   );
 }
