@@ -36,6 +36,12 @@ export default function StudioPage() {
       try {
         console.log('Loading Sanity Studio...');
 
+        // Only load if we're in the browser
+        if (typeof window === 'undefined') {
+          console.warn('Studio loading called on server - skipping');
+          return;
+        }
+
         const [{Studio: StudioComponent}, studioConfig] = await Promise.all([
           import('sanity'),
           import('../../studio/sanity.config'),
