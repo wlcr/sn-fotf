@@ -13,29 +13,14 @@
 
 import {createClient} from '@sanity/client';
 import type {SanityClient, ClientConfig} from '@sanity/client';
+import {createQueryStore} from '@sanity/react-loader';
 import imageUrlBuilder from '@sanity/image-url';
 import type {ImageUrlBuilder} from '@sanity/image-url/lib/types/builder';
 import type {SanityImageSource} from '@sanity/image-url/lib/types/types';
 
-// Conditionally load react-loader utilities to handle externalization
-let createQueryStore: any = null;
-
-try {
-  // This might fail if @sanity/react-loader is externalized
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const reactLoaderModule = require('@sanity/react-loader');
-  createQueryStore = reactLoaderModule.createQueryStore;
-} catch {
-  // react-loader not available (externalized), provide fallback
-  console.warn('@sanity/react-loader not available - live queries disabled');
-  createQueryStore = () => ({
-    subscribe: () => () => {},
-    getSnapshot: () => null,
-  });
-}
-
-// Export with fallback
-export {createQueryStore};
+// Re-export modern live query utilities for React Router v7 + Hydrogen integration
+// @sanity/react-loader provides better SSR support and performance than preview-kit
+export {createQueryStore} from '@sanity/react-loader';
 
 /**
  * Sanity Configuration
