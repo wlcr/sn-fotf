@@ -50,11 +50,14 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   ssr: {
-    // Exclude heavy dependencies that are only used client-side or in dynamic imports
+    // Aggressively exclude heavy dependencies to reduce bundle size for deployment
     external: [
       '@sanity/visual-editing',
-      // Heavy Studio dependencies that are dynamically imported
       '@sanity/vision',
+      '@sanity/ui', // Heavy UI library - only needed client-side
+      'framer-motion', // Animation library - client-only
+      'motion', // Animation library - client-only
+      '@sanity/react-loader', // Can be loaded dynamically
     ],
     noExternal: ['ultrahtml'],
     optimizeDeps: {

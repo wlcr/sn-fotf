@@ -30,18 +30,30 @@ function createVisionPlugin() {
 }
 // import StudioIcon from './components/StudioIcon';
 
-// Define SEO Testing plugin
+// Define SEO Testing plugin with conditional loading
 function seoTestingPlugin() {
-  return {
-    name: 'seo-testing',
-    tools: [
-      {
-        name: 'seo-testing',
-        title: 'SEO Testing',
-        component: SeoTestingTool,
-      },
-    ],
-  };
+  try {
+    // Only load if @sanity/ui is available (not externalized)
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('@sanity/ui');
+    return {
+      name: 'seo-testing',
+      tools: [
+        {
+          name: 'seo-testing',
+          title: 'SEO Testing',
+          component: SeoTestingTool,
+        },
+      ],
+    };
+  } catch {
+    // @sanity/ui not available, return minimal plugin
+    console.warn('SEO Testing tool disabled - @sanity/ui not available');
+    return {
+      name: 'seo-testing-disabled',
+      tools: [],
+    };
+  }
 }
 
 // Sanity Studio Configuration
