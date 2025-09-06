@@ -3,7 +3,7 @@
 ## Project Identity
 
 - **Sierra Nevada - Friends of the Family**: Members-only e-commerce storefront
-- **Tech Stack**: Hydrogen + React Router v7 + Sanity CMS + PostCSS + Open Props
+- **Tech Stack**: Hydrogen + React Router v7 + Sanity CMS + Radix UI Themes (layout) + Open Props + PostCSS
 - **Security**: Production-ready CSP configuration (don't modify)
 
 ## 🚨 Critical Rules
@@ -19,14 +19,32 @@ import { ... } from '@remix-run/react';
 import { ... } from 'react-router-dom';
 ```
 
-### Styling Pattern
+### Hybrid Styling Pattern (Radix Layout + Custom Components)
 
 ```typescript
-// Component styling approach
-import styles from './Component.module.css';
-import clsx from 'clsx';
+// ✅ Use Radix UI for LAYOUT components only
+import { Container, Section, Flex, Grid, Card } from '@radix-ui/themes';
 
-// Use CSS Modules + Open Props design tokens
+// Layout with Radix primitives
+<Container size="4">
+  <Section>
+    <Flex direction="column" gap="4">
+      <Card variant="surface">
+        Content here
+      </Card>
+    </Flex>
+  </Section>
+</Container>
+
+// ✅ Custom components for brand-specific UI elements
+import Button from '~/components/Button/Button';
+import styles from './Component.module.css';
+import { clsx } from 'clsx';
+
+// Use custom Button component (not Radix Button)
+<Button appearance="dark" variant="solid" label="Click me" />
+
+// CSS Modules + Open Props for styling
 <div className={clsx(styles.component, styles.isActive)} />
 ```
 
@@ -131,6 +149,34 @@ npm run seo:test:verbose # Detailed SEO analysis
 ```
 
 ## 🚑 Critical Patterns
+
+### Component Patterns (Hybrid Approach)
+
+```typescript
+// ✅ Radix UI for LAYOUT and STRUCTURE only
+import { Container, Section, Flex, Grid, Card, Box } from '@radix-ui/themes';
+
+// ✅ Custom components for interactive/branded elements
+import Button from '~/components/Button/Button';
+import Header from '~/components/Header/Header';
+
+// ✅ Layout structure with Radix
+<Container size="4">
+  <Flex direction="column" gap="4">
+    <Card>Custom content</Card>
+  </Flex>
+</Container>
+
+// ✅ Brand-specific components (don't use Radix Button, Text, etc.)
+<Button appearance="dark" variant="solid" label="Custom Button" />
+
+// ✅ CSS Modules + Open Props for custom styling
+import styles from './CustomComponent.module.css';
+<div className={styles.customLayout} />
+
+// ❌ Don't use Radix UI interactive components (Button, Input, etc.)
+// ❌ Don't use Radix Text, Heading - we have custom typography
+```
 
 ### GraphQL Types
 

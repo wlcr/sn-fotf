@@ -9,9 +9,10 @@ A **members-only** Hydrogen-powered headless commerce storefront for Sierra Neva
 
 - **Framework**: Shopify Hydrogen 2025.5.0
 - **Routing**: React Router v7.6.0 ⚠️ **(NOT Remix)**
-- **Styling**: CSS Modules + PostCSS + Open Props
+- **Styling**: CSS Modules + PostCSS + Open Props + Radix UI Themes
+- **UI Components**: Custom Button system with Sierra Nevada "Mills River" brand theme
 - **CMS**: Sanity CMS (not Shopify metafields)
-- **Icons**: SVG-Go via vite-plugin-svgr
+- **Icons**: SVG-Go via vite-plugin-svgr + Custom Sierra Nevada logo
 - **State**: React Query + React hooks
 - **Security**: Pre-configured CSP with Klaviyo integration
 - **Quality**: Automated TypeScript checks, ESLint, Prettier, and Husky pre-commit hooks
@@ -31,7 +32,7 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 
 ## What's included
 
-- Remix
+- React Router v7 (NOT Remix)
 - Hydrogen
 - Oxygen
 - Vite
@@ -42,12 +43,15 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 - TypeScript and JavaScript flavors
 - PostCSS with preset-env configuration
 - Open Props for CSS custom properties
+- Radix UI Themes for component styling
 - SVG support with vite-plugin-svgr
+- Custom Sierra Nevada logo component
+- Complete Button component system with brand variants
 - AI assistant configuration files
 - Comprehensive CSP security configuration
-- Automated quality checks with Husky pre-commit hooks
-- Sanity CMS integration with live preview
-- Minimal setup of components and routes
+- Automated quality checks with Husky pre-commit hooks (restored)
+- Sanity CMS integration with embedded Studio
+- Interactive StyleGuide component
 
 ## Getting started
 
@@ -183,9 +187,11 @@ npx tsx app/test-open-graph.ts
 
 **Documentation:**
 
-- 📋 `SEO_ENHANCEMENTS.md` - Complete SEO implementation guide
-- ✅ `SEO_TESTING_CHECKLIST.md` - Manual testing checklist
-- 🛠️ `CONTENT_SETUP_GUIDE.md` - Content preparation for testing
+- 📚 **[Documentation Hub](./docs/)** - Complete guide navigation
+- 🔍 **[SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- 🏗️ **[Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
+- 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
+- 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
 ### Pre-commit Hooks
 
