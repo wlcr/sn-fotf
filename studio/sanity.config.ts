@@ -8,10 +8,26 @@
 
 import {defineConfig} from 'sanity';
 import {structureTool} from 'sanity/structure';
-import {visionTool} from '@sanity/vision';
 import {schemaTypes} from './schemaTypes';
 import {structure} from './structure';
 import SeoTestingTool from './tools/SeoTestingTool';
+
+// Conditionally import visionTool to handle cases where it might be externalized
+// We'll create a plugin function that tries to load the vision tool
+function createVisionPlugin() {
+  try {
+    // This will work if @sanity/vision is available in the bundle
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const {visionTool} = require('@sanity/vision');
+    return visionTool();
+  } catch {
+    // Vision tool not available (externalized), return null
+    console.warn(
+      'Vision tool not available - GROQ queries will not be available in Studio',
+    );
+    return null;
+  }
+}
 // import StudioIcon from './components/StudioIcon';
 
 // Define SEO Testing plugin
@@ -49,9 +65,10 @@ export default defineConfig({
 
   plugins: [
     structureTool({structure}),
-    visionTool(), // GROQ query tool for development
+    // Conditionally include visionTool if available
+    createVisionPlugin(),
     seoTestingPlugin(), // Custom SEO Testing tool
-  ],
+  ].filter(Boolean), // Remove null plugins
 
   schema: {
     types: schemaTypes,
