@@ -7,7 +7,11 @@ export default {
   generates: {
     'storefrontapi.generated.d.ts': {
       schema: getSchema('storefront'),
-      documents: ['./*.{ts,tsx,js,jsx}', './app/**/*.{ts,tsx,js,jsx}'],
+      documents: [
+        './*.{ts,tsx,js,jsx}',
+        './app/**/*.{ts,tsx,js,jsx}',
+        '!./app/graphql/customer-account/*.{ts,tsx,js,jsx}',
+      ],
       preset,
     },
     'customeraccountapi.generated.d.ts': {
