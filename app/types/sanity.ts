@@ -15,4 +15,5 @@ export type {
 } from '@sanity/types';
 
 // Import the generated types separately to avoid studio config dependencies
-export * from '../../studio/sanity.types';
+// TEMPORARILY COMMENTED OUT TO TEST SERVER-SIDE IMPORT ISSUE
+// export * from '../../studio/sanity.types';
