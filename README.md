@@ -280,8 +280,11 @@ npm run studio:clean        # Clear Studio cache if needed
 
 Comprehensive documentation is available in the `/docs` folder:
 
-- **[Sanity CMS Developer Guide](./docs/SANITY_DEVELOPER_GUIDE.md)** - Complete integration guide
-- **[GitHub Copilot Instructions](./.github/copilot-instructions.md)** - AI assistant configuration
+- **[📚 Documentation Hub](./docs/)** - Complete guide navigation
+- **[🏗️ Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
+- **[🔍 SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- **[🤖 AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
+- **[🔧 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
 ## GraphQL & Type Safety
 
