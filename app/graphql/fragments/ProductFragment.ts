@@ -1,6 +1,6 @@
 import ProductVariantFragment from './ProductVariantFragment';
 
-const ProductFragment = `#graphql
+const ProductFragment = /* GraphQL */ `
   fragment Product on Product {
     id
     title
@@ -10,6 +10,17 @@ const ProductFragment = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    media(first: 10) {
+      nodes {
+        ... on MediaImage {
+          id
+          image {
+            altText
+            url
+          }
+        }
+      }
+    }
     options {
       name
       optionValues {
@@ -27,10 +38,14 @@ const ProductFragment = `#graphql
         }
       }
     }
-    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+    selectedOrFirstAvailableVariant(
+      selectedOptions: $selectedOptions
+      ignoreUnknownOptions: true
+      caseInsensitiveMatch: true
+    ) {
       ...ProductVariant
     }
-    adjacentVariants (selectedOptions: $selectedOptions) {
+    adjacentVariants(selectedOptions: $selectedOptions) {
       ...ProductVariant
     }
     seo {
