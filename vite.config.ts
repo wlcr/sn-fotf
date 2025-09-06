@@ -51,7 +51,7 @@ export default defineConfig({
   },
   ssr: {
     // Exclude Sanity Studio and heavy dependencies from server bundle
-    external: ['@sanity/visual-editing', 'framer-motion', 'motion'],
+    external: ['@sanity/visual-editing'],
     noExternal: ['ultrahtml'],
     optimizeDeps: {
       /**
