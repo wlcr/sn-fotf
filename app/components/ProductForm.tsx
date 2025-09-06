@@ -1,5 +1,9 @@
 import {Link, useNavigate} from 'react-router';
-import {type MappedProductOptions} from '@shopify/hydrogen';
+import {
+  CartForm,
+  type MappedProductOptions,
+  type OptimisticCartLineInput,
+} from '@shopify/hydrogen';
 import type {
   Maybe,
   ProductOptionValueSwatch,
@@ -7,6 +11,7 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {Grid} from '@radix-ui/themes';
 
 export function ProductForm({
   productOptions,
@@ -17,6 +22,17 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+
+  const lines: Array<OptimisticCartLineInput> = selectedVariant
+    ? [
+        {
+          merchandiseId: selectedVariant.id,
+          quantity: 1,
+          selectedVariant,
+        },
+      ]
+    : [];
+
   return (
     <div className="product-form">
       {productOptions.map((option) => {
@@ -101,25 +117,30 @@ export function ProductForm({
           </div>
         );
       })}
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
-              ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
+      <Grid gap="2">
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={lines}
+          variant="outline"
+        >
+          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        </AddToCartButton>
+        {selectedVariant?.availableForSale && (
+          <AddToCartButton
+            disabled={!selectedVariant || !selectedVariant.availableForSale}
+            onClick={() => {
+              open('cart');
+            }}
+            lines={lines}
+            variant="solid"
+          >
+            Buy now
+          </AddToCartButton>
+        )}
+      </Grid>
     </div>
   );
 }

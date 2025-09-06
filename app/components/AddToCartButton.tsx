@@ -9,12 +9,20 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  variant = 'solid',
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
+  variant?:
+    | 'text'
+    | 'solid'
+    | 'outline'
+    | 'round'
+    | 'round-outline'
+    | undefined;
 }) {
   const {open} = useAside();
 
@@ -42,7 +50,8 @@ export function AddToCartButton({
               type="submit"
               onClick={onClick}
               disabled={disabled ?? fetcher.state !== 'idle'}
-              variant="outline"
+              variant={variant}
+              width="full"
             >
               {children}
             </Button>
