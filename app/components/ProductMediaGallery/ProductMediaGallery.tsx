@@ -9,7 +9,7 @@ export type ProductMediaGalleryProps = {
 
 export default function ProductMediaGallery({media}: ProductMediaGalleryProps) {
   return (
-    <Grid>
+    <Grid columns={'2'} gap="4">
       {media.nodes.map((node) => {
         if (!node.image) return null;
         return (

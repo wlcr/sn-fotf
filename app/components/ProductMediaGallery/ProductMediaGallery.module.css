@@ -4,6 +4,10 @@
   position: relative;
 }
 
+.ProductMediaGalleryImage:first-child {
+  grid-column: span 2;
+}
+
 .ProductMediaGalleryImage img {
   position: absolute;
   top: 0;
