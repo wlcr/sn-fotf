@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 
 // Types for Sanity Studio components
 interface StudioComponent {
@@ -16,12 +15,8 @@ interface SanityConfig {
   [key: string]: any;
 }
 
-export async function loader({request}: LoaderFunctionArgs) {
-  // Optional: Add authentication check for production
-  // const session = await getSession(request.headers.get('Cookie'));
-  // if (!session) throw redirect('/login');
-  return null;
-}
+// No server-side loader - this route is client-only to avoid
+// including Sanity Studio in the server bundle
 
 export default function StudioPage() {
   const [Studio, setStudio] = useState<StudioComponent | null>(null);
