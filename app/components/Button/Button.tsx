@@ -11,8 +11,8 @@ export type ButtonProps = {
 
 export default function Button({
   disabled,
-  appearance,
-  variant,
+  appearance = 'dark',
+  variant = 'solid',
   children,
 }: ButtonProps) {
   let className = styles.Button;
