@@ -16,7 +16,7 @@ import type {
   PageBuilderResult,
 } from '~/types/sanity';
 import PageBuilder from '~/components/sanity/PageBuilder';
-import {homeQuery, settingsQuery} from '~/studio/queries/index';
+import {HOME_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
 import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
 import StyleGuide from '~/components/StyleGuide';
 export const meta: MetaFunction = () => {
@@ -46,7 +46,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     // Fetch Sanity site settings for global content
     sanityServerQuery<SettingsQueryResult | null>(
       sanityClient,
-      settingsQuery,
+      SETTINGS_QUERY,
       {},
       {
         displayName: 'Site Settings',
@@ -59,7 +59,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     // Fetch Sanity homepage content
     sanityServerQuery<Homepage | null>(
       sanityClient,
-      homeQuery,
+      HOME_QUERY,
       {},
       {
         displayName: 'Homepage Content',

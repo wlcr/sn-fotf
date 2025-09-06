@@ -14,7 +14,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 // Sanity integration
-import {productPageQuery} from 'studio/queries';
+import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries';
 import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
@@ -130,7 +130,7 @@ async function loadCriticalData({
   // Step 1: Try to load Sanity ProductPage using URL handle
   const sanityProductPage = await sanityServerQuery<ProductPage | null>(
     sanityClient,
-    productPageQuery,
+    PRODUCT_PAGE_QUERY,
     {handle},
     {
       displayName: 'ProductPage Content',

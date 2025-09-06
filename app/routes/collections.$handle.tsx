@@ -6,7 +6,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
 
 // Sanity integration
-import {collectionPageQuery} from 'studio/queries';
+import {COLLECTION_PAGE_QUERY} from '~/lib/sanity/queries';
 import PageBuilder from '~/components/sanity/PageBuilder';
 import {CollectionPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
@@ -123,7 +123,7 @@ async function loadCriticalData({
   // Step 1: Try to load Sanity CollectionPage using URL handle
   const sanityCollectionPage = await sanityServerQuery<CollectionPage | null>(
     sanityClient,
-    collectionPageQuery,
+    COLLECTION_PAGE_QUERY,
     {handle},
     {
       displayName: 'CollectionPage Content',
