@@ -1,9 +1,21 @@
 import {useState, useEffect, useRef, useCallback} from 'react';
-import {motion, AnimatePresence} from 'motion/react';
 import {clsx} from 'clsx';
 import accordionStyles from './FaqAccordion.module.css';
 import {FaqBlock} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
+
+// Dynamic imports for motion components to avoid server-side inclusion
+let motion: any = null;
+let AnimatePresence: any = null;
+
+// Client-side only motion loading
+const loadMotion = async () => {
+  if (typeof window !== 'undefined' && !motion) {
+    const motionModule = await import('motion/react');
+    motion = motionModule.motion;
+    AnimatePresence = motionModule.AnimatePresence;
+  }
+};
 
 // Animation configuration
 const ANIMATION_CONFIG = {
@@ -58,7 +70,15 @@ export function FaqAccordion({
   allowMultiple = false,
 }: FaqAccordionProps) {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+  const [motionLoaded, setMotionLoaded] = useState(false);
   const accordionRef = useRef<HTMLDivElement>(null);
+
+  // Load motion components on client-side
+  useEffect(() => {
+    loadMotion().then(() => {
+      setMotionLoaded(true);
+    });
+  }, []);
 
   // Memoized helper functions
   const isItemOpen = useCallback(
@@ -143,29 +163,47 @@ export function FaqAccordion({
               />
             </button>
 
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
+            {/* Conditional rendering based on motion availability */}
+            {motionLoaded && motion && AnimatePresence ? (
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    id={contentId}
+                    className={accordionStyles.accordionContent}
+                    role="region"
+                    aria-labelledby={headerId}
+                    initial={{height: 0, opacity: 0}}
+                    animate={{height: 'auto', opacity: 1}}
+                    exit={{height: 0, opacity: 0}}
+                    transition={{
+                      duration: ANIMATION_CONFIG.duration,
+                      ease: ANIMATION_CONFIG.ease,
+                      height: {duration: ANIMATION_CONFIG.duration},
+                    }}
+                    style={{overflow: 'hidden'}}
+                  >
+                    <div className={accordionStyles.accordionContentInner}>
+                      <PortableText value={item.answer ?? []} />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            ) : (
+              // Fallback without animation for server-side rendering
+              isOpen && (
+                <div
                   id={contentId}
                   className={accordionStyles.accordionContent}
                   role="region"
                   aria-labelledby={headerId}
-                  initial={{height: 0, opacity: 0}}
-                  animate={{height: 'auto', opacity: 1}}
-                  exit={{height: 0, opacity: 0}}
-                  transition={{
-                    duration: ANIMATION_CONFIG.duration,
-                    ease: ANIMATION_CONFIG.ease,
-                    height: {duration: ANIMATION_CONFIG.duration},
-                  }}
                   style={{overflow: 'hidden'}}
                 >
                   <div className={accordionStyles.accordionContentInner}>
                     <PortableText value={item.answer ?? []} />
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              )
+            )}
           </div>
         );
       })}
