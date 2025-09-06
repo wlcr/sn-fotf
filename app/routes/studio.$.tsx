@@ -33,7 +33,7 @@ export default function StudioPage() {
   useEffect(() => {
     // Only proceed if we're on the client
     if (!isClient) return;
-    
+
     // Set up browser globals that Sanity Studio needs
     if (typeof window !== 'undefined') {
       (window as any).global = (window as any).global || window;
@@ -52,22 +52,69 @@ export default function StudioPage() {
           return;
         }
 
-        const {Studio: StudioComponent} = await import('sanity');
-        
-        // Use inline config to avoid importing studio config that includes sanity
-        // This prevents the studio config from being bundled in the server
-        const inlineConfig = {
+        const [
+          {Studio: StudioComponent, defineConfig},
+          schemaTypes,
+          seoPlugin,
+          studioStructure,
+        ] = await Promise.all([
+          import('sanity').then((sanityModule) => ({
+            Studio: sanityModule.Studio,
+            defineConfig: sanityModule.defineConfig,
+          })),
+          import('../lib/studio-schema.client').then((module) =>
+            module.createSchemaTypes(),
+          ),
+          import('../lib/studio-schema.client').then((module) =>
+            module.createSeoPlugin(),
+          ),
+          import('../lib/studio-schema.client').then((module) =>
+            module.createStudioStructure(),
+          ),
+        ]);
+
+        // Try to load structure tool and vision tool
+        let structureTool = null;
+        let visionTool = null;
+        try {
+          const structureModule = await import('sanity/structure');
+          structureTool = structureModule.structureTool;
+        } catch {
+          console.warn('Structure tool not available');
+        }
+
+        try {
+          const visionModule = await import('@sanity/vision');
+          visionTool = visionModule.visionTool;
+        } catch {
+          console.warn('Vision tool not available');
+        }
+
+        // Create full studio configuration with actual schema
+        const studioConfig = defineConfig({
           name: 'friends-of-the-family',
-          title: 'Friends of the Family',
+          title: 'Friends of the Family Studio',
           projectId: 'rimuhevv',
           dataset: 'production',
-          plugins: [], // Will be configured by the Studio runtime
-          schema: { types: [] }, // Will be loaded dynamically by Studio
-        };
+          apiVersion: '2025-01-01',
+          basePath: '/studio',
+          plugins: [
+            structureTool
+              ? structureTool(
+                  studioStructure ? {structure: studioStructure} : {},
+                )
+              : null,
+            visionTool ? visionTool() : null,
+            seoPlugin, // Add SEO testing plugin
+          ].filter(Boolean),
+          schema: {
+            types: schemaTypes as any,
+          },
+        });
 
-        console.log('Studio loaded successfully');
+        console.log('Studio loaded with full schema');
         setStudio(() => StudioComponent);
-        setConfig(inlineConfig);
+        setConfig(studioConfig);
       } catch (err) {
         console.error('Failed to load Studio:', err);
         setError(err instanceof Error ? err.message : 'Failed to load Studio');

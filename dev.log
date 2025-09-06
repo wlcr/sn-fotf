@@ -1,0 +1,38 @@
+
+> sn-friends-of-the-family@2025.5.1 dev
+> shopify hydrogen dev --codegen
+
+Port 3000 is in use, trying another one...
+
+Environment variables injected into MiniOxygen:
+
+PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG    from Oxygen
+PUBLIC_STOREFRONT_ID                    from local .env
+PUBLIC_STOREFRONT_API_TOKEN             from local .env
+PUBLIC_STORE_DOMAIN                     from local .env
+PRIVATE_STOREFRONT_API_TOKEN            from local .env
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID   from local .env
+PUBLIC_CUSTOMER_ACCOUNT_API_URL         from local .env
+SHOP_ID                                 from local .env
+SESSION_SECRET                          from local .env
+SANITY_API_TOKEN                        from local .env
+SANITY_PREVIEW_SECRET                   from local .env
+SANITY_REVALIDATE_SECRET                from local .env
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+
+
+╭─ success ────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  View SN - Friends of the Family app: http://localhost:3001/                 │
+│                                                                              │
+│  View GraphiQL API browser:                                                  │
+│  http://localhost:3001/graphiql                                              │
+│                                                                              │
+│  View server network requests:                                               │
+│  http://localhost:3001/subrequest-profiler                                   │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
