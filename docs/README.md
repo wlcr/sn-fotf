@@ -9,6 +9,7 @@
 - **[🔍 SEO Implementation](./SEO_GUIDE.md)** - SEO features, testing, and optimization
 - **[🤖 AI Development](./AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[📦 Bundle Optimization](./BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
 
 ## 🎯 Feature Guides
 

@@ -18,6 +18,18 @@
 - **Integrated SEO Tool**: Real-time SEO testing directly in Studio
 - **Simplified Workflow**: Everything runs with `npm run dev`
 
+### ⚠️ CRITICAL: Studio Must Be Client-Only
+
+**Bundle Size Warning:** Sanity Studio is a ~4MB bundle designed for browsers. Including it in the server bundle will cause Oxygen deployment failures.
+
+**Required Pattern:**
+
+- Studio routes (`studio.$.tsx`) MUST have NO server-side loaders
+- All Sanity Studio imports MUST use dynamic imports (`import('sanity')`)
+- Studio dependencies MUST be externalized from SSR in `vite.config.ts`
+
+**See:** [Bundle Optimization Guide](./BUNDLE_OPTIMIZATION.md) for complete details.
+
 ### Technology Integration
 
 - **Project ID**: `rimuhevv` (hardcoded, not sensitive)
@@ -508,6 +520,169 @@ export async function loader({params, context}: Route.LoaderArgs) {
   }
 }
 ```
+
+---
+
+## 🏗️ Embedded Studio Setup
+
+### ✅ Correct Studio Route Pattern
+
+**File: `app/routes/studio.$.tsx`**
+
+```typescript
+import { useEffect, useState } from 'react';
+
+// ⚠️ CRITICAL: NO server-side loader function
+// This ensures Sanity Studio stays client-only and doesn't bloat server bundle
+
+export default function StudioPage() {
+  const [Studio, setStudio] = useState(null);
+  const [config, setConfig] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Set up browser globals for Sanity Studio
+    if (typeof window !== 'undefined') {
+      window.global = window.global || window;
+      if (!window.process) {
+        window.process = { env: { NODE_ENV: 'development' } };
+      }
+    }
+
+    async function loadStudio() {
+      try {
+        // ✅ Dynamic imports prevent server-side inclusion
+        const [{ Studio: StudioComponent }, studioConfig] = await Promise.all([
+          import('sanity'),                    // ~4MB - client only!
+          import('../../studio/sanity.config'),
+        ]);
+
+        setStudio(() => StudioComponent);
+        setConfig(studioConfig.default);
+      } catch (err) {
+        console.error('Failed to load Studio:', err);
+        setError(err.message || 'Failed to load Studio');
+      }
+    }
+
+    loadStudio();
+  }, []);
+
+  // Loading state
+  if (!Studio || !config) {
+    return (
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        Loading Sanity Studio...
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column'
+      }}>
+        <h1>Studio Loading Error</h1>
+        <p>{error}</p>
+        <a href="/">← Back to Site</a>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ height: '100vh', width: '100vw' }}>
+      <Studio
+        config={config}
+        unstable_noAuthBoundary
+        unstable_globalErrorHandler={(error) => {
+          console.error('Studio error (handled):', error);
+          return true; // Prevent error from bubbling up
+        }}
+      />
+    </div>
+  );
+}
+```
+
+### ⚠️ Bundle Size Requirements
+
+**Why Client-Only Matters:**
+
+- Sanity Studio bundle: **~4MB** designed for browsers
+- Shopify Oxygen server limit: **< 2MB total**
+- Including Studio in server bundle = deployment failure
+
+**Required Vite Configuration:**
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  ssr: {
+    // Exclude heavy Sanity dependencies from server bundle
+    external: [
+      'sanity',
+      '@sanity/vision',
+      '@sanity/visual-editing',
+      '@sanity/react-loader',
+    ],
+    noExternal: [
+      // Keep light dependencies in server bundle
+      '@sanity/client', // Small API client (~50KB)
+      '@sanity/image-url', // Image URL builder (~10KB)
+    ],
+  },
+});
+```
+
+### ✅ SEO API Route Pattern
+
+**File: `app/routes/studio.seo.tsx`**
+
+```typescript
+import type {ActionFunctionArgs} from '@shopify/remix-oxygen';
+
+// ✅ Server action for API functionality is OK
+export async function action({request, context}: ActionFunctionArgs) {
+  // Keep dependencies minimal and lightweight
+  const {parse} = await import('ultrahtml'); // Dynamic import
+
+  // SEO testing logic here...
+  return new Response(JSON.stringify(results), {
+    headers: {'Content-Type': 'application/json'},
+  });
+}
+
+// ✅ NO default export component
+// This prevents including client-side Studio dependencies
+```
+
+### 🔍 Bundle Size Verification
+
+```bash
+# Build and check server bundle size
+npm run build
+ls -lh dist/server/index.js
+
+# Should show ~1.4MB, not 7MB+
+# Open bundle analyzer if too large:
+open dist/server/server-bundle-analyzer.html
+```
+
+**Target Sizes:**
+
+- **Server bundle**: < 1.5MB ✅
+- **Client Studio chunk**: ~4.4MB ✅ (lazy loaded)
+- **Other client chunks**: < 1MB each ✅
 
 ---
 

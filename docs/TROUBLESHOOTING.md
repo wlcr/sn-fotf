@@ -18,6 +18,45 @@
 3. **Review environment variables**: `SANITY_API_TOKEN`, `SANITY_PREVIEW_SECRET`
 4. **Clear Studio cache**: `npm run studio:clean`
 
+### Deployment Failures
+
+#### "Script startup exceeded CPU time limit"
+
+**Problem:** Server bundle too large for Oxygen edge functions
+
+```bash
+# Quick diagnosis
+npm run build
+ls -lh dist/server/index.js
+# If > 2MB, you have a bundle size problem
+
+# Open bundle analyzer to find culprit
+open dist/server/server-bundle-analyzer.html
+```
+
+**Common Causes:**
+
+- Sanity Studio included in server bundle (~4MB)
+- Heavy dependencies not externalized
+- Server-side loader in client-only routes
+
+**Quick Fix:**
+
+```bash
+# 1. Check studio routes have NO server loaders
+# 2. Verify vite.config.ts SSR externals:
+grep -A 10 "external:" vite.config.ts
+
+# 3. Should include:
+# 'sanity', '@sanity/vision', '@sanity/visual-editing'
+
+# 4. Rebuild and verify size
+npm run build
+ls -lh dist/server/index.js  # Should be ~1.4MB
+```
+
+**See:** [Bundle Optimization Guide](./BUNDLE_OPTIMIZATION.md) for complete solution
+
 ---
 
 ## 🔧 Development Issues
