@@ -50,14 +50,13 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   ssr: {
-    // Exclude Sanity Studio and heavy dependencies from server bundle
+    // Exclude heavy studio packages but keep essential Sanity client libraries
     external: [
-      'sanity',
-      '@sanity/vision',
-      '@sanity/visual-editing',
-      '@sanity/react-loader',
-      'framer-motion',
-      'motion',
+      'sanity', // Heavy Studio package - client only
+      '@sanity/vision', // Studio tool - client only
+      '@sanity/visual-editing', // Studio tool - client only
+      'framer-motion', // Heavy animation library - client only
+      'motion', // Heavy animation library - client only
     ],
     noExternal: ['ultrahtml'],
     optimizeDeps: {
