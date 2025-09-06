@@ -1,292 +1,56 @@
-/* Skip to main content link - accessibility */
-.skipLink {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--color-dark, #000);
-  color: var(--color-light, #fff);
-  padding: 8px 12px;
-  text-decoration: none;
-  z-index: 9999;
-  border-radius: 0 0 4px 4px;
-  font-size: 14px;
-  font-weight: 600;
-  transition: top 0.2s ease;
+:root {
+  --header-height: 128px;
 }
 
-.skipLink:focus {
-  top: 0;
-}
-
-/* Announcement Bar */
-.announcementBar {
-  background: var(--color-dark, #000);
-  color: var(--color-light, #fff);
-  text-align: center;
-  padding: 8px 16px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.announcementLink {
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  width: 100%;
-  padding: 4px 0;
-}
-
-.announcementLink:hover {
-  text-decoration: underline;
-}
-
-.announcementText {
-  display: block;
-  padding: 4px 0;
-}
-
-/* Main Header */
-.header {
-  background: var(--color-light, #fff);
-  border-bottom: 1px solid var(--color-border, #e5e5e5);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.headerContainer {
-  max-width: var(--max-content-width, 1200px);
-  margin: 0 auto;
-  padding: 0 16px;
+.Header {
   display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-gap: var(--size-5);
   align-items: center;
-  min-height: var(--header-height, 64px);
-  gap: 16px;
+  background-color: var(--color-mills-river);
+  color: var(--color-white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: var(--size-5);
 
-  /* Mobile Layout: Logo top, CTA + Utilities bottom */
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    'logo utility'
-    'cta utility';
-
-  @media (min-width: 768px) {
-    /* Desktop Layout: CTA left, Logo center, Utilities right */
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-areas: 'cta logo utility';
-    padding: 0 32px;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
-/* CTA Button */
-.ctaButtonWrapper {
-  grid-area: cta;
-  justify-self: start;
-
-  @media (max-width: 767px) {
-    order: 2;
-  }
-}
-
-.ctaButton {
-  /* Will inherit styles from global .button class */
-  display: inline-flex;
-  align-items: center;
-  font-size: 14px;
-  padding: 8px 16px;
-  white-space: nowrap;
-}
-
-/* Logo */
-.logoWrapper {
-  grid-area: logo;
-  justify-self: center;
-}
-
-.logoLink,
-.logoTextLink {
-  display: inline-block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.logoLink:focus,
-.logoTextLink:focus {
-  outline: 2px solid var(--color-primary, #000);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-.logo {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  max-height: 48px;
-
-  @media (min-width: 768px) {
-    max-height: 56px;
-  }
-}
-
-.logoText {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-dark, #000);
-
-  @media (min-width: 768px) {
-    font-size: 24px;
-  }
-}
-
-/* Utility Navigation */
-.utilityNav {
-  grid-area: utility;
-  justify-self: end;
-}
-
-.utilityList {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  @media (min-width: 768px) {
-    gap: 16px;
-  }
-}
-
-.utilityItem {
-  margin: 0;
-}
-
-.utilityLink {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: none;
-  background: transparent;
-  color: var(--color-dark, #000);
-  text-decoration: none;
-  font-size: 14px;
-  font-family: inherit;
-  cursor: pointer;
-  border-radius: 4px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-
-  @media (min-width: 768px) {
-    padding: 8px 16px;
-    font-size: 15px;
-  }
-}
-
-.utilityLink:hover {
-  background: var(--color-light-hover, #f5f5f5);
-}
-
-.utilityLink:focus {
-  outline: 2px solid var(--color-primary, #000);
-  outline-offset: 2px;
-}
-
-.utilityLinkActive {
-  background: var(--color-primary-light, #f0f0f0);
-  color: var(--color-primary, #000);
-  font-weight: 600;
-}
-
-.utilityText {
-  font-weight: 500;
-
-  @media (max-width: 480px) {
-    /* Hide text on very small screens, show icons only */
+.HeaderLeft {
+  @media (max-width: 768px) {
     display: none;
   }
 }
 
-.utilityIcon {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
-}
-
-.cartIconWrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cartCount {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: var(--color-brand-orange);
-  color: white;
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-  min-width: 18px;
-  height: 18px;
+.HeaderCenter {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 0 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
-  z-index: 1;
-}
-
-.utilityLink:hover .cartCount {
-  background: var(--color-brand-maroon);
-  transform: scale(1.1);
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-  .headerContainer {
-    min-height: auto;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    row-gap: 12px;
-  }
-
-  .logoWrapper {
-    order: 1;
-  }
-
-  .utilityNav {
-    order: 3;
+  @media (max-width: 768px) {
   }
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .header {
-    border-bottom: 2px solid;
-  }
+.HeaderRight {
+  justify-self: end;
 
-  .utilityLink:focus {
-    outline: 3px solid;
-  }
-
-  .skipLink:focus {
-    outline: 3px solid var(--color-light, #fff);
+  @media (max-width: 768px) {
+    display: none;
   }
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .skipLink {
-    transition: none;
-  }
+.HeaderUtilityList {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  grid-gap: var(--size-5);
+  justify-content: end;
+}
 
-  .utilityLink {
-    transition: none;
-  }
+.HeaderLogo {
+  color: var(--color-dry-malt);
+  max-width: 192px;
 }

@@ -69,3 +69,9 @@ declare module 'react-router' {
     // declare local additions to the Remix session data here
   }
 }
+
+declare module '@radix-ui/themes' {
+  interface ThemeProps {
+    accentColor?: 'millsRiver' | string;
+  }
+}

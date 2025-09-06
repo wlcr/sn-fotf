@@ -36,6 +36,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@portabletext/react": "^4.0.1",
+    "@radix-ui/themes": "^3.2.1",
     "@sanity/asset-utils": "^2.2.1",
     "@sanity/client": "^7.9.0",
     "@sanity/image-url": "^1.1.0",

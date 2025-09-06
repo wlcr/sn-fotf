@@ -18,6 +18,7 @@ import type {
 import PageBuilder from '~/components/sanity/PageBuilder';
 import {homeQuery, settingsQuery} from '~/studio/queries/index';
 import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
+import StyleGuide from '~/components/StyleGuide';
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -99,25 +100,28 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div className="home">
-      {/* Render Sanity homepage content if available */}
-      {data.homepage?.pageBuilder && (
-        <PageSectionsBuilder
-          parent={{_id: data.homepage._id, _type: data.homepage._type}}
-          pageBuilder={data.homepage.pageBuilder}
-        />
-      )}
-      {/* {data.homepage && (
+    <>
+      <StyleGuide></StyleGuide>
+      <div className="home">
+        {/* Render Sanity homepage content if available */}
+        {data.homepage?.pageBuilder && (
+          <PageSectionsBuilder
+            parent={{_id: data.homepage._id, _type: data.homepage._type}}
+            pageBuilder={data.homepage.pageBuilder}
+          />
+        )}
+        {/* {data.homepage && (
         <PageBuilder
           parent={{_id: data.homepage._id, _type: data.homepage._type}}
           pageBuilder={data.homepage.pageBuilder as PageBuilderResult}
         />
       )} */}
 
-      {/* Keep existing Shopify content */}
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
-    </div>
+        {/* Keep existing Shopify content */}
+        <FeaturedCollection collection={data.featuredCollection} />
+        <RecommendedProducts products={data.recommendedProducts} />
+      </div>
+    </>
   );
 }
 
