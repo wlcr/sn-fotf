@@ -192,6 +192,7 @@ npx tsx app/test-open-graph.ts
 - 🏗️ **[Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
 - 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- 📦 **[Bundle Optimization](./docs/BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
 
 ### Pre-commit Hooks
 
