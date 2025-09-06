@@ -53,9 +53,6 @@ export default defineConfig({
     // Exclude heavy dependencies that are only used client-side or in dynamic imports
     external: [
       '@sanity/visual-editing',
-      // Animation libraries - used only in client-side dynamic imports
-      'framer-motion',
-      'motion',
       // Heavy Studio dependencies that are dynamically imported
       '@sanity/vision',
     ],

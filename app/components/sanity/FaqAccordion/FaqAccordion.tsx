@@ -8,17 +8,12 @@ import {PortableText} from '@portabletext/react';
 let motion: any = null;
 let AnimatePresence: any = null;
 
-// Client-side only motion loading with fallback for externalized modules
+// Client-side only motion loading
 const loadMotion = async () => {
   if (typeof window !== 'undefined' && !motion) {
-    try {
-      const motionModule = await import('motion/react');
-      motion = motionModule.motion;
-      AnimatePresence = motionModule.AnimatePresence;
-    } catch (error) {
-      // Motion is externalized or not available - component will use fallback
-      console.warn('Motion library not available, using fallback rendering');
-    }
+    const motionModule = await import('motion/react');
+    motion = motionModule.motion;
+    AnimatePresence = motionModule.AnimatePresence;
   }
 };
 
