@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Quick test to verify the SEO strategy logic works correctly
-import {generateRobotsTxt} from './app/lib/seo.ts';
+import {generateRobotsTxt} from '../../../app/lib/seo';
 
 console.log('🧪 Testing SEO Strategy Logic\n');
 

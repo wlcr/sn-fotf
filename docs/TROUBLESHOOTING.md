@@ -244,6 +244,12 @@ export async function loader({request, context}: Route.LoaderArgs) {
 pkill -f "npm run dev"
 
 # 2. Clean ports and cache
+# Try graceful termination first
+lsof -ti:3000 | xargs kill -TERM 2>/dev/null || true
+lsof -ti:3001 | xargs kill -TERM 2>/dev/null || true
+# Wait a moment for graceful shutdown
+sleep 2
+# If processes persist, force kill as last resort
 lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 lsof -ti:3001 | xargs kill -9 2>/dev/null || true
 rm -rf dist/ .cache/ node_modules/.cache/
