@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 
 import ResolvedLink from './ResolvedLink';
-import {CallToAction} from 'studio/sanity.types';
+import {CallToAction} from '~/types/sanity';
 import {PortableText} from '@portabletext/react';
 import {urlForImage} from '~/lib/sanity';
 import styles from './SideBySideCtaSection.module.css';

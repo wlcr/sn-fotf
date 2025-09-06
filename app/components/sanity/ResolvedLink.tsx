@@ -1,5 +1,5 @@
 import {linkResolver} from '~/lib/sanity/linkResolver';
-import {Link as LinkType} from 'studio/sanity.types';
+import {Link as LinkType} from '~/types/sanity';
 import {Link} from 'react-router';
 
 interface ResolvedLinkProps {

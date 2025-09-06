@@ -5,17 +5,22 @@ This is a **Hydrogen storefront** for Sierra Nevada Brewing Co's members-only e-
 ## Key Technologies & Patterns
 
 ### Framework & Routing
+
 - **Hydrogen 2025.5.0** with **React Router v7.6.0** (NOT Remix)
 - File-based routing in `app/routes/`
 - TypeScript strict mode enabled
 
-### Styling Architecture  
+### Styling Architecture (Hybrid Approach)
+
+- **Radix UI Themes** (@radix-ui/themes) for layout primitives only (Container, Flex, Grid, Card)
+- **Custom Components** for brand-specific interactive elements (Button, Header, etc.)
 - **CSS Modules** for component styles (`.module.css`)
 - **Open Props** for design tokens and CSS custom properties
 - **PostCSS** for modern CSS processing
 - **clsx** for conditional class names
 
 ### Content Management
+
 - **Sanity CMS** for content (NOT Shopify metafields)
 - **Native Shopify account pages** (unstyled, external)
 - Members-only authentication required
@@ -24,37 +29,74 @@ This is a **Hydrogen storefront** for Sierra Nevada Brewing Co's members-only e-
 
 ```typescript
 // ✅ React Router (CORRECT)
-import { useLoaderData, Link, Form, redirect, json } from 'react-router';
+import {useLoaderData, Link, Form, redirect, json} from 'react-router';
+
+// ✅ Radix UI Layout Components (layout primitives only)
+import {Container, Section, Flex, Grid, Card, Box} from '@radix-ui/themes';
+
+// ✅ Custom Components (for interactive/branded elements)
+import Button from '~/components/Button/Button';
 
 // ✅ Styling
 import styles from './Component.module.css';
-import clsx from 'clsx';
+import {clsx} from 'clsx';
 
-// ✅ Utilities
-import { clsx } from 'clsx';
-import type { LoaderFunction } from 'react-router';
+// ✅ Types
+import type {LoaderFunction} from 'react-router';
 
 // ❌ NEVER use Remix imports
 // import { ... } from '@remix-run/react';
 // import { ... } from 'react-router-dom';
+
+// ❌ NEVER use Radix interactive components
+// import { Button, Text, Heading } from '@radix-ui/themes'; // Use custom components
 ```
 
-## Component Template
+## Component Templates
+
+### Layout Component (using Radix primitives)
+
+```typescript
+import type { FC } from 'react';
+import { Container, Flex, Card } from '@radix-ui/themes';
+import { clsx } from 'clsx';
+
+interface LayoutComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const LayoutComponent: FC<LayoutComponentProps> = ({
+  className,
+  children,
+  ...props
+}) => {
+  return (
+    <Container size="4" className={clsx(className)}>
+      <Flex direction="column" gap="4">
+        <Card>{children}</Card>
+      </Flex>
+    </Container>
+  );
+};
+```
+
+### Custom Component (brand-specific styling)
 
 ```typescript
 import type { FC } from 'react';
 import styles from './ComponentName.module.css';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 
 interface ComponentNameProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-export const ComponentName: FC<ComponentNameProps> = ({ 
-  className, 
-  children, 
-  ...props 
+export const ComponentName: FC<ComponentNameProps> = ({
+  className,
+  children,
+  ...props
 }) => {
   return (
     <div className={clsx(styles.componentName, className)} {...props}>
@@ -65,17 +107,20 @@ export const ComponentName: FC<ComponentNameProps> = ({
 ```
 
 ## Security Context
+
 - **CSP is pre-configured** in `app/entry.server.tsx` with Klaviyo + Shopify support
 - Don't suggest CSP modifications - it's production-ready
 - Includes React Router v7 inline script compatibility
 
 ## Project Goals
+
 - Members-only Sierra Nevada Brewing storefront
 - Migrating proven patterns from previous project
 - Sanity CMS integration for flexible content management
 - Production-ready security and performance
 
 ## Common File Locations
+
 - Components: `app/components/`
 - Routes: `app/routes/`
 - Utilities: `app/lib/`

@@ -10,6 +10,7 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
+  useLocation,
 } from 'react-router';
 import favicon from '~/assets/favicon.svg?url';
 import {HEADER_QUERY, FOOTER_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
@@ -22,7 +23,7 @@ import type {
   Header as SanityHeader,
   Footer as FooterType,
   Settings,
-} from '~/studio/sanity.types';
+} from '~/types/sanity';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
@@ -170,10 +171,43 @@ export async function loader(args: LoaderFunctionArgs) {
 }
 
 export function Layout({children}: {children?: React.ReactNode}) {
-  // Always call useNonce at the top level (React Hooks rule)
+  const location = useLocation();
+  // Always call hooks at the top level (React Hooks rule)
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>('root');
 
+  const isStudioRoute = location.pathname.startsWith('/studio');
+
+  // For studio routes, render minimal layout without site chrome
+  if (isStudioRoute) {
+    return (
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width,initial-scale=1" />
+          <meta name="robots" content="noindex, nofollow" />
+          <title>Content Studio</title>
+          <Meta />
+          <Links />
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+              * { box-sizing: border-box; }
+              html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+              #studio-container { height: 100vh; width: 100vw; }
+            `,
+            }}
+          />
+        </head>
+        <body>
+          <div id="studio-container">{children}</div>
+          <Scripts nonce={nonce} />
+        </body>
+      </html>
+    );
+  }
+
+  // Regular site layout
   return (
     <html lang="en">
       <head>
@@ -213,6 +247,8 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
+  const location = useLocation();
+  const isStudioRoute = location.pathname.startsWith('/studio');
   const error = useRouteError();
   let errorMessage = 'Unknown error';
   let errorStatus = 500;
@@ -224,6 +260,57 @@ export function ErrorBoundary() {
     errorMessage = error.message;
   }
 
+  // Studio-specific error layout
+  if (isStudioRoute) {
+    return (
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width,initial-scale=1" />
+          <meta name="robots" content="noindex, nofollow" />
+          <title>Studio Error</title>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+              * { box-sizing: border-box; }
+              html, body { margin: 0; padding: 0; height: 100vh; font-family: system-ui, sans-serif; }
+              .studio-error { 
+                height: 100vh; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                padding: 20px; 
+              }
+              .studio-error-content { 
+                text-align: center; 
+                max-width: 600px; 
+              }
+            `,
+            }}
+          />
+        </head>
+        <body>
+          <div className="studio-error">
+            <div className="studio-error-content">
+              <h1>Studio Error</h1>
+              <h2>Error {errorStatus}</h2>
+              {errorMessage && <p>{errorMessage}</p>}
+              <p>
+                <a
+                  href="/studio"
+                  style={{color: '#0066cc', textDecoration: 'none'}}
+                >
+                  ← Back to Studio
+                </a>
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
+  // Regular site error layout
   return (
     <div className="route-error">
       <h1>Oops</h1>

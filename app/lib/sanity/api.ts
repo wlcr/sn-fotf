@@ -11,7 +11,7 @@ const SANITY_CONFIG = {
   projectId: 'rimuhevv',
   dataset: 'production',
   apiVersion: '2025-01-01',
-  studioUrl: 'http://localhost:3333',
+  studioUrl: 'http://localhost:3000/studio', // Embedded Studio
 };
 
 /**

@@ -7,7 +7,7 @@ import globals from 'globals';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import _import from 'eslint-plugin-import';
 import tsParser from '@typescript-eslint/parser';
-import jest from 'eslint-plugin-jest';
+import vitest from 'eslint-plugin-vitest';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import js from '@eslint/js';
@@ -191,20 +191,20 @@ export default [
       },
     },
   },
-  ...compat.extends('plugin:jest/recommended').map((config) => ({
-    ...config,
-    files: ['**/*.test.*'],
-  })),
   {
     files: ['**/*.test.*'],
     plugins: {
-      jest,
+      vitest,
     },
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.jest,
+        ...globals.vitest,
       },
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      'vitest/valid-expect': 'off', // Allow custom messages in expect statements
     },
   },
   {
@@ -262,6 +262,19 @@ export default [
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'react/prop-types': 'off',
+    },
+  },
+  // Test files and development utilities - allow console statements
+  {
+    files: [
+      '**/test-*.{js,ts}',
+      '**/*test*.{js,ts}',
+      '**/scripts/**/*.js',
+      '**/lib/seo/routes.ts', // SEO debug utilities
+    ],
+    rules: {
+      'no-console': 'off',
+      'no-unused-vars': 'warn',
     },
   },
 ];

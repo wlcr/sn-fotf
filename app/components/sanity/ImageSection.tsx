@@ -1,4 +1,4 @@
-import {ImageBlock} from 'studio/sanity.types';
+import {ImageBlock} from '~/types/sanity';
 import CoverImage from './CoverImage';
 
 type ImageBlockProps = {

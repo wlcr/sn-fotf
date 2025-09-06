@@ -5,8 +5,84 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+// Sanity integration
+import {COLLECTION_PAGE_QUERY} from '~/lib/sanity/queries';
+import PageBuilder from '~/components/sanity/PageBuilder';
+import {CollectionPage} from '~/types/sanity';
+import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
+
+// SEO integration
+import {
+  generateCollectionMetaTags,
+  generateComprehensiveSEOTags,
+  pageHasNonIndexableCollections,
+} from '~/lib/seo';
+import {shouldNoIndex} from '~/lib/seo/routes';
+import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
+import type {Settings} from '~/types/sanity';
+
+// Structured data integration
+import {
+  generateSiteStructuredData,
+  generateBreadcrumbData,
+  combineStructuredData,
+} from '~/lib/seo/structured-data';
+import StructuredData from '~/components/StructuredData';
+
+export const meta: MetaFunction<typeof loader> = ({data, location}) => {
+  if (!data?.collection) {
+    return [{title: 'Collection Not Found'}];
+  }
+
+  // Generate comprehensive SEO meta tags combining Shopify + Sanity data
+  const metaTags = generateCollectionMetaTags(
+    data.settings,
+    data.sanityCollectionPage,
+    {
+      title: data.collection.title,
+      description: data.collection.description,
+      handle: data.collection.handle,
+      image: data.collection.image?.url,
+    },
+    {
+      name: data.shopData?.name,
+      primaryDomain: data.shopData?.primaryDomain,
+    },
+  );
+
+  // Check if page has non-indexable collection blocks
+  const hasNonIndexableCollections = data.sanityCollectionPage?.pageBuilder
+    ? pageHasNonIndexableCollections(data.sanityCollectionPage.pageBuilder)
+    : false;
+
+  // Check route-based SEO rules
+  const routeShouldNoIndex = shouldNoIndex(location.pathname, data.settings);
+
+  // Override robots directive if page contains non-indexable collections or route rules apply
+  if ((hasNonIndexableCollections || routeShouldNoIndex) && metaTags.robots) {
+    metaTags.robots = 'noindex, nofollow';
+  }
+
+  // Generate comprehensive meta tags with enhanced Open Graph and Twitter Cards
+  const enhancedMetaTags = {
+    ...metaTags,
+    type: 'website' as const,
+    image: data.collection.image?.url,
+    keywords: [
+      data.collection.title,
+      'collection',
+      'Sierra Nevada',
+      'brewery products',
+    ]
+      .filter(Boolean)
+      .slice(0, 10),
+  };
+
+  return generateComprehensiveSEOTags(enhancedMetaTags, data.settings, {
+    name: data.shopData?.name,
+    primaryDomain: data.shopData?.primaryDomain,
+    brand: data.shopData?.brand,
+  });
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -38,24 +114,87 @@ async function loadCriticalData({
     throw redirect('/collections');
   }
 
-  const [{collection}] = await Promise.all([
+  // Create Sanity client for potential CollectionPage lookup
+  const sanityClient = createSanityClient(context.env);
+
+  // Strategy: Try to find Sanity CollectionPage first, then get Shopify collection
+  // If no CollectionPage exists, just load Shopify collection directly
+
+  // Step 1: Try to load Sanity CollectionPage using URL handle
+  const sanityCollectionPage = await sanityServerQuery<CollectionPage | null>(
+    sanityClient,
+    COLLECTION_PAGE_QUERY,
+    {handle},
+    {
+      displayName: 'CollectionPage Content',
+      env: context.env,
+    },
+  ).catch((error) => {
+    // Log Sanity query errors for debugging, but don't fail the page
+    console.warn(
+      'Failed to load CollectionPage from Sanity:',
+      error instanceof Error ? error.message : String(error),
+    );
+    return null;
+  });
+
+  // Step 2: Determine which collection handle to use for Shopify query
+  let collectionHandle = handle;
+  if (sanityCollectionPage?.collectionHandle) {
+    // If Sanity CollectionPage exists, use its collectionHandle for Shopify
+    collectionHandle = sanityCollectionPage.collectionHandle;
+  }
+
+  // Step 3: Load Shopify collection, settings, and shop data in parallel
+  const [shopifyRes, settings, shopData] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
-      variables: {handle, ...paginationVariables},
-      // Add other queries here, so that they are loaded in parallel
+      variables: {handle: collectionHandle, ...paginationVariables},
+    }),
+    // Load global settings for SEO
+    sanityServerQuery<Settings | null>(
+      sanityClient,
+      SETTINGS_QUERY,
+      {},
+      {
+        displayName: 'Settings',
+        env: context.env,
+      },
+    ).catch((error) => {
+      // Log Settings query errors for debugging, but don't fail the page
+      console.warn(
+        'Failed to load Settings from Sanity:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
+    // Load shop data for comprehensive SEO and structured data
+    storefront.query(SHOP_SEO_QUERY).catch((error) => {
+      console.warn(
+        'Failed to load shop data for SEO:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
     }),
   ]);
 
-  if (!collection) {
+  const collection = shopifyRes.collection;
+  if (!collection?.id) {
     throw new Response(`Collection ${handle} not found`, {
       status: 404,
     });
   }
 
   // The API handle might be localized, so redirect to the localized handle
-  redirectIfHandleIsLocalized(request, {handle, data: collection});
+  redirectIfHandleIsLocalized(request, {
+    handle: collectionHandle,
+    data: collection,
+  });
 
   return {
     collection,
+    sanityCollectionPage, // May be null if no CollectionPage exists
+    settings, // For SEO meta tag generation
+    shopData: shopData?.shop || null, // For comprehensive SEO and structured data
   };
 }
 
@@ -69,33 +208,80 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const {collection, sanityCollectionPage, settings, shopData} =
+    useLoaderData<typeof loader>();
+
+  // Use name and description overrides from Sanity if available
+  const displayTitle = sanityCollectionPage?.nameOverride || collection.title;
+  const displayDescription =
+    sanityCollectionPage?.descriptionOverride || collection.description;
+
+  // Generate structured data for this collection
+  const baseUrl =
+    shopData?.primaryDomain?.url || 'https://friends.sierranevada.com';
+
+  const siteStructuredData = generateSiteStructuredData(settings, shopData);
+  const breadcrumbData = generateBreadcrumbData(
+    [
+      {name: 'Home', url: '/'},
+      {name: 'Collections', url: '/collections'},
+      {name: displayTitle, url: `/collections/${collection.handle}`},
+    ],
+    baseUrl,
+  );
+
+  const allStructuredData = combineStructuredData(
+    ...siteStructuredData,
+    breadcrumbData,
+  );
 
   return (
-    <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
+    <>
+      {/* Structured Data */}
+      <StructuredData
+        data={allStructuredData}
+        id="collection-structured-data"
+      />
+
+      <div className="collection">
+        <h1>{displayTitle}</h1>
+        {displayDescription && (
+          <p className="collection-description">{displayDescription}</p>
+        )}
+        <PaginatedResourceSection
+          connection={collection.products}
+          resourcesClassName="products-grid"
+        >
+          {({node: product, index}) => (
+            <ProductItem
+              key={(product as any).id}
+              product={product as any}
+              loading={index < 8 ? 'eager' : undefined}
+            />
+          )}
+        </PaginatedResourceSection>
+        <Analytics.CollectionView
+          data={{
+            collection: {
+              id: collection.id,
+              handle: collection.handle,
+            },
+          }}
+        />
+      </div>
+
+      {/* Render Sanity page builder content if available */}
+      {sanityCollectionPage?.pageBuilder &&
+        sanityCollectionPage.pageBuilder.length > 0 && (
+          <PageBuilder
+            parent={{
+              _id: sanityCollectionPage._id,
+              _type: sanityCollectionPage._type,
+            }}
+            pageBuilder={sanityCollectionPage.pageBuilder}
           />
         )}
-      </PaginatedResourceSection>
-      <Analytics.CollectionView
-        data={{
-          collection: {
-            id: collection.id,
-            handle: collection.handle,
-          },
-        }}
-      />
-    </div>
+    </>
   );
 }
 
@@ -143,6 +329,10 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        url
+        altText
+      }
       products(
         first: $first,
         last: $last,
@@ -157,6 +347,44 @@ const COLLECTION_QUERY = `#graphql
           hasNextPage
           endCursor
           startCursor
+        }
+      }
+    }
+  }
+` as const;
+
+const SHOP_SEO_QUERY = `#graphql
+  query ShopSEO($country: CountryCode, $language: LanguageCode)
+   @inContext(country: $country, language: $language) {
+    shop {
+      id
+      name
+      description
+      primaryDomain {
+        url
+      }
+      brand {
+        logo {
+          image {
+            url
+          }
+        }
+        coverImage {
+          image {
+            url
+          }
+        }
+        squareLogo {
+          image {
+            url
+          }
+        }
+        shortDescription
+        slogan
+        colors {
+          primary {
+            background
+          }
         }
       }
     }

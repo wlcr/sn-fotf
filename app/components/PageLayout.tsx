@@ -3,7 +3,7 @@ import type {
   Header as SanityHeader,
   Footer as SanityFooter,
   Settings,
-} from '~/studio/sanity.types';
+} from '~/types/sanity';
 import {Aside} from '~/components/Aside';
 import {CartAside} from '~/components/CartAside/CartAside';
 import {Footer} from '~/components/Footer/Footer';

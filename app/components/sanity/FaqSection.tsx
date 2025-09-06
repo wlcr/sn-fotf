@@ -1,5 +1,4 @@
-'use client';
-import {FaqBlock} from 'studio/sanity.types';
+import {FaqBlock} from '~/types/sanity';
 import {FaqAccordion} from './FaqAccordion/FaqAccordion';
 
 type FaqBlockProps = {

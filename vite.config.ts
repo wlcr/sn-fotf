@@ -12,22 +12,53 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
     svgr({
-      // SVG-Go configuration for React components
+      // SVG-React configuration with SVGO optimization
       svgrOptions: {
         exportType: 'named',
         ref: true,
-        svgo: false,
+        svgo: true, // Enable SVGO for automatic optimization
+        svgoConfig: {
+          // Basic SVGO optimization with preset-default (uses advanced optimizations from svgo.config.cjs at runtime)
+          plugins: [
+            {
+              name: 'preset-default',
+              params: {
+                overrides: {
+                  removeViewBox: false,
+                  removeTitle: false,
+                  removeDesc: false,
+                },
+              },
+            },
+          ],
+        },
         titleProp: true,
       },
       include: '**/*.svg',
     }),
   ],
+  define: {
+    // Browser globals needed for Sanity Studio
+    global: 'globalThis',
+    'process.env.NODE_ENV': JSON.stringify(
+      process.env.NODE_ENV || 'development',
+    ),
+  },
   build: {
     // Allow a strict Content-Security-Policy
     // withtout inlining assets as base64:
     assetsInlineLimit: 0,
   },
   ssr: {
+    // Exclude heavy studio packages but keep essential Sanity client libraries
+    external: [
+      'sanity', // Heavy Studio package - client only
+      '@sanity/vision', // Studio tool - client only
+      '@sanity/visual-editing', // Studio tool - client only
+      'framer-motion', // Heavy animation library - client only
+      'motion', // Heavy animation library - client only
+    ],
+    noExternal: ['ultrahtml'],
     optimizeDeps: {
       /**
        * Include dependencies here if they throw CJS<>ESM errors.

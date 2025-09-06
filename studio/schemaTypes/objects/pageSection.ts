@@ -11,6 +11,7 @@ export const pageSection = defineType({
       description: 'Content blocks for this section',
       type: 'array',
       of: [
+        {type: 'collectionBlock'},
         {type: 'contentBlock'},
         {type: 'imageContentBlock'},
         {type: 'imageBlock'},

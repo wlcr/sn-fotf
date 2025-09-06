@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import {clsx} from 'clsx';
 import {urlForImage} from '~/lib/sanity';
 import {linkResolver} from '~/lib/sanity/linkResolver';
-import type {Footer as FooterType} from '~/studio/sanity.types';
+import type {Footer as FooterType} from '~/types/sanity';
 import styles from './Footer.module.css';
 
 export interface FooterProps {

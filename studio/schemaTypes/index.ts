@@ -1,6 +1,7 @@
 import {page} from './documents/page';
 import {blockContent} from './objects/blockContent';
 import {callToAction} from './objects/callToAction';
+import {collectionBlock} from './objects/collectionBlock';
 import {link} from './objects/link';
 import {mediaImage} from './objects/mediaImage';
 import {settings} from './singletons/settings';
@@ -15,10 +16,12 @@ import {faqBlock} from './objects/faqBlock';
 import {ctaBlock} from './objects/ctaBlock';
 import {homepage} from './singletons/homepage';
 import {productPage} from './documents/productPage';
+import {collectionPage} from './documents/collectionPage';
 import {specialComponentBlock} from './objects/specialComponentBlock';
 import {newsletterBlock} from './objects/newsletterBlock';
 import {mediaVimeo} from './objects/mediaVimeo';
 import {pageSection} from './objects/pageSection';
+import {openGraph, globalOpenGraph} from './objects/openGraph';
 
 export const schemaTypes = [
   // Singletons
@@ -29,6 +32,7 @@ export const schemaTypes = [
   // Documents
   page,
   productPage,
+  collectionPage,
   // Objects
   blockContent,
   callToAction,
@@ -37,8 +41,11 @@ export const schemaTypes = [
   mediaImage,
   mediaVimeo,
   menu,
+  openGraph,
+  globalOpenGraph,
   // Block Arrays + Blocks
   pageSection,
+  collectionBlock,
   contentBlock,
   ctaBlock,
   faqBlock,
