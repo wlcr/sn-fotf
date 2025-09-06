@@ -52,14 +52,22 @@ export default function StudioPage() {
           return;
         }
 
-        const [{Studio: StudioComponent}, studioConfig] = await Promise.all([
-          import('sanity'),
-          import('../../studio/sanity.config'),
-        ]);
+        const {Studio: StudioComponent} = await import('sanity');
+        
+        // Use inline config to avoid importing studio config that includes sanity
+        // This prevents the studio config from being bundled in the server
+        const inlineConfig = {
+          name: 'friends-of-the-family',
+          title: 'Friends of the Family',
+          projectId: 'rimuhevv',
+          dataset: 'production',
+          plugins: [], // Will be configured by the Studio runtime
+          schema: { types: [] }, // Will be loaded dynamically by Studio
+        };
 
         console.log('Studio loaded successfully');
         setStudio(() => StudioComponent);
-        setConfig(studioConfig.default);
+        setConfig(inlineConfig);
       } catch (err) {
         console.error('Failed to load Studio:', err);
         setError(err instanceof Error ? err.message : 'Failed to load Studio');
