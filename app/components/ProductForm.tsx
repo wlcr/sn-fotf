@@ -120,9 +120,7 @@ export function ProductForm({
       <Grid gap="2">
         <AddToCartButton
           disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onClick={() => {
-            open('cart');
-          }}
+          onAddToCart={() => console.log('something added to cart')}
           lines={lines}
           variant="outline"
         >
@@ -131,9 +129,7 @@ export function ProductForm({
         {selectedVariant?.availableForSale && (
           <AddToCartButton
             disabled={!selectedVariant || !selectedVariant.availableForSale}
-            onClick={() => {
-              open('cart');
-            }}
+            onAddToCart={() => console.log('something added to cart')}
             lines={lines}
             variant="solid"
           >

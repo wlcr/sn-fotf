@@ -2,20 +2,21 @@ import {type FetcherWithComponents} from 'react-router';
 import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
 import Button from './Button/Button';
+import {useEffect} from 'react';
 
 export function AddToCartButton({
   analytics,
   children,
   disabled,
   lines,
-  onClick,
+  onAddToCart,
   variant = 'solid',
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
-  onClick?: () => void;
+  onAddToCart?: () => void;
   variant?:
     | 'text'
     | 'solid'
@@ -33,10 +34,7 @@ export function AddToCartButton({
         const isAdding = fetcher.state === 'submitting';
         const wasAdding = fetcher.state === 'idle' && fetcher.data;
 
-        if (wasAdding && !isAdding) {
-          // Use setTimeout to avoid state updates during render
-          setTimeout(() => open('cart'), 0);
-        }
+        if (wasAdding) onAddToCart?.();
 
         return (
           <>
@@ -48,7 +46,6 @@ export function AddToCartButton({
 
             <Button
               type="submit"
-              onClick={onClick}
               disabled={disabled ?? fetcher.state !== 'idle'}
               variant={variant}
               width="full"
