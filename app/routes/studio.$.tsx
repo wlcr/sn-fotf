@@ -19,11 +19,21 @@ interface SanityConfig {
 // including Sanity Studio in the server bundle
 
 export default function StudioPage() {
+  // Only render on client to avoid any server-side issues
+  const [isClient, setIsClient] = useState(false);
   const [Studio, setStudio] = useState<StudioComponent | null>(null);
   const [config, setConfig] = useState<SanityConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Set client-side flag
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    // Only proceed if we're on the client
+    if (!isClient) return;
+    
     // Set up browser globals that Sanity Studio needs
     if (typeof window !== 'undefined') {
       (window as any).global = (window as any).global || window;
@@ -57,7 +67,12 @@ export default function StudioPage() {
     }
 
     loadStudio();
-  }, []);
+  }, [isClient]);
+
+  // Server-side: render nothing to avoid any imports
+  if (!isClient) {
+    return null;
+  }
 
   if (error) {
     return (
