@@ -1,4 +1,4 @@
-const ProductVariantFragment = `#graphql
+const ProductVariantFragment = /* GraphQL */ `
   fragment ProductVariant on ProductVariant {
     availableForSale
     compareAtPrice {
