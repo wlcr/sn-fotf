@@ -15,5 +15,5 @@ export type {
 } from '@sanity/types';
 
 // Import the generated types separately to avoid studio config dependencies
-// TEMPORARILY COMMENTED OUT TO TEST SERVER-SIDE IMPORT ISSUE
-// export * from '../../studio/sanity.types';
+// These are pure TypeScript types with no runtime imports - safe to include
+export * from '../../studio/sanity.types';
