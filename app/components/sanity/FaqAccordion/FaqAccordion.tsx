@@ -1,5 +1,3 @@
-'use client';
-
 import {useState, useEffect, useRef, useCallback} from 'react';
 import {motion, AnimatePresence} from 'motion/react';
 import {clsx} from 'clsx';

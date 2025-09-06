@@ -7,7 +7,7 @@ import {useAside} from '~/components/Aside';
 import type {Header as HeaderType} from '~/studio/sanity.types';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
-import Logo from '../Icons/Logo';
+import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
 
 export interface HeaderProps {

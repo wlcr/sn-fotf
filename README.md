@@ -290,6 +290,7 @@ Comprehensive documentation is available in the `/docs` folder:
 - **[📚 Documentation Hub](./docs/)** - Complete guide navigation
 - **[🏗️ Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
 - **[🔍 SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- **[🖼️ SVG Usage Guide](./docs/SVG_GUIDE.md)** - Automated SVG optimization pipeline
 - **[🤖 AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 

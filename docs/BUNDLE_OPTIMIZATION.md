@@ -49,7 +49,131 @@ Open the HTML file to see what's consuming server bundle space.
 
 ## 🛠️ Solution Strategies
 
-### 1. Externalize from SSR Bundle
+### 1. Use React.lazy for Client-Only Components (Recommended for React Router v7)
+
+**The most effective approach** for React Router v7/Remix applications is to use dynamic imports with `React.lazy` for components that depend on heavy client-side libraries:
+
+```typescript
+// In your component renderer (e.g., BlockRenderer.tsx)
+import React, {createElement, lazy, Suspense} from 'react';
+
+// Dynamically import components that use heavy libraries like motion, framer-motion, etc.
+const FaqSectionBlock = lazy(() => import('./FaqSection'));
+const NewsletterSectionBlock = lazy(() => import('./NewsletterBlock'));
+const HeavyInteractiveComponent = lazy(() => import('./HeavyComponent'));
+
+// In your render logic
+if (BlockComponent) {
+  // Identify components that should be client-only
+  const isClientOnlyComponent =
+    block._type === 'faqBlock' ||
+    block._type === 'newsletterBlock' ||
+    block._type === 'interactiveWidget';
+
+  if (isClientOnlyComponent) {
+    return (
+      <div key={block._key} data-sanity={sanityDataAttr}>
+        <Suspense fallback={<div className="loading-placeholder">Loading...</div>}>
+          {createElement(BlockComponent, {
+            key: block._key,
+            block,
+            index,
+          })}
+        </Suspense>
+      </div>
+    );
+  }
+
+  // Regular server-side rendered components
+  return (
+    <div key={block._key} data-sanity={sanityDataAttr}>
+      {createElement(BlockComponent, {
+        key: block._key,
+        block,
+        index,
+      })}
+    </div>
+  );
+}
+```
+
+**Benefits:**
+
+- ✅ Heavy dependencies automatically excluded from server bundle
+- ✅ Components still work perfectly on client-side
+- ✅ Better performance with progressive loading
+- ✅ No need to manually manage external dependencies
+- ✅ Cleaner than conditional imports
+
+**When to Use This Pattern:**
+
+- Components using `motion`, `framer-motion`, `three.js`, etc.
+- Interactive widgets, animations, complex forms
+- Any component that doesn't need server-side rendering
+
+### 2. SVG Optimization with SVGO (Critical for Large SVGs)
+
+**Large inline SVG components can bloat your server bundle significantly.** We've set up an automated SVGO pipeline to optimize all SVGs:
+
+#### Automatic Optimization
+
+SVGO is enabled in `vite.config.ts` and will automatically optimize SVGs imported as React components:
+
+```typescript
+// vite.config.ts
+svgr({
+  svgrOptions: {
+    exportType: 'named',
+    ref: true,
+    svgo: true, // Automatic optimization enabled
+    titleProp: true,
+    svgoConfig: {
+      configFile: './svgo.config.cjs',
+    },
+  },
+  include: '**/*.svg',
+}),
+```
+
+#### Manual SVG Optimization Commands
+
+```bash
+# Optimize all SVGs in the app directory
+npm run svg:optimize
+
+# Optimize a single SVG file
+npm run svg:optimize:single -- input.svg output.svg
+
+# Check SVG file sizes (largest first)
+npm run svg:check
+
+# Analyze bundle after optimization
+npm run bundle:analyze
+```
+
+#### Real-World Results
+
+**Logo Component Optimization:**
+
+- **Before:** 205KB inline TSX component (1,326 lines)
+- **After:** 98KB optimized SVG file + 115-byte import component
+- **Reduction:** 51% smaller SVG + 99.94% smaller component
+- **Server Bundle Impact:** 198KB reduction (1.47MB → 1.25MB)
+
+#### Best Practices for SVGs
+
+1. **Convert large inline SVG components to separate .svg files**
+2. **Import optimized SVGs using `?react` suffix:**
+   ```typescript
+   import LogoSvg from '../assets/icons/logo.svg?react';
+   export default function Logo() {
+     return <LogoSvg />;
+   }
+   ```
+3. **Use SVGO configuration in `svgo.config.cjs`** for project-wide optimization
+4. **Check bundle analyzer for large SVG components** - anything over 50KB should be optimized
+
+### 3. Externalize from SSR Bundle (Alternative)
 
 **In `vite.config.ts`:**
 

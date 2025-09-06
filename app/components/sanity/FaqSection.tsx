@@ -1,4 +1,3 @@
-'use client';
 import {FaqBlock} from 'studio/sanity.types';
 import {FaqAccordion} from './FaqAccordion/FaqAccordion';
 

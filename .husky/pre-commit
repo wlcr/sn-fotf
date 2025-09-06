@@ -1,5 +1,9 @@
 echo "🔍 Running pre-commit quality checks..."
 
+# Optimize any SVG files automatically
+echo "🖼️  Optimizing SVG assets..."
+npm run svg:optimize
+
 # Run type checking and linting on staged files
 npm run pre-commit
 

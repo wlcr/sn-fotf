@@ -12,12 +12,16 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
     svgr({
-      // SVG-Go configuration for React components
+      // SVG-React configuration with SVGO optimization
       svgrOptions: {
         exportType: 'named',
         ref: true,
-        svgo: false,
+        svgo: true, // Enable SVGO for automatic optimization
         titleProp: true,
+        // Use basic SVGO optimizations for build-time processing
+        svgoConfig: {
+          plugins: ['preset-default'],
+        },
       },
       include: '**/*.svg',
     }),

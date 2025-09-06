@@ -30,7 +30,12 @@
     "seo:test": "node scripts/seo-test.js",
     "seo:test:verbose": "node scripts/seo-test.js --verbose",
     "seo:test:local": "node scripts/seo-test.js --url=http://localhost:3000",
-    "seo:test:quick": "node tests/unit/seo/quick-strategy-test.js"
+    "seo:test:quick": "node tests/unit/seo/quick-strategy-test.js",
+    "svg:optimize": "node scripts/optimize-svgs.js",
+    "svg:optimize:manual": "svgo --config=svgo.config.cjs --folder=app --recursive --quiet",
+    "svg:optimize:single": "svgo --config=svgo.config.cjs --input",
+    "svg:check": "find app studio/static -name '*.svg' -exec wc -c {} + | sort -n",
+    "bundle:analyze": "npm run build && open dist/server/server-bundle-analyzer.html"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -105,6 +110,7 @@
     "postcss-preset-env": "^10.3.0",
     "postcss-pxtorem": "^6.1.0",
     "prettier": "^3.4.2",
+    "svgo": "^4.0.0",
     "typescript": "^5.2.2",
     "vite": "^6.2.4",
     "vite-plugin-svgr": "^4.3.0",
