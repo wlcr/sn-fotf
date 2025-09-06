@@ -15,6 +15,7 @@ const ProductFragment = /* GraphQL */ `
         ... on MediaImage {
           id
           image {
+            id
             altText
             url
           }
