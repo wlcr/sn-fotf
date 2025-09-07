@@ -20,6 +20,7 @@ import ProductQuery from '~/graphql/queries/ProductQuery';
 import {Container, Grid} from '@radix-ui/themes';
 import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGallery';
 import {ProductFragment} from 'storefrontapi.generated';
+import styles from './ProductDetail.module.css';
 
 export type ProductDetailProps = {
   product: ProductFragment;
@@ -57,6 +58,7 @@ export default function ProductDetail({product}: ProductDetailProps) {
             <div className="heading-4">Chico, Lorem Ipsum</div>
             <h1 className="heading-1">{product.title}</h1>
             <ProductPrice
+              className={styles.ProductDetailPrice}
               price={selectedVariant?.price}
               compareAtPrice={selectedVariant?.compareAtPrice}
             />
