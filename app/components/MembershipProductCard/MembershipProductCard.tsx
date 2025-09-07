@@ -17,14 +17,19 @@ export default function MembershipProductCard({
   return (
     <Grid gap="2">
       {image && (
-        <div className={styles.MembershipProductCardImage}>
-          <Image
-            alt={image.altText || product.title}
-            data={image}
-            loading="lazy"
-            sizes="(min-width: 769px) 50vw, 100vw"
-          />
-        </div>
+        <Link
+          to={`/memberships/${product.handle}`}
+          aria-label={`Learn more about ${product.title}`}
+        >
+          <div className={styles.MembershipProductCardImage}>
+            <Image
+              alt={image.altText || product.title}
+              data={image}
+              loading="lazy"
+              sizes="(min-width: 769px) 50vw, 100vw"
+            />
+          </div>
+        </Link>
       )}
       <Grid gap="2">
         <Box>
