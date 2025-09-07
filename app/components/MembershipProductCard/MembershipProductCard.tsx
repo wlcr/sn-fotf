@@ -14,7 +14,6 @@ export default function MembershipProductCard({
   product,
 }: MembershipProductCardProps) {
   const image = product.featuredImage;
-  console.log(product);
   return (
     <Grid gap="2">
       {image && (
