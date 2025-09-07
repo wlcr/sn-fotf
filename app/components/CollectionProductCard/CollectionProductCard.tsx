@@ -18,7 +18,7 @@ export default function CollectionProductCard({
     <Grid gap="2">
       {image && (
         <Link
-          to={`/Collections/${product.handle}`}
+          to={`/products/${product.handle}`}
           aria-label={`Learn more about ${product.title}`}
         >
           <div className={styles.CollectionProductCardImage}>

@@ -20,7 +20,7 @@ export default function CollectionProductsGrid({
         <Grid columns={{initial: '2', sm: '4'}} gap="5">
           <PaginatedResourceSection connection={collection.products}>
             {({node: product, index}) => (
-              <CollectionProductCard product={product} />
+              <CollectionProductCard product={product} key={product.id} />
             )}
           </PaginatedResourceSection>
         </Grid>
