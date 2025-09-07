@@ -1,0 +1,17 @@
+.CollectionProductCardImage {
+  padding-bottom: 100%;
+  position: relative;
+}
+
+.CollectionProductCardImage img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  background-color: var(--color-white);
+  padding: var(--space-6);
+}
