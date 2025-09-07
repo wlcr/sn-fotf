@@ -2,6 +2,7 @@ import {CollectionItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
+import styles from './MembershipProductCard.module.css';
 
 export type MembershipProductCardProps = {
   product: CollectionItemFragment;
@@ -20,13 +21,14 @@ export default function MembershipProductCard({
       to={variantUrl}
     >
       {image && (
-        <Image
-          alt={image.altText || product.title}
-          aspectRatio="1/1"
-          data={image}
-          loading="lazy"
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
+        <div className={styles.MembershipProductCardImage}>
+          <Image
+            alt={image.altText || product.title}
+            data={image}
+            loading="lazy"
+            sizes="(min-width: 769px) 50vw, 100vw"
+          />
+        </div>
       )}
       <h4>{product.title}</h4>
       <small>
