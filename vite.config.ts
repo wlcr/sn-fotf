@@ -48,6 +48,7 @@ export default defineConfig({
         '@radix-ui/react-avatar',
         'classnames',
         '@radix-ui/themes',
+        'radix-ui',
       ],
     },
   },
