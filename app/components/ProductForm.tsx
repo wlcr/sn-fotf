@@ -34,7 +34,7 @@ export function ProductForm({
     : [];
 
   return (
-    <div className="product-form">
+    <Grid gap="5">
       {productOptions.map((option) => {
         // If there is only a single value in the option values, don't display the option
         if (option.optionValues.length === 1) return null;
@@ -113,7 +113,6 @@ export function ProductForm({
                 }
               })}
             </div>
-            <br />
           </div>
         );
       })}
@@ -137,7 +136,7 @@ export function ProductForm({
           </AddToCartButton>
         )}
       </Grid>
-    </div>
+    </Grid>
   );
 }
 

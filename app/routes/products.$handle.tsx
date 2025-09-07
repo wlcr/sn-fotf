@@ -15,6 +15,7 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {Container, Grid} from '@radix-ui/themes';
 import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGallery';
 import ProductQuery from '~/graphql/queries/ProductQuery';
+import ProductDetail from '~/components/ProductDetail/ProductDetail';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -83,68 +84,8 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
   return {};
 }
 
-export default function Product() {
+export default function ProductHandle() {
   const {product} = useLoaderData<typeof loader>();
 
-  // Optimistically selects a variant with given available variant information
-  const selectedVariant = useOptimisticVariant(
-    product.selectedOrFirstAvailableVariant,
-    getAdjacentAndFirstAvailableVariants(product),
-  );
-
-  // Sets the search param to the selected variant without navigation
-  // only when no search params are set in the url
-  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
-
-  // Get the product options array
-  const productOptions = getProductOptions({
-    ...product,
-    selectedOrFirstAvailableVariant: selectedVariant,
-  });
-
-  const {title, descriptionHtml} = product;
-
-  return (
-    <Container px={{initial: '4', sm: '6'}} py={{initial: '6', sm: '9'}}>
-      <Grid columns={{initial: '1', sm: '2'}}>
-        <ProductMediaGallery media={product.media} />
-
-        <div className="product-main">
-          <h1>{title}</h1>
-          <ProductPrice
-            price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
-          />
-          <br />
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-          />
-          <br />
-          <br />
-          <p>
-            <strong>Description</strong>
-          </p>
-          <br />
-          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-          <br />
-        </div>
-        <Analytics.ProductView
-          data={{
-            products: [
-              {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price.amount || '0',
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || '',
-                variantTitle: selectedVariant?.title || '',
-                quantity: 1,
-              },
-            ],
-          }}
-        />
-      </Grid>
-    </Container>
-  );
+  return <ProductDetail product={product} />;
 }
