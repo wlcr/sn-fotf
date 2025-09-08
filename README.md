@@ -339,18 +339,47 @@ This project implements a **customer eligibility system** that determines purcha
 ### Configuration
 
 **Environment Variables**:
+
 ```bash
 # Customer eligibility tag (configurable)
 PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG=eligible_to_purchase
 
-# Development: ngrok URL for local testing (optional)
-VITE_DEV_HOST=your-ngrok-url.ngrok-free.app
+# Customer Account API credentials (from Shopify settings)
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=your-client-id
+PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/your-account-id
 ```
 
 ### Quick Start
 
-1. **Set up Customer Account API** following [Shopify's guide](https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development) (steps 1-2)
-2. **Configure customer tags** in your Shopify Admin
-3. **Test eligibility** by logging in with customers that have/don't have the eligibility tag
+1. **Set up Customer Account API in Shopify**:
+   - Go to your Shopify store's **Settings > Customer accounts**
+   - Choose **New customer accounts** (not Classic)
+   - Enable **Customer Account API**
+   - Note your **Client ID** and **Account URL** (add these to your `.env` file)
 
-For complete implementation details, see **[Customer Account Guide](./docs/CUSTOMER_ACCOUNTS.md)**.
+2. **Set up tunnel for local development** (required for customer login):
+
+   ```bash
+   # Run in separate terminal
+   ngrok http 3000
+
+   # Note the HTTPS URL (e.g., https://abc123.ngrok-free.app)
+   ```
+
+3. **Configure redirect URL in Shopify**:
+   - In your Shopify Customer Account API settings
+   - Add redirect URL: `https://your-tunnel-id.ngrok-free.app/account/authorize`
+   - Replace `your-tunnel-id` with your actual ngrok URL
+
+4. **Update Vite config** with your tunnel URL:
+   - Open `vite.config.ts`
+   - Replace the ngrok URL in `server.allowedHosts` with your tunnel URL
+
+5. **Configure customer tags** in Shopify Admin (Customers section)
+
+6. **Test eligibility** by logging in via your tunnel URL with customers that have/don't have the eligibility tag
+
+**Additional Resources**:
+
+- **[Customer Account Guide](./docs/CUSTOMER_ACCOUNTS.md)** - Complete implementation details, troubleshooting, and examples
+- **[Shopify's Official Guide](https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen)** - Official Shopify documentation

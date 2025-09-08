@@ -419,6 +419,7 @@ export type Settings = {
   ga4MeasurementId?: string;
   facebookPixelId?: string;
   companyName: string;
+  customerGreeting: string;
   contactEmail?: string;
   phoneNumber?: string;
   address?: string;
@@ -799,6 +800,7 @@ export type SettingsQueryResult = {
   ga4MeasurementId?: string;
   facebookPixelId?: string;
   companyName: string;
+  customerGreeting: string;
   contactEmail?: string;
   phoneNumber?: string;
   address?: string;

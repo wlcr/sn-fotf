@@ -45,7 +45,7 @@ export function PageLayout({
         <CartAside cart={cart} />
         <SearchAside />
         <SkipLink />
-        {header && <Header header={header} cart={cart} />}
+        {header && <Header header={header} cart={cart} settings={settings} />}
         <main id="main-content">{children}</main>
         {footer && <Footer footer={footer} />}
       </Aside.Provider>

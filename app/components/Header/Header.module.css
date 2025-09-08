@@ -54,3 +54,51 @@
   color: var(--color-dry-malt);
   max-width: 192px;
 }
+
+/* Customer Account Styles */
+.customerAccountLink {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2);
+  text-decoration: none;
+  color: inherit;
+  padding: var(--size-1) var(--size-2);
+  border-radius: var(--radius-2);
+  transition: background-color 0.2s ease;
+}
+
+.customerAccountLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.customerAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.customerGreeting {
+  font-weight: 500;
+}
+
+.customerEligible {
+  color: var(--color-pale-ale);
+}
+
+.customerNotEligible {
+  color: var(--color-amber-malt);
+}
+
+.loginLink {
+  color: inherit;
+  text-decoration: none;
+  padding: var(--size-1) var(--size-2);
+  border-radius: var(--radius-2);
+  transition: background-color 0.2s ease;
+}
+
+.loginLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

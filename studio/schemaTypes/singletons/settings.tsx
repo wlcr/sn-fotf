@@ -154,6 +154,16 @@ export const settings = defineType({
       group: 'company',
     }),
     defineField({
+      name: 'customerGreeting',
+      title: 'Customer Greeting',
+      type: 'string',
+      description:
+        'Greeting text shown to logged-in customers (e.g., "Welcome", "Hello", "Hi there")',
+      initialValue: 'Welcome',
+      validation: (rule) => rule.required().max(20),
+      group: 'company',
+    }),
+    defineField({
       name: 'contactEmail',
       title: 'Contact Email',
       type: 'string',

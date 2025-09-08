@@ -33,6 +33,7 @@ export const SETTINGS_QUERY = `
     
     // Company Info
     companyName,
+    customerGreeting,
     contactEmail,
     phoneNumber,
     address,
