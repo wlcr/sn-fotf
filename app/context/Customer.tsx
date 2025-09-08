@@ -2,6 +2,14 @@ import {createContext, useContext, ReactNode} from 'react';
 
 import type {CustomerDetailsQuery} from 'customer-accountapi.generated';
 
+// TODO: CRITICAL - Sync with main branch before extending customer features
+// The main branch has substantial updates to:
+// - Header/PageLayout components (conflicts with our customer integration)
+// - Sanity settings schema (needed for configurable redirect destinations) 
+// - Bundle optimization and studio configuration
+// - Documentation structure and SEO enhancements
+// Many files we've modified have significant changes on main that need to be merged first.
+
 type CustomerContextType = {
   customer: CustomerDetailsQuery['customer'] | null;
   isEligible: boolean;
