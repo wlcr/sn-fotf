@@ -122,6 +122,12 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     ),
     // Fetch customer data to determine if they can access account features
     // Expected to fail for unauthenticated users
+    // TODO: Performance Consideration - Defer customer data loading
+    // 9. Customer data is currently loaded in root loader (blocking initial page render)
+    //    - Consider if customer eligibility is critical for first paint
+    //    - Could defer this to client-side or use React.lazy loading
+    //    - Measure impact on Time to First Byte (TTFB) and Core Web Vitals
+    //    - Consider loading customer data only when needed (e.g., account-related pages)
     context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error: unknown) => {
       // Log unexpected errors in development for debugging
       const errorMessage = error instanceof Error ? error.message : String(error);

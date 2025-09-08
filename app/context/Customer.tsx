@@ -10,6 +10,14 @@ import type {CustomerDetailsQuery} from 'customer-accountapi.generated';
 // - Documentation structure and SEO enhancements
 // Many files we've modified have significant changes on main that need to be merged first.
 
+// TODO: Error Handling & Resilience Improvements
+// 8. Add error boundary for customer context failures
+//    - Wrap CustomerProvider with error boundary component
+//    - Add fallback UI when customer context throws errors
+//    - Handle edge cases like malformed customer data
+//    - Graceful degradation when customer features unavailable
+//    - Consider retry mechanisms for transient failures
+
 type CustomerContextType = {
   customer: CustomerDetailsQuery['customer'] | null;
   isEligible: boolean;
