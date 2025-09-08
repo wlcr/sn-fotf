@@ -85,7 +85,7 @@ export default defineConfig({
   },
   server: {
     allowedHosts: [
-      'a2eaffbd06a2.ngrok-free.app', // Replace with your actual ngrok URL without protocol
-    ],
+      process.env.VITE_DEV_HOST, // Set your ngrok URL in .env as VITE_DEV_HOST (without protocol)
+    ].filter(Boolean),
   },
 });

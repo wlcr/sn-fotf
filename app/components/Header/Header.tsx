@@ -38,7 +38,9 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
           <nav>
             <ul className={styles.HeaderUtilityList}>
               <li>How it works</li>
-              {/* TODO: remove example code */}
+              {/* TODO: Replace with production-ready user authentication UI after customer integration is finalized.
+                   This debug code shows customer ID and eligibility status - replace with proper user greeting,
+                   account dropdown, logout functionality, and styled components instead of inline styles. */}
               {customer ? (
                 <li style={{color: 'green'}}>
                   Welcome, {customer.id}{' '}

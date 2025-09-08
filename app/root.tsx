@@ -121,8 +121,13 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       },
     ),
     // Fetch customer data to determine if they can access account features
-    // It looks like this can error if the customer is not logged in
-    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch(() => {
+    // Expected to fail for unauthenticated users
+    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error: unknown) => {
+      // Log unexpected errors in development for debugging
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (process.env.NODE_ENV === 'development' && !errorMessage.includes('Unauthenticated')) {
+        console.warn('Customer query failed:', errorMessage);
+      }
       return null;
     }),
   ]);
