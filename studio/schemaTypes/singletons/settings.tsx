@@ -39,6 +39,10 @@ export const settings = defineType({
       title: 'Social Media',
     },
     {
+      name: 'opengraph',
+      title: 'Open Graph / Social Sharing',
+    },
+    {
       name: 'legal',
       title: 'Legal & Compliance',
     },
@@ -79,43 +83,23 @@ export const settings = defineType({
     }),
     defineField({
       name: 'keywords',
-      title: 'Site Keywords',
+      title: 'Site Keywords 🎯',
       type: 'array',
       of: [{type: 'string'}],
       description:
-        'Keywords that describe your site (optional, for internal use)',
+        '📝 Internal use only: These help you stay focused on target topics when writing content. Modern search engines ignore meta keywords, but they\'re useful for content strategy and team alignment. Example: "craft beer", "sierra nevada", "exclusive brewing"',
       options: {
         layout: 'tags',
       },
       group: 'seo',
     }),
+    // Open Graph / Social Sharing settings (comprehensive)
     defineField({
-      name: 'ogImage',
-      title: 'Default Social Share Image',
-      type: 'image',
-      description:
-        'Default image for social media sharing and search results (1200x630px recommended)',
-      group: 'seo',
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alternative Text',
-          type: 'string',
-          description: 'Describe the image for accessibility and SEO',
-          validation: (rule) => {
-            return rule.custom((alt, context) => {
-              // Check if image is selected and alt text is missing
-              if (context.document && context.document.ogImage && !alt) {
-                return 'Alternative text is required when an image is selected';
-              }
-              return true;
-            });
-          },
-        }),
-      ],
+      name: 'openGraph',
+      title: 'Open Graph / Social Sharing Settings',
+      type: 'globalOpenGraph',
+      description: 'Default social media sharing settings for the entire site',
+      group: 'opengraph',
     }),
 
     // Analytics & Tracking Group
@@ -251,6 +235,96 @@ export const settings = defineType({
       description: 'Toggle cookie consent banner display',
       initialValue: true,
       group: 'legal',
+    }),
+
+    // Global SEO Controls - Redesigned for clarity
+    defineField({
+      name: 'globalSeoControls',
+      title: '🚨 Search Engine Visibility Controls',
+      type: 'object',
+      description:
+        '⚠️ IMPORTANT: These settings control how Google and other search engines can find and index your site. Changes take effect immediately and impact ALL pages.',
+      group: 'seo',
+      fields: [
+        defineField({
+          name: 'seoStrategy',
+          title: '📋 Current SEO Strategy',
+          type: 'string',
+          options: {
+            list: [
+              {
+                title: '🎯 RECOMMENDED: Marketing Mode',
+                value: 'marketing',
+              },
+              {
+                title: '🔒 Private Mode - Hide Everything',
+                value: 'private',
+              },
+              {
+                title: '🏠 Homepage Only - Just Landing Page',
+                value: 'homepage_only',
+              },
+              {
+                title: '⚙️ Custom - Advanced Controls',
+                value: 'custom',
+              },
+            ],
+            layout: 'radio',
+          },
+          description:
+            'Choose your SEO strategy. Marketing Mode is recommended for member acquisition - it shows products to attract new members while keeping private areas hidden.',
+          initialValue: 'marketing',
+        }),
+        defineField({
+          name: 'siteDiscoverable',
+          title: '🔍 Technical: Site Indexing Control',
+          type: 'boolean',
+          description:
+            'Controls whether your site appears in Google search results.\n\n✅ ON = Your site pages can appear in Google search results\n❌ OFF = Your site will NOT appear in Google search results (complete privacy)\n\n⚠️ Turning OFF removes ALL pages from search within days.',
+          initialValue: true,
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
+        }),
+        defineField({
+          name: 'allowRobotsCrawling',
+          title: '🤖 Technical: Search Engine Access Control',
+          type: 'boolean',
+          description:
+            'Controls which pages Google can access and index.\n\n✅ ON = Google can access all your public pages\n❌ OFF = Google can only access your homepage\n\n⚠️ Turning OFF means only homepage appears in search results.',
+          initialValue: true,
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
+        }),
+        defineField({
+          name: 'emergencyPrivateMode',
+          title: '🚨 EMERGENCY: Hide Site From Search Engines',
+          type: 'boolean',
+          description:
+            '⚠️ EMERGENCY USE ONLY: Immediately hides the entire site from Google and all search engines. Use this if you need to urgently make the site private.\n\n🕐 Takes effect: Immediately\n🕐 Google removal: 1-3 days\n\n❌ This will hurt SEO if used unnecessarily.',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'lastModified',
+          title: '📅 Last SEO Change',
+          type: 'datetime',
+          description: 'When these SEO settings were last updated',
+          readOnly: true,
+          initialValue: new Date().toISOString(),
+        }),
+        defineField({
+          name: 'customRobotsDirectives',
+          title: '⚙️ Advanced: Custom Robots Directives',
+          type: 'array',
+          of: [{type: 'string'}],
+          description:
+            '🔧 For advanced users only: Additional robots.txt rules. Most users should leave this empty.',
+          options: {
+            layout: 'tags',
+          },
+          hidden: ({document}) =>
+            (document as any)?.globalSeoControls?.seoStrategy !== 'custom',
+        }),
+      ],
     }),
   ],
   preview: {

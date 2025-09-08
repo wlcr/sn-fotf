@@ -3,7 +3,7 @@
  *
  * GROQ queries for global site settings including site metadata, contact info, and branding.
  */
-import type {Settings} from '~/studio/sanity.types';
+import type {Settings} from '~/types/sanity';
 
 /**
  * Settings query - gets global site settings
@@ -16,9 +16,14 @@ export const SETTINGS_QUERY = `
     title,
     description,
     keywords,
-    ogImage {
-      asset,
-      alt
+    openGraph {
+      siteName,
+      defaultImage {
+        asset,
+        alt
+      },
+      twitterHandle,
+      facebookAppId
     },
     
     // Analytics & Tracking
@@ -43,7 +48,15 @@ export const SETTINGS_QUERY = `
     
     // Legal & Compliance
     cookieConsentMessage,
-    showCookieConsent
+    showCookieConsent,
+    
+    // Global SEO Controls
+    globalSeoControls {
+      siteDiscoverable,
+      allowRobotsCrawling,
+      customRobotsDirectives,
+      seoNote
+    }
   }
 ` as const;
 
@@ -62,7 +75,7 @@ export function getSeoSettings(settings: Settings | null) {
     title: settings.title,
     description: settings.description,
     keywords: settings.keywords,
-    ogImage: settings.ogImage,
+    openGraph: settings.openGraph,
   };
 }
 
@@ -112,4 +125,30 @@ export function getLegalSettings(settings: Settings | null) {
     cookieConsentMessage: settings.cookieConsentMessage,
     showCookieConsent: settings.showCookieConsent,
   };
+}
+
+/**
+ * Get global SEO controls for site-wide search engine discoverability
+ */
+export function getGlobalSeoControls(settings: Settings | null) {
+  if (!settings) return null;
+
+  return settings.globalSeoControls || null;
+}
+
+/**
+ * Check if the site should be discoverable by search engines
+ * This is the main function to determine global SEO strategy
+ */
+export function isSiteDiscoverable(settings: Settings | null): boolean {
+  const seoControls = getGlobalSeoControls(settings);
+  return seoControls?.siteDiscoverable ?? false; // Default to false for members-only sites
+}
+
+/**
+ * Check if search engine crawling is allowed
+ */
+export function isRobotsCrawlingAllowed(settings: Settings | null): boolean {
+  const seoControls = getGlobalSeoControls(settings);
+  return seoControls?.allowRobotsCrawling ?? false;
 }

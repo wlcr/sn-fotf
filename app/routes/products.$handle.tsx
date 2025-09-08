@@ -17,14 +17,86 @@ import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGa
 import ProductQuery from '~/graphql/queries/ProductQuery';
 import ProductDetail from '~/components/ProductDetail/ProductDetail';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+// Sanity integration
+import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries';
+import PageBuilder from '~/components/sanity/PageBuilder';
+import {ProductPage} from '~/types/sanity';
+import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
+
+// SEO integration
+import {
+  generateProductMetaTags,
+  generateComprehensiveSEOTags,
+  pageHasNonIndexableCollections,
+} from '~/lib/seo';
+import {shouldNoIndex} from '~/lib/seo/routes';
+import {SETTINGS_QUERY} from '~/lib/sanity/queries/settings';
+import type {Settings} from '~/types/sanity';
+
+// Structured data integration
+import {
+  generateSiteStructuredData,
+  generateProductData,
+  generateBreadcrumbData,
+  combineStructuredData,
+} from '~/lib/seo/structured-data';
+import StructuredData from '~/components/StructuredData';
+
+export const meta: MetaFunction<typeof loader> = ({data, location}) => {
+  if (!data?.product) {
+    return [{title: 'Product Not Found'}];
+  }
+
+  // Generate comprehensive SEO meta tags combining Shopify + Sanity data
+  const metaTags = generateProductMetaTags(
+    data.settings,
+    data.sanityProductPage,
     {
-      rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      title: data.product.title,
+      description:
+        data.product.description || data.product.seo?.description || undefined,
+      handle: data.product.handle,
+      image: data.product.selectedOrFirstAvailableVariant?.image?.url,
     },
-  ];
+    {
+      name: data.shopData?.name,
+      primaryDomain: data.shopData?.primaryDomain,
+    },
+  );
+
+  // Check if page has non-indexable collection blocks
+  const hasNonIndexableCollections = data.sanityProductPage?.pageBuilder
+    ? pageHasNonIndexableCollections(data.sanityProductPage.pageBuilder)
+    : false;
+
+  // Check route-based SEO rules
+  const routeShouldNoIndex = shouldNoIndex(location.pathname, data.settings);
+
+  // Override robots directive if page contains non-indexable collections or route rules apply
+  if ((hasNonIndexableCollections || routeShouldNoIndex) && metaTags.robots) {
+    metaTags.robots = 'noindex, nofollow';
+  }
+
+  // Generate comprehensive meta tags with enhanced Open Graph and Twitter Cards
+  const enhancedMetaTags = {
+    ...metaTags,
+    type: 'product' as const,
+    image: data.product.selectedOrFirstAvailableVariant?.image?.url,
+    keywords: [
+      data.product.title,
+      data.product.vendor || 'Sierra Nevada',
+      data.product.productType,
+      ...(data.product.tags || []),
+    ]
+      .filter(Boolean)
+      .slice(0, 10),
+  };
+
+  return generateComprehensiveSEOTags(enhancedMetaTags, data.settings, {
+    name: data.shopData?.name,
+    primaryDomain: data.shopData?.primaryDomain,
+    brand: data.shopData?.brand,
+  });
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -53,22 +125,86 @@ async function loadCriticalData({
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  // Create Sanity client for potential ProductPage lookup
+  const sanityClient = createSanityClient(context.env);
+
+  // Strategy: Try to find Sanity ProductPage first, then get Shopify product
+  // If no ProductPage exists, just load Shopify product directly
+
+  // Step 1: Try to load Sanity ProductPage using URL handle
+  const sanityProductPage = await sanityServerQuery<ProductPage | null>(
+    sanityClient,
+    PRODUCT_PAGE_QUERY,
+    {handle},
+    {
+      displayName: 'ProductPage Content',
+      env: context.env,
+    },
+  ).catch((error) => {
+    // Log Sanity query errors for debugging, but don't fail the page
+    console.warn(
+      'Failed to load ProductPage from Sanity:',
+      error instanceof Error ? error.message : String(error),
+    );
+    return null;
+  });
+
+  // Step 2: Determine which product handle to use for Shopify query
+  let productHandle = handle;
+  if (sanityProductPage?.productHandle) {
+    // If Sanity ProductPage exists, use its productHandle for Shopify
+    productHandle = sanityProductPage.productHandle;
+  }
+
+  // Step 3: Load Shopify product and settings in parallel, plus shop data for SEO
+  // Use the new ProductQuery from PR #10
+  const [shopifyRes, settings, shopData] = await Promise.all([
     storefront.query(ProductQuery, {
-      variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+      variables: {
+        handle: productHandle,
+        selectedOptions: getSelectedProductOptions(request),
+      },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    // Load global settings for SEO
+    sanityServerQuery<Settings | null>(
+      sanityClient,
+      SETTINGS_QUERY,
+      {},
+      {
+        displayName: 'Settings',
+        env: context.env,
+      },
+    ).catch((error) => {
+      // Log Settings query errors for debugging, but don't fail the page
+      console.warn(
+        'Failed to load Settings from Sanity:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
+    // Load shop data for comprehensive SEO and structured data
+    storefront.query(SHOP_SEO_QUERY).catch((error) => {
+      console.warn(
+        'Failed to load shop data for SEO:',
+        error instanceof Error ? error.message : String(error),
+      );
+      return null;
+    }),
   ]);
 
+  const product = shopifyRes.product;
   if (!product?.id) {
     throw new Response(null, {status: 404});
   }
 
   // The API handle might be localized, so redirect to the localized handle
-  redirectIfHandleIsLocalized(request, {handle, data: product});
+  redirectIfHandleIsLocalized(request, {handle: productHandle, data: product});
 
   return {
     product,
+    sanityProductPage, // May be null if no ProductPage exists
+    settings, // For SEO meta tag generation
+    shopData: shopData?.shop || null, // For comprehensive SEO and structured data
   };
 }
 
@@ -84,8 +220,115 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
   return {};
 }
 
-export default function ProductHandle() {
-  const {product} = useLoaderData<typeof loader>();
+export default function Product() {
+  const {product, sanityProductPage, settings, shopData} =
+    useLoaderData<typeof loader>();
 
-  return <ProductDetail product={product} />;
+  // Use name override from Sanity if available
+  const displayTitle = sanityProductPage?.nameOverride || product.title;
+
+  // Generate structured data for this product
+  const baseUrl =
+    shopData?.primaryDomain?.url || 'https://friends.sierranevada.com';
+
+  const siteStructuredData = generateSiteStructuredData(settings, shopData);
+
+  // Get selected variant for structured data
+  const selectedVariant = useOptimisticVariant(
+    product.selectedOrFirstAvailableVariant,
+    getAdjacentAndFirstAvailableVariants(product),
+  );
+
+  const productStructuredData = generateProductData(
+    {
+      name: displayTitle,
+      description: product.description,
+      image: selectedVariant?.image?.url,
+      brand: product.vendor || 'Sierra Nevada Brewing Co.',
+      sku: selectedVariant?.sku || undefined,
+      price: selectedVariant?.price?.amount,
+      currency: selectedVariant?.price?.currencyCode,
+      availability: selectedVariant?.availableForSale
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      url: `${baseUrl}/products/${product.handle}`,
+    },
+    settings,
+  );
+
+  const breadcrumbData = generateBreadcrumbData(
+    [
+      {name: 'Home', url: '/'},
+      {name: 'Products', url: '/products'},
+      {name: displayTitle, url: `/products/${product.handle}`},
+    ],
+    baseUrl,
+  );
+
+  const allStructuredData = combineStructuredData(
+    ...siteStructuredData,
+    productStructuredData,
+    breadcrumbData,
+  );
+
+  return (
+    <>
+      {/* Structured Data */}
+      <StructuredData data={allStructuredData} id="product-structured-data" />
+
+      {/* Use the new ProductDetail component from PR #10 */}
+      <ProductDetail product={product} />
+
+      {/* Render Sanity page builder content if available */}
+      {sanityProductPage?.pageBuilder &&
+        sanityProductPage.pageBuilder.length > 0 && (
+          <PageBuilder
+            parent={{
+              _id: sanityProductPage._id,
+              _type: sanityProductPage._type,
+            }}
+            pageBuilder={sanityProductPage.pageBuilder}
+          />
+        )}
+    </>
+  );
 }
+
+// GraphQL query for SEO shop data
+const SHOP_SEO_QUERY = `#graphql
+  query ShopSEO($country: CountryCode, $language: LanguageCode)
+   @inContext(country: $country, language: $language) {
+    shop {
+      id
+      name
+      description
+      primaryDomain {
+        url
+      }
+      brand {
+        logo {
+          image {
+            url
+          }
+        }
+        coverImage {
+          image {
+            url
+          }
+        }
+        squareLogo {
+          image {
+            url
+          }
+        }
+        shortDescription
+        slogan
+        colors {
+          primary {
+            background
+          }
+        }
+      }
+    }
+  }
+` as const;

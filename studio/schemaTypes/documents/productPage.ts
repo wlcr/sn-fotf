@@ -37,10 +37,60 @@ export const productPage = defineType({
       description: 'An optional override for the product name.',
     }),
     defineField({
+      name: 'seoControls',
+      title: 'SEO Controls',
+      type: 'object',
+      description:
+        'Control search engine discoverability for this specific product',
+      fields: [
+        defineField({
+          name: 'indexable',
+          title: 'Allow Search Engine Indexing',
+          type: 'boolean',
+          description:
+            'Allow search engines to index this product page. Uncheck for members-only products.',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'followable',
+          title: 'Allow Link Following',
+          type: 'boolean',
+          description:
+            'Allow search engines to follow links from this product page.',
+          initialValue: true,
+        }),
+        defineField({
+          name: 'customMetaDescription',
+          title: 'Custom Meta Description',
+          type: 'text',
+          description:
+            'Override the default product description for search results (max 160 characters)',
+          validation: (rule) =>
+            rule
+              .max(160)
+              .warning('Descriptions over 160 characters may be truncated'),
+        }),
+        defineField({
+          name: 'seoNotes',
+          title: 'SEO Notes',
+          type: 'text',
+          description: 'Internal notes about SEO strategy for this product',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'openGraph',
+      title: 'Open Graph / Social Media',
+      type: 'openGraph',
+      description:
+        'Custom social media sharing settings for this product. If not set, defaults will be used.',
+    }),
+    defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',
       of: [
+        {type: 'collectionBlock'},
         {type: 'faqBlock'},
         {type: 'contentBlock'},
         {type: 'imageContentBlock'},
