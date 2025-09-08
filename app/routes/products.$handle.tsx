@@ -12,6 +12,10 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {Container, Grid} from '@radix-ui/themes';
+import ProductMediaGallery from '~/components/ProductMediaGallery/ProductMediaGallery';
+import ProductQuery from '~/graphql/queries/ProductQuery';
+import ProductDetail from '~/components/ProductDetail/ProductDetail';
 
 // Sanity integration
 import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries';
@@ -153,8 +157,9 @@ async function loadCriticalData({
   }
 
   // Step 3: Load Shopify product and settings in parallel, plus shop data for SEO
+  // Use the new ProductQuery from PR #10
   const [shopifyRes, settings, shopData] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
+    storefront.query(ProductQuery, {
       variables: {
         handle: productHandle,
         selectedOptions: getSelectedProductOptions(request),
@@ -219,32 +224,21 @@ export default function Product() {
   const {product, sanityProductPage, settings, shopData} =
     useLoaderData<typeof loader>();
 
-  // Optimistically selects a variant with given available variant information
-  const selectedVariant = useOptimisticVariant(
-    product.selectedOrFirstAvailableVariant,
-    getAdjacentAndFirstAvailableVariants(product),
-  );
-
-  // Sets the search param to the selected variant without navigation
-  // only when no search params are set in the url
-  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
-
-  // Get the product options array
-  const productOptions = getProductOptions({
-    ...product,
-    selectedOrFirstAvailableVariant: selectedVariant,
-  });
-
-  const {title, descriptionHtml} = product;
-
   // Use name override from Sanity if available
-  const displayTitle = sanityProductPage?.nameOverride || title;
+  const displayTitle = sanityProductPage?.nameOverride || product.title;
 
   // Generate structured data for this product
   const baseUrl =
     shopData?.primaryDomain?.url || 'https://friends.sierranevada.com';
 
   const siteStructuredData = generateSiteStructuredData(settings, shopData);
+
+  // Get selected variant for structured data
+  const selectedVariant = useOptimisticVariant(
+    product.selectedOrFirstAvailableVariant,
+    getAdjacentAndFirstAvailableVariants(product),
+  );
+
   const productStructuredData = generateProductData(
     {
       name: displayTitle,
@@ -282,44 +276,8 @@ export default function Product() {
       {/* Structured Data */}
       <StructuredData data={allStructuredData} id="product-structured-data" />
 
-      <div className="product">
-        <ProductImage image={selectedVariant?.image} />
-        <div className="product-main">
-          <h1>{displayTitle}</h1>
-          <ProductPrice
-            price={selectedVariant?.price}
-            compareAtPrice={selectedVariant?.compareAtPrice}
-          />
-          <br />
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-          />
-          <br />
-          <br />
-          <p>
-            <strong>Description</strong>
-          </p>
-          <br />
-          <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-          <br />
-        </div>
-        <Analytics.ProductView
-          data={{
-            products: [
-              {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price.amount || '0',
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || '',
-                variantTitle: selectedVariant?.title || '',
-                quantity: 1,
-              },
-            ],
-          }}
-        />
-      </div>
+      {/* Use the new ProductDetail component from PR #10 */}
+      <ProductDetail product={product} />
 
       {/* Render Sanity page builder content if available */}
       {sanityProductPage?.pageBuilder &&
@@ -336,100 +294,7 @@ export default function Product() {
   );
 }
 
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
-  }
-` as const;
-
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    productType
-    tags
-    encodedVariantExistence
-    encodedVariantAvailability
-    options {
-      name
-      optionValues {
-        name
-        firstSelectableVariant {
-          ...ProductVariant
-        }
-        swatch {
-          color
-          image {
-            previewImage {
-              url
-            }
-          }
-        }
-      }
-    }
-    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-      ...ProductVariant
-    }
-    adjacentVariants (selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    seo {
-      description
-      title
-    }
-  }
-  ${PRODUCT_VARIANT_FRAGMENT}
-` as const;
-
-const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
-  }
-  ${PRODUCT_FRAGMENT}
-` as const;
-
+// GraphQL query for SEO shop data
 const SHOP_SEO_QUERY = `#graphql
   query ShopSEO($country: CountryCode, $language: LanguageCode)
    @inContext(country: $country, language: $language) {

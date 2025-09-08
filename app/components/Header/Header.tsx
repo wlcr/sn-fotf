@@ -23,7 +23,9 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
     <>
       <header className={clsx(styles.Header, className)} role="banner">
         <div className={styles.HeaderLeft}>
-          <Button label="Shop Now" appearance="light" variant="outline" />
+          <Button appearance="light" variant="outline">
+            Shop Now
+          </Button>
         </div>
         <div className={styles.HeaderCenter}>
           <div className={styles.HeaderLogo}>

@@ -1,5 +1,5 @@
 import groq from 'groq';
-import { pageBuilder } from './fragments';
+import {pageBuilder} from './fragments';
 
 export const HOME_QUERY = groq`
   *[_type == 'homepage'][0]{

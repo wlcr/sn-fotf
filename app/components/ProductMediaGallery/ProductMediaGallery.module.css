@@ -1,0 +1,18 @@
+.ProductMediaGalleryImage {
+  padding-bottom: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.ProductMediaGalleryImage:first-child {
+  grid-column: span 2;
+}
+
+.ProductMediaGalleryImage img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  object-fit: cover;
+}

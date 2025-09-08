@@ -1,12 +1,22 @@
 import styles from './Button.module.css';
 
 export type ButtonProps = {
-  label: string;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  onClick?: () => void;
   appearance?: 'light' | 'dark';
   variant?: 'solid' | 'outline' | 'round' | 'text' | 'round-outline';
+  width?: 'auto' | 'full';
+  children?: React.ReactNode;
 };
 
-export default function Button({label, appearance, variant}: ButtonProps) {
+export default function Button({
+  disabled,
+  appearance = 'dark',
+  variant = 'solid',
+  width = 'auto',
+  children,
+}: ButtonProps) {
   let className = styles.Button;
   switch (`${appearance}-${variant}`) {
     case 'dark-solid':
@@ -40,5 +50,12 @@ export default function Button({label, appearance, variant}: ButtonProps) {
       break;
   }
 
-  return <button className={className}>{label}</button>;
+  const widthClass = width === 'full' ? styles.ButtonFullWidth : '';
+  const finalClassName = `${className} ${widthClass}`.trim();
+
+  return (
+    <button className={finalClassName} disabled={disabled}>
+      {children}
+    </button>
+  );
 }
