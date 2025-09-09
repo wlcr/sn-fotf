@@ -128,14 +128,20 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     //    - Could defer this to client-side or use React.lazy loading
     //    - Measure impact on Time to First Byte (TTFB) and Core Web Vitals
     //    - Consider loading customer data only when needed (e.g., account-related pages)
-    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error: unknown) => {
-      // Log unexpected errors in development for debugging
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (process.env.NODE_ENV === 'development' && !errorMessage.includes('Unauthenticated')) {
-        console.warn('Customer query failed:', errorMessage);
-      }
-      return null;
-    }),
+    context.customerAccount
+      .query(CUSTOMER_DETAILS_QUERY)
+      .catch((error: unknown) => {
+        // Log unexpected errors in development for debugging
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          process.env.NODE_ENV === 'development' &&
+          !errorMessage.includes('Unauthenticated')
+        ) {
+          console.warn('Customer query failed:', errorMessage);
+        }
+        return null;
+      }),
   ]);
 
   return {

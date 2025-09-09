@@ -4,6 +4,8 @@ import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
+import CollectionQuery from '~/graphql/queries/CollectionQuery';
+import CollectionProductsGrid from '~/components/CollectionProductsGrid/CollectionProductsGrid';
 
 // Sanity integration
 import {COLLECTION_PAGE_QUERY} from '~/lib/sanity/queries';
@@ -146,8 +148,9 @@ async function loadCriticalData({
   }
 
   // Step 3: Load Shopify collection, settings, and shop data in parallel
+  // Use CollectionQuery from PR #11
   const [shopifyRes, settings, shopData] = await Promise.all([
-    storefront.query(COLLECTION_QUERY, {
+    storefront.query(CollectionQuery, {
       variables: {handle: collectionHandle, ...paginationVariables},
     }),
     // Load global settings for SEO
@@ -243,32 +246,8 @@ export default function Collection() {
         id="collection-structured-data"
       />
 
-      <div className="collection">
-        <h1>{displayTitle}</h1>
-        {displayDescription && (
-          <p className="collection-description">{displayDescription}</p>
-        )}
-        <PaginatedResourceSection
-          connection={collection.products}
-          resourcesClassName="products-grid"
-        >
-          {({node: product, index}) => (
-            <ProductItem
-              key={(product as any).id}
-              product={product as any}
-              loading={index < 8 ? 'eager' : undefined}
-            />
-          )}
-        </PaginatedResourceSection>
-        <Analytics.CollectionView
-          data={{
-            collection: {
-              id: collection.id,
-              handle: collection.handle,
-            },
-          }}
-        />
-      </div>
+      {/* Use the new CollectionProductsGrid from PR #11 */}
+      <CollectionProductsGrid collection={collection} />
 
       {/* Render Sanity page builder content if available */}
       {sanityCollectionPage?.pageBuilder &&
@@ -285,74 +264,7 @@ export default function Collection() {
   );
 }
 
-const PRODUCT_ITEM_FRAGMENT = `#graphql
-  fragment MoneyProductItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment ProductItem on Product {
-    id
-    handle
-    title
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyProductItem
-      }
-      maxVariantPrice {
-        ...MoneyProductItem
-      }
-    }
-  }
-` as const;
-
-// NOTE: https://shopify.dev/docs/api/storefront/2022-04/objects/collection
-const COLLECTION_QUERY = `#graphql
-  ${PRODUCT_ITEM_FRAGMENT}
-  query Collection(
-    $handle: String!
-    $country: CountryCode
-    $language: LanguageCode
-    $first: Int
-    $last: Int
-    $startCursor: String
-    $endCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collection(handle: $handle) {
-      id
-      handle
-      title
-      description
-      image {
-        url
-        altText
-      }
-      products(
-        first: $first,
-        last: $last,
-        before: $startCursor,
-        after: $endCursor
-      ) {
-        nodes {
-          ...ProductItem
-        }
-        pageInfo {
-          hasPreviousPage
-          hasNextPage
-          endCursor
-          startCursor
-        }
-      }
-    }
-  }
-` as const;
-
+// GraphQL query for SEO shop data
 const SHOP_SEO_QUERY = `#graphql
   query ShopSEO($country: CountryCode, $language: LanguageCode)
    @inContext(country: $country, language: $language) {

@@ -16,7 +16,9 @@ declare global {
   /**
    * A global `process` object is only available during build to access NODE_ENV.
    */
-  const process: {env: {NODE_ENV: 'production' | 'development'; VITE_DEV_HOST?: string}};
+  const process: {
+    env: {NODE_ENV: 'production' | 'development'; VITE_DEV_HOST?: string};
+  };
 
   /**
    * Window ENV object for client-side environment variables
