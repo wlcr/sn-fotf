@@ -129,7 +129,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
 // NOTE: https://shopify.dev/docs/api/storefront/2022-04/objects/collection
 const COLLECTION_QUERY = `#graphql
   ${PRODUCT_ITEM_FRAGMENT}
-  query Collection(
+  query MembershipsCollection(
     $handle: String!
     $country: CountryCode
     $language: LanguageCode
