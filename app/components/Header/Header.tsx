@@ -4,20 +4,30 @@ import {clsx} from 'clsx';
 import {Suspense} from 'react';
 import {urlForImage} from '~/lib/sanity';
 import {useAside} from '~/components/Aside';
-import type {Header as HeaderType} from '~/types/sanity';
+import type {Header as HeaderType, Settings} from '~/types/sanity';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import styles from './Header.module.css';
 import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
+import {useCustomer} from '~/context/Customer';
+import ResolvedLink from '../sanity/ResolvedLink';
 
 export interface HeaderProps {
   header: HeaderType;
   cart?: Promise<CartApiQueryFragment | null>;
+  settings?: Settings | null;
   className?: string;
 }
 
-export const Header: FC<HeaderProps> = ({header, cart, className}) => {
+export const Header: FC<HeaderProps> = ({
+  header,
+  cart,
+  settings,
+  className,
+}) => {
   const {logo, ctaButton, announcementBar} = header;
+  const {customer, isEligible} = useCustomer();
+  const greeting = settings?.customerGreeting || 'Welcome';
 
   return (
     <>
@@ -36,6 +46,37 @@ export const Header: FC<HeaderProps> = ({header, cart, className}) => {
           <nav>
             <ul className={styles.HeaderUtilityList}>
               <li>How it works</li>
+              {customer ? (
+                <li>
+                  <a
+                    href="https://sierranevada.com/account"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={clsx(
+                      styles.customerAccountLink,
+                      isEligible
+                        ? styles.customerEligible
+                        : styles.customerNotEligible,
+                    )}
+                  >
+                    {customer.imageUrl && (
+                      <img
+                        src={customer.imageUrl}
+                        alt={`${customer.firstName || 'Customer'} avatar`}
+                        className={styles.customerAvatar}
+                      />
+                    )}
+                    <span className={styles.customerGreeting}>
+                      {greeting}
+                      {customer.firstName ? `, ${customer.firstName}` : ''}
+                    </span>
+                  </a>
+                </li>
+              ) : (
+                <NavLink to="/account" className={styles.loginLink}>
+                  Login
+                </NavLink>
+              )}
               <li>FAQ</li>
               <li>Cart</li>
             </ul>

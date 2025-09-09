@@ -31,6 +31,7 @@ import {Theme} from '@radix-ui/themes';
 import radixStyles from '@radix-ui/themes/styles.css?url';
 import themeStyles from './styles/themes.css?url';
 import variableStyles from './styles/variables.css?url';
+import {CUSTOMER_DETAILS_QUERY} from './graphql/customer-account/CustomerDetailsQuery';
 
 export type RootLoader = typeof loader;
 
@@ -91,7 +92,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const sanityEnv = validateSanityEnv(env);
   const sanityClient = createSanityClient(sanityEnv);
 
-  const [header, footer, settings] = await Promise.all([
+  const [header, footer, settings, customer] = await Promise.all([
     sanityServerQuery<SanityHeader>(
       sanityClient,
       HEADER_QUERY,
@@ -119,12 +120,29 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
         env: sanityEnv,
       },
     ),
+    // Fetch customer data to determine if they can access account features
+    // Expected to fail for unauthenticated users
+    // TODO: Performance Consideration - Defer customer data loading
+    // 9. Customer data is currently loaded in root loader (blocking initial page render)
+    //    - Consider if customer eligibility is critical for first paint
+    //    - Could defer this to client-side or use React.lazy loading
+    //    - Measure impact on Time to First Byte (TTFB) and Core Web Vitals
+    //    - Consider loading customer data only when needed (e.g., account-related pages)
+    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error: unknown) => {
+      // Log unexpected errors in development for debugging
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (process.env.NODE_ENV === 'development' && !errorMessage.includes('Unauthenticated')) {
+        console.warn('Customer query failed:', errorMessage);
+      }
+      return null;
+    }),
   ]);
 
   return {
     header: header || null,
     footer: footer || null,
     settings: settings || null,
+    customer: customer?.data?.customer || null,
   };
 }
 
@@ -155,6 +173,7 @@ export async function loader(args: LoaderFunctionArgs) {
     ...deferredData,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
+    eligibleToPurchaseTag: env.PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG || null,
     shop: getShopAnalytics({
       storefront,
       publicStorefrontId: env.PUBLIC_STOREFRONT_ID,

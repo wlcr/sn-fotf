@@ -83,4 +83,13 @@ export default defineConfig({
       ],
     },
   },
+  server: {
+    host: true, // Allow external connections
+    allowedHosts: [
+      process.env.VITE_DEV_HOST, // Set your ngrok URL in .env as VITE_DEV_HOST (without protocol)
+      'ebe14be60c0d.ngrok-free.app', // Explicit ngrok domain for development
+      'localhost',
+      '127.0.0.1',
+    ].filter(Boolean),
+  },
 });

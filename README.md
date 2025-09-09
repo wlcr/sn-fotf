@@ -324,6 +324,62 @@ export function ProductDetails({ product }: { product: ProductQuery['product'] }
 interface CustomProduct { title: string; } // Don't do this
 ```
 
-## Setup for using Customer Account API (`/account` section)
+## Customer Account System
 
-Follow step 1 and 2 of <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
+This project implements a **customer eligibility system** that determines purchase access based on customer tags, designed for the members-only "Friends of the Family" program.
+
+### Key Features
+
+- **Customer Eligibility Logic**: Determines purchase access via `eligible_to_purchase` tag
+- **Context-Based State Management**: React context provides customer data throughout the app
+- **Account Route Redirects**: Redirects unauthenticated users to homepage (configurable)
+- **Type-Safe Implementation**: Full TypeScript support with generated GraphQL types
+- **Error Handling**: Graceful fallbacks for unauthenticated and ineligible users
+
+### Configuration
+
+**Environment Variables**:
+
+```bash
+# Customer eligibility tag (configurable)
+PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG=eligible_to_purchase
+
+# Customer Account API credentials (from Shopify settings)
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=your-client-id
+PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/your-account-id
+```
+
+### Quick Start
+
+1. **Set up Customer Account API in Shopify**:
+   - Go to your Shopify store's **Settings > Customer accounts**
+   - Choose **New customer accounts** (not Classic)
+   - Enable **Customer Account API**
+   - Note your **Client ID** and **Account URL** (add these to your `.env` file)
+
+2. **Set up tunnel for local development** (required for customer login):
+
+   ```bash
+   # Run in separate terminal
+   ngrok http 3000
+
+   # Note the HTTPS URL (e.g., https://abc123.ngrok-free.app)
+   ```
+
+3. **Configure redirect URL in Shopify**:
+   - In your Shopify Customer Account API settings
+   - Add redirect URL: `https://your-tunnel-id.ngrok-free.app/account/authorize`
+   - Replace `your-tunnel-id` with your actual ngrok URL
+
+4. **Update Vite config** with your tunnel URL:
+   - Open `vite.config.ts`
+   - Replace the ngrok URL in `server.allowedHosts` with your tunnel URL
+
+5. **Configure customer tags** in Shopify Admin (Customers section)
+
+6. **Test eligibility** by logging in via your tunnel URL with customers that have/don't have the eligibility tag
+
+**Additional Resources**:
+
+- **[Customer Account Guide](./docs/CUSTOMER_ACCOUNTS.md)** - Complete implementation details, troubleshooting, and examples
+- **[Shopify's Official Guide](https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen)** - Official Shopify documentation

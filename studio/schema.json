@@ -2816,6 +2816,13 @@
         },
         "optional": false
       },
+      "customerGreeting": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
       "contactEmail": {
         "type": "objectAttribute",
         "value": {

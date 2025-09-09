@@ -8,6 +8,8 @@ const ProductFragment = /* GraphQL */ `
     handle
     descriptionHtml
     description
+    productType
+    tags
     encodedVariantExistence
     encodedVariantAvailability
     media(first: 10) {

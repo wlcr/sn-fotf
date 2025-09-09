@@ -19,6 +19,7 @@ import PageBuilder from '~/components/sanity/PageBuilder';
 import {HOME_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
 import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
 import StyleGuide from '~/components/StyleGuide';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -41,7 +42,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   // Create Sanity client
   const sanityClient = createSanityClient(context.env);
 
-  const [{collections}, siteSettings, homepage] = await Promise.all([
+  const [{collections}, siteSettings, homepage, customer] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Fetch Sanity site settings for global content
     sanityServerQuery<SettingsQueryResult | null>(
@@ -69,12 +70,18 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       console.error('Failed to load Sanity homepage content:', error);
       return null; // Continue without homepage data if it fails
     }),
+    // Fetch customer data to determine if they can access account features
+    context.customerAccount.query(CUSTOMER_DETAILS_QUERY).catch((error) => {
+      console.error('error fetching customer', error);
+      return null;
+    }), // Preload customer data for account access
   ]);
 
   return {
     featuredCollection: collections.nodes[0],
     siteSettings,
     homepage,
+    customer: customer?.data?.customer || null,
   };
 }
 
@@ -99,6 +106,21 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+
+  console.log('homepage', data.homepage);
+  console.log('customer', data.customer);
+
+  /**
+   * Determine if customer is eligible to purchase (based on tags).
+   *
+   * Customer must be authenticated
+   *
+   * TODO: Connect this eligibility check to ProductForm/AddToCartButton components
+   * TODO: Update tag logic in customerIsEligibleToPurchase function as needed
+   */
+  const eligibleToPurchase = customerIsEligibleToPurchase(
+    data.customer?.tags || null,
+  );
   return (
     <>
       <StyleGuide></StyleGuide>
@@ -224,3 +246,8 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
     }
   }
 ` as const;
+
+function customerIsEligibleToPurchase(tags: string[] | null) {
+  if (!tags) return false;
+  return tags.includes('eligible_to_purchase');
+}
