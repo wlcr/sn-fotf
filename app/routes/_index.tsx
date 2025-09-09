@@ -106,16 +106,17 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-  
+
   console.log('homepage', data.homepage);
   console.log('customer', data.customer);
-  
+
   /**
    * Determine if customer is eligible to purchase (based on tags).
    *
    * Customer must be authenticated
    *
-   * TODO: Update tag in function below and implement
+   * TODO: Connect this eligibility check to ProductForm/AddToCartButton components
+   * TODO: Update tag logic in customerIsEligibleToPurchase function as needed
    */
   const eligibleToPurchase = customerIsEligibleToPurchase(
     data.customer?.tags || null,
