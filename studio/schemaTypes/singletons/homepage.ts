@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
+import pageBuilder from '../fields/pageBuilder';
 
 /**
  * Page schema.  Define and edit the fields for the 'page' content type.
@@ -19,11 +20,6 @@ export const homepage = defineType({
       initialValue: 'Home',
       readOnly: true,
     }),
-    defineField({
-      name: 'page',
-      title: 'Page',
-      type: 'reference',
-      to: [{type: 'page'}],
-    }),
+    pageBuilder,
   ],
 });
