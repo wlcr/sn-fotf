@@ -1,7 +1,5 @@
-'use client';
 import {useState} from 'react';
-import {set} from 'sanity';
-import {NewsletterBlock} from '~/studio/sanity.types';
+import {NewsletterBlock} from '~/types/sanity';
 
 type NewsletterBlockProps = {
   block: NewsletterBlock;

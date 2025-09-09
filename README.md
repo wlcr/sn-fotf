@@ -9,9 +9,10 @@ A **members-only** Hydrogen-powered headless commerce storefront for Sierra Neva
 
 - **Framework**: Shopify Hydrogen 2025.5.0
 - **Routing**: React Router v7.6.0 ⚠️ **(NOT Remix)**
-- **Styling**: CSS Modules + PostCSS + Open Props
+- **Styling**: CSS Modules + PostCSS + Open Props + Radix UI Themes
+- **UI Components**: Custom Button system with Sierra Nevada "Mills River" brand theme
 - **CMS**: Sanity CMS (not Shopify metafields)
-- **Icons**: SVG-Go via vite-plugin-svgr
+- **Icons**: SVG-Go via vite-plugin-svgr + Custom Sierra Nevada logo
 - **State**: React Query + React hooks
 - **Security**: Pre-configured CSP with Klaviyo integration
 - **Quality**: Automated TypeScript checks, ESLint, Prettier, and Husky pre-commit hooks
@@ -31,7 +32,7 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 
 ## What's included
 
-- Remix
+- React Router v7 (NOT Remix)
 - Hydrogen
 - Oxygen
 - Vite
@@ -42,12 +43,15 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 - TypeScript and JavaScript flavors
 - PostCSS with preset-env configuration
 - Open Props for CSS custom properties
+- Radix UI Themes for component styling
 - SVG support with vite-plugin-svgr
+- Custom Sierra Nevada logo component
+- Complete Button component system with brand variants
 - AI assistant configuration files
 - Comprehensive CSP security configuration
-- Automated quality checks with Husky pre-commit hooks
-- Sanity CMS integration with live preview
-- Minimal setup of components and routes
+- Automated quality checks with Husky pre-commit hooks (restored)
+- Sanity CMS integration with embedded Studio
+- Interactive StyleGuide component
 
 ## Getting started
 
@@ -122,7 +126,7 @@ The following variables are automatically configured:
 - `SANITY_API_TOKEN` - API access token for preview mode and authenticated queries
 - `SANITY_PREVIEW_SECRET` - Secret for preview mode authentication
 - `SANITY_REVALIDATE_SECRET` - Secret for webhook validation
-- `SANITY_STUDIO_URL` - Studio development URL (optional, defaults to localhost:3333)
+- `SANITY_STUDIO_URL` - Studio development URL (optional, defaults to localhost:3000/studio)
 
 **Important**: The Sanity project ID (`rimuhevv`), dataset (`production`), and API version (`2025-01-01`) are hardcoded in `app/lib/sanity.ts` since they're not sensitive information - project IDs are visible in API URLs and client requests. Only secrets like API tokens are stored as environment variables for security.
 
@@ -138,6 +142,58 @@ npm run type-check      # TypeScript compilation check
 npm run lint            # ESLint with auto-fix
 npm run lint:fix        # ESLint with auto-fix
 ```
+
+### SEO Testing & Validation
+
+Comprehensive SEO testing with 100-point scoring system, available both via command line and embedded Sanity Studio:
+
+#### **Embedded Studio SEO Tool** (Recommended)
+
+1. Start development server: `npm run dev`
+2. Navigate to **http://localhost:3000/studio**
+3. Use the **"SEO Testing"** tool in Studio sidebar
+4. Run real-time tests with visual scorecard and recommendations
+
+#### **Command Line Testing** (Development & CI)
+
+```bash
+# Test production site with detailed SEO analysis
+npm run seo:test
+
+# Test with verbose output and scoring breakdown
+npm run seo:test:verbose
+
+# Test local development server
+npm run seo:test:local
+
+# Test OpenGraph integration (development utility)
+npx tsx app/test-open-graph.ts
+```
+
+**Testing includes:**
+
+- ✅ **Meta Tags & Titles** (25 points): Length, presence, optimization
+- ✅ **Open Graph & Social Media** (20 points): Complete social tags
+- ✅ **Structured Data** (20 points): JSON-LD presence and validity
+- ✅ **Performance & Technical** (15 points): Headers, compression, viewport
+- ✅ **Accessibility** (10 points): ARIA, headings, focus management
+- ✅ **Members-Only Features** (10 points): Proper noindex, exclusive content
+
+**Technical Implementation:**
+
+- **DOM Parsing**: Uses `ultrahtml` for zero-dependency HTML parsing compatible with SSR environments
+- **Fallback Support**: Regex-based parsing when DOM libraries unavailable
+- **Studio Integration**: Real-time testing interface at `/studio/seo` API route
+
+**Documentation:**
+
+- 📚 **[Documentation Hub](./docs/)** - Complete guide navigation
+- 🔍 **[SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- 🏗️ **[Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
+- 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
+- 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- 📦 **[Bundle Optimization](./docs/BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
+- 🛡️ **[Bundle Size Monitoring](./docs/BUNDLE_SIZE_MONITORING.md)** - **CRITICAL**: Prevent deployment failures with automated monitoring
 
 ### Pre-commit Hooks
 
@@ -163,38 +219,33 @@ git commit --no-verify -m "your commit message"
 
 ## Sanity Studio (Content Management)
 
-This project uses Sanity CMS for content management. The Sanity Studio provides an intuitive interface for managing content that feeds into your Hydrogen storefront.
+This project uses Sanity CMS for content management with an **embedded Studio** that runs alongside your Hydrogen app for seamless development.
 
-### Running Sanity Studio Locally
+### Embedded Studio Benefits
 
-**Start the Studio development server**:
+- **Single Development Server**: No need to run separate terminals
+- **Same Origin**: No CORS issues for API calls between Studio and app
+- **Integrated SEO Tool**: Real-time SEO testing directly in Studio
+- **Simplified Workflow**: Everything runs with `npm run dev`
 
-```bash
-npm run studio:dev
-```
+### Running the Embedded Studio
 
-**Note**: If you see a warning about "Could not find a production build in the dist directory", choose **"Y" to start a development server**. This is normal for local development - you only need a production build for deployment.
-
-The Studio will be available at: **http://localhost:3333/**
-
-**Development Workflow** (run both simultaneously):
+**Start the development server** (serves both app and Studio):
 
 ```bash
-# Terminal 1: Your Hydrogen app
 npm run dev
-
-# Terminal 2: Sanity Studio
-npm run studio:dev
 ```
+
+**Access points:**
 
 - **Hydrogen app**: http://localhost:3000/
-- **Sanity Studio**: http://localhost:3333/
+- **Embedded Studio**: http://localhost:3000/studio
 
 ### Sanity Studio Access
 
 #### Local Development
 
-- **URL**: http://localhost:3333/
+- **URL**: http://localhost:3000/studio
 - **Authentication**: Sign in with your Sanity account
 - **Project**: Sierra Nevada - Friends of the Family
 - **Dataset**: `production`
@@ -225,20 +276,24 @@ The Studio uses schema definitions located in `studio/schemaTypes/`:
 ### Sanity Commands
 
 ```bash
-# Development
-npm run studio:dev          # Start Studio dev server
-npm run studio:build        # Build Studio for production
+# Development (embedded Studio)
+npm run dev                 # Start both app and embedded Studio
 
 # Code Generation
 npm run sanity:codegen      # Generate TypeScript types from schema
+npm run studio:clean        # Clear Studio cache if needed
 ```
 
 ### Documentation
 
 Comprehensive documentation is available in the `/docs` folder:
 
-- **[Sanity CMS Developer Guide](./docs/SANITY_DEVELOPER_GUIDE.md)** - Complete integration guide
-- **[GitHub Copilot Instructions](./.github/copilot-instructions.md)** - AI assistant configuration
+- **[📚 Documentation Hub](./docs/)** - Complete guide navigation
+- **[🏗️ Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
+- **[🔍 SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- **[🖼️ SVG Usage Guide](./docs/SVG_GUIDE.md)** - Automated SVG optimization pipeline
+- **[🤖 AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
+- **[🔧 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
 ## GraphQL & Type Safety
 
@@ -269,6 +324,62 @@ export function ProductDetails({ product }: { product: ProductQuery['product'] }
 interface CustomProduct { title: string; } // Don't do this
 ```
 
-## Setup for using Customer Account API (`/account` section)
+## Customer Account System
 
-Follow step 1 and 2 of <https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen#step-1-set-up-a-public-domain-for-local-development>
+This project implements a **customer eligibility system** that determines purchase access based on customer tags, designed for the members-only "Friends of the Family" program.
+
+### Key Features
+
+- **Customer Eligibility Logic**: Determines purchase access via `eligible_to_purchase` tag
+- **Context-Based State Management**: React context provides customer data throughout the app
+- **Account Route Redirects**: Redirects unauthenticated users to homepage (configurable)
+- **Type-Safe Implementation**: Full TypeScript support with generated GraphQL types
+- **Error Handling**: Graceful fallbacks for unauthenticated and ineligible users
+
+### Configuration
+
+**Environment Variables**:
+
+```bash
+# Customer eligibility tag (configurable)
+PUBLIC_FOTF_ELIGIBLE_TO_PURCHASE_TAG=eligible_to_purchase
+
+# Customer Account API credentials (from Shopify settings)
+PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID=your-client-id
+PUBLIC_CUSTOMER_ACCOUNT_API_URL=https://shopify.com/your-account-id
+```
+
+### Quick Start
+
+1. **Set up Customer Account API in Shopify**:
+   - Go to your Shopify store's **Settings > Customer accounts**
+   - Choose **New customer accounts** (not Classic)
+   - Enable **Customer Account API**
+   - Note your **Client ID** and **Account URL** (add these to your `.env` file)
+
+2. **Set up tunnel for local development** (required for customer login):
+
+   ```bash
+   # Run in separate terminal
+   ngrok http 3000
+
+   # Note the HTTPS URL (e.g., https://abc123.ngrok-free.app)
+   ```
+
+3. **Configure redirect URL in Shopify**:
+   - In your Shopify Customer Account API settings
+   - Add redirect URL: `https://your-tunnel-id.ngrok-free.app/account/authorize`
+   - Replace `your-tunnel-id` with your actual ngrok URL
+
+4. **Update Vite config** with your tunnel URL:
+   - Open `vite.config.ts`
+   - Replace the ngrok URL in `server.allowedHosts` with your tunnel URL
+
+5. **Configure customer tags** in Shopify Admin (Customers section)
+
+6. **Test eligibility** by logging in via your tunnel URL with customers that have/don't have the eligibility tag
+
+**Additional Resources**:
+
+- **[Customer Account Guide](./docs/CUSTOMER_ACCOUNTS.md)** - Complete implementation details, troubleshooting, and examples
+- **[Shopify's Official Guide](https://shopify.dev/docs/custom-storefronts/building-with-the-customer-account-api/hydrogen)** - Official Shopify documentation

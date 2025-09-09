@@ -43,38 +43,36 @@ export default function StyleGuide() {
 
           <Flex direction="column" gap="4" wrap="wrap">
             <Flex gap="2" p="2">
-              <Button label="Dark Solid" appearance="dark" variant="solid" />
-              <Button
-                label="Dark Outline"
-                appearance="dark"
-                variant="outline"
-              />
-              <Button label="Dark Round" appearance="dark" variant="round" />
-              <Button label="Dark Text" appearance="dark" variant="text" />
+              <Button appearance="dark" variant="solid">
+                Dark Solid
+              </Button>
+              <Button appearance="dark" variant="outline">
+                Dark Outline
+              </Button>
+              <Button appearance="dark" variant="round">
+                Dark Round
+              </Button>
+              <Button appearance="dark" variant="text">
+                Dark Text
+              </Button>
             </Flex>
             <div style={{backgroundColor: 'var(--color-mills-river)'}}>
               <Flex gap="2" p="2" wrap="wrap">
-                <Button
-                  label="Light Solid"
-                  appearance="light"
-                  variant="solid"
-                />
-                <Button
-                  label="Light Outline"
-                  appearance="light"
-                  variant="outline"
-                />
-                <Button
-                  label="Light Round"
-                  appearance="light"
-                  variant="round"
-                />
-                <Button label="Light Text" appearance="light" variant="text" />
-                <Button
-                  label="Light Round Outline"
-                  appearance="light"
-                  variant="round-outline"
-                />
+                <Button appearance="light" variant="solid">
+                  Light Solid
+                </Button>
+                <Button appearance="light" variant="outline">
+                  Light Outline
+                </Button>
+                <Button appearance="light" variant="round">
+                  Light Round
+                </Button>
+                <Button appearance="light" variant="text">
+                  Light Text
+                </Button>
+                <Button appearance="light" variant="round-outline">
+                  Light Round Outline
+                </Button>
               </Flex>
             </div>
           </Flex>

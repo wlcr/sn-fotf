@@ -36,7 +36,7 @@ export const sanityConfig = {
   projectId: 'rimuhevv', // Not sensitive - visible in API URLs
   dataset: 'production',
   apiVersion: '2025-01-01',
-  studioUrl: 'http://localhost:3333',
+  studioUrl: 'http://localhost:3000/studio', // Embedded Studio
 };
 
 // Environment variables interface for server-side Sanity operations

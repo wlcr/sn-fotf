@@ -1,5 +1,5 @@
 import BlockRenderer, {BlockType} from './BlockRenderer';
-import {Page, PageSection} from 'studio/sanity.types';
+import {Page, PageSection} from '~/types/sanity';
 
 type PageBuilderProps = {
   parent: {_id: string; _type: string};

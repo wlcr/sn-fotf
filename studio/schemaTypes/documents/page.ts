@@ -39,6 +39,7 @@ export const page = defineType({
       title: 'Page builder',
       type: 'array',
       of: [
+        {type: 'collectionBlock'},
         {type: 'faqBlock'},
         {type: 'contentBlock'},
         {type: 'imageContentBlock'},

@@ -19,8 +19,33 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
     // External services that Hydrogen doesn't automatically include
-    connectSrc: ['https://www.klaviyo.com', 'https://*.klaviyo.com'],
-    scriptSrc: ['https://www.klaviyo.com', 'https://*.klaviyo.com'],
+    connectSrc: [
+      'https://www.klaviyo.com',
+      'https://*.klaviyo.com',
+      'https://*.api.sanity.io', // Sanity API requests
+      'https://api.sanity.io', // Sanity API requests
+      'https://sanity-cdn.com', // Sanity CDN for modules/updates
+      'https://*.sanity-cdn.com', // Sanity CDN for modules/updates
+      'wss://*.api.sanity.io', // Sanity WebSocket connections
+      'wss://api.sanity.io', // Sanity WebSocket connections
+    ],
+    scriptSrc: [
+      'https://www.klaviyo.com',
+      'https://*.klaviyo.com',
+      'https://cdn.sanity.io', // Sanity Studio assets
+      'https://*.sanity.io', // Sanity Studio assets
+      'https://sanity-cdn.com', // Sanity CDN modules
+      'https://*.sanity-cdn.com', // Sanity CDN modules
+    ],
+    // Style sources for external services including Sanity Studio
+    styleSrc: [
+      "'self'",
+      "'unsafe-inline'", // Required for dynamic styles in Studio
+      'https://cdn.sanity.io', // Sanity Studio styles
+      'https://*.sanity.io', // Sanity Studio styles
+      'https://sanity-cdn.com', // Sanity CDN styles
+      'https://*.sanity-cdn.com', // Sanity CDN styles
+    ],
     // Comprehensive img-src support (Hydrogen doesn't reliably auto-generate this)
     imgSrc: [
       'https://www.klaviyo.com',
@@ -29,6 +54,10 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       'https://shopify.com',
       'https://cdn.sanity.io', // Sanity image CDN
+      'https://sanity-cdn.com', // Sanity CDN assets
+      'https://*.sanity-cdn.com', // Sanity CDN assets
+      'https://lh3.googleusercontent.com', // Google profile images
+      'https://*.googleusercontent.com', // Google user content
       'http://localhost:*',
       'data:',
     ],
@@ -39,6 +68,10 @@ export default async function handleRequest(
       'https://www.klaviyo.com',
       'https://*.klaviyo.com',
       'https://cdn.shopify.com',
+      'https://cdn.sanity.io', // Sanity Studio assets
+      'https://*.sanity.io', // Sanity Studio assets
+      'https://sanity-cdn.com', // Sanity CDN modules
+      'https://*.sanity-cdn.com', // Sanity CDN modules
       "'self'",
       'http://localhost:*',
       "'unsafe-inline'", // Required for React Router v7 inline script compatibility

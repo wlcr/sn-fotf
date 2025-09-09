@@ -1,13 +1,16 @@
-import React, {createElement} from 'react';
+import React, {createElement, lazy, Suspense} from 'react';
 
 import ContentSection from './ContentSection';
 import ImageContentSection from './ImageContentSection';
 import ImageSection from './ImageSection';
-import FaqSectionBlock from './FaqSection';
 import SideBySideCtaSection from './SideBySideCtaSection';
-import NewsletterSectionBlock from './NewsletterBlock';
 import BeerLabelBlock from './BeerLabelBlock';
 import BeerMapBlock from './BeerMapBlock';
+
+// Dynamically import components that use motion/react to keep them client-only
+// This prevents motion from being included in the server bundle
+const FaqSectionBlock = lazy(() => import('./FaqSection'));
+const NewsletterSectionBlock = lazy(() => import('./NewsletterBlock'));
 
 type BlocksType = {
   [key: string]: React.FC<any>;
@@ -59,6 +62,27 @@ export default function BlockRenderer({
     ];
 
   if (BlockComponent) {
+    // Components that use motion/react need to be wrapped with Suspense for client-only loading
+    const isClientOnlyComponent =
+      block._type === 'faqBlock' || block._type === 'newsletterBlock';
+
+    if (isClientOnlyComponent) {
+      return (
+        <div key={block._key} data-sanity={sanityDataAttr}>
+          <Suspense
+            fallback={<div className="loading-placeholder">Loading...</div>}
+          >
+            {createElement(BlockComponent, {
+              key: block._key,
+              block,
+              index,
+            })}
+          </Suspense>
+        </div>
+      );
+    }
+
+    // Regular server-side rendered components
     return (
       <div key={block._key} data-sanity={sanityDataAttr}>
         {createElement(BlockComponent, {

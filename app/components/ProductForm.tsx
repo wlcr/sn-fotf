@@ -24,6 +24,11 @@ export function ProductForm({
   const navigate = useNavigate();
   const {open} = useAside();
 
+  // TODO: Add customer eligibility logic here
+  // - Check if customer is eligible to purchase (use customerIsEligibleToPurchase from context)
+  // - Display custom messaging for ineligible customers using customerGreeting from Sanity
+  // - Disable/hide add-to-cart buttons for ineligible customers
+
   const lines: Array<OptimisticCartLineInput> = selectedVariant
     ? [
         {
