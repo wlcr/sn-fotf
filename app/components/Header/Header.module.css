@@ -53,6 +53,10 @@
 .HeaderLogo {
   color: var(--color-dry-malt);
   max-width: 192px;
+
+  & svg {
+    width: 100%;
+  }
 }
 
 /* Customer Account Styles */
