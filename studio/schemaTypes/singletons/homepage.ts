@@ -20,15 +20,10 @@ export const homepage = defineType({
       readOnly: true,
     }),
     defineField({
-      name: 'heroVideo',
-      title: 'Hero Video Embed',
-      type: 'mediaVimeo',
-    }),
-    defineField({
-      name: 'pageBuilder',
-      title: 'Page builder',
-      type: 'array',
-      of: [{type: 'pageSection'}],
+      name: 'page',
+      title: 'Page',
+      type: 'reference',
+      to: [{type: 'page'}],
     }),
   ],
 });
