@@ -2,8 +2,6 @@ import * as documents from './documents';
 import * as objects from './objects';
 import * as singletons from './singletons';
 
-console.log(documents);
-
 export const schemaTypes = [
   // Singletons
   ...Object.values(singletons),
