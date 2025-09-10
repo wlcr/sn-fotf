@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useCallback} from 'react';
 import {clsx} from 'clsx';
 import accordionStyles from './FaqAccordion.module.css';
-import type {FaqSection as FaqSectionData} from '~/types/sanity';
+import type {FaqSection as FaqSectionData} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
 
 // Dynamic imports for motion components to avoid server-side inclusion
