@@ -12,7 +12,7 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 
-import {PRODUCT_PAGE_QUERY} from '../lib/sanity/queries/pages';
+import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries/pages';
 // import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/studio/sanity.types';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
