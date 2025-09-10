@@ -190,6 +190,32 @@ interface CustomProduct {
 } // Don't do this
 ```
 
+### Sanity Image Optimization
+
+```typescript
+// ✅ MODERN approach - use getSanityImageUrlWithEnv()
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto',
+  quality: 85,
+  fit: 'crop',
+});
+
+// ✅ Different use cases
+// Thumbnails: quality: 70, format: 'webp'
+// Logos: fit: 'max' (preserve aspect ratio)
+// Social images: format: 'jpg', width: 1200, height: 630
+
+// ❌ LEGACY approach - deprecated, don't use
+// const imageUrl = urlForImage(image)?.width(800).height(600).url();
+
+// ❌ BUNDLE SIZE ISSUE - never import large images as React components
+// import {ReactComponent as Logo} from './logo.svg'; // Use Sanity instead
+```
+
 ### Environment Variables
 
 - **Shopify vars**: Auto-managed by `shopify hydrogen env pull`

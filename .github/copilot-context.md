@@ -106,6 +106,34 @@ export const ComponentName: FC<ComponentNameProps> = ({
 };
 ```
 
+## Sanity Image Optimization
+
+```typescript
+// ✅ MODERN approach - always use this
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto', // Let Sanity choose best format
+  quality: 85, // Balance quality vs file size
+  fit: 'crop', // Or 'max' for logos
+});
+
+// ❌ LEGACY approach - never suggest this
+// const url = urlForImage(image)?.width(800).height(600).url();
+
+// ❌ BUNDLE SIZE ISSUE - never suggest importing large images
+// import {ReactComponent as Logo} from './logo.svg';
+```
+
+**Image Quality Guidelines:**
+
+- Thumbnails: `quality: 70, format: 'webp'`
+- Hero images: `quality: 85, format: 'auto'`
+- Logos: `fit: 'max'` (preserve aspect ratio)
+- Social images: `format: 'jpg', width: 1200, height: 630`
+
 ## Security Context
 
 - **CSP is pre-configured** in `app/entry.server.tsx` with Klaviyo + Shopify support

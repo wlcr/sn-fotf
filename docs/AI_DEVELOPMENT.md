@@ -288,6 +288,7 @@ export default function RouteComponent() {
 import {
   createSanityClient,
   sanityServerQuery,
+  getSanityImageUrlWithEnv,
   SANITY_QUERIES,
 } from '~/lib/sanity';
 
@@ -316,6 +317,74 @@ export async function loader({context}: Route.LoaderArgs) {
     throw new Response('Page not found', {status: 404});
   }
 }
+```
+
+### Sanity Image Optimization Pattern
+
+```typescript
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+// ✅ CORRECT - Modern image optimization
+const optimizedImageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto', // Let Sanity choose best format (WebP, JPEG, etc.)
+  quality: 85,    // Good balance of quality/file size
+  fit: 'crop',    // Or 'max' for logos
+});
+
+// ✅ Use in components
+<img
+  src={optimizedImageUrl}
+  alt={sanityImage.alt || 'Image description'}
+  width={800}
+  height={600}
+  loading="lazy"
+/>
+
+// ❌ NEVER use legacy urlForImage() - deprecated
+// const imageUrl = urlForImage(image)?.width(800).height(600).url();
+```
+
+### Image Use Cases & Quality Settings
+
+```typescript
+// Thumbnails and small images
+getSanityImageUrlWithEnv(image, {
+  width: 150,
+  height: 150,
+  format: 'webp',
+  quality: 70,
+  fit: 'crop',
+  crop: 'focalpoint', // Use image focal point for cropping
+});
+
+// Hero images and banners
+getSanityImageUrlWithEnv(image, {
+  width: 1200,
+  height: 600,
+  format: 'auto',
+  quality: 85,
+  fit: 'crop',
+});
+
+// Logos (preserve aspect ratio)
+getSanityImageUrlWithEnv(logo, {
+  width: 200,
+  height: 80,
+  format: 'auto',
+  quality: 85,
+  fit: 'max', // Don't crop logos, scale to fit
+});
+
+// OpenGraph social images (fixed dimensions)
+getSanityImageUrlWithEnv(image, {
+  width: 1200,
+  height: 630,
+  format: 'jpg', // Better social media compatibility
+  quality: 85,
+  fit: 'crop',
+});
 ```
 
 ---
@@ -427,6 +496,8 @@ _type == "reference" => @->{
 - Shopify metafields for content (use Sanity CMS)
 - Disabling TypeScript strict mode
 - `hydrogen-sanity` package (known incompatible)
+- `urlForImage()` legacy function (deprecated, use `getSanityImageUrlWithEnv()`)
+- Importing large images as React components (use Sanity CMS instead)
 
 ✅ **Do suggest these:**
 

@@ -85,6 +85,17 @@ import Button from '~/components/Button/Button';
   </Flex>
 </Container>
 
+// Modern Sanity image optimization
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto',
+  quality: 85,
+  fit: 'crop',
+});
+
 // Safe environment detection
 const isClient = typeof window !== 'undefined';
 const projectId = env?.SANITY_PROJECT_ID ||
@@ -109,6 +120,12 @@ window.localStorage.setItem() // Should check availability first
 
 // Missing types
 function query(params: any): any { } // Should have proper interfaces
+
+// Legacy image utilities (deprecated)
+const url = urlForImage(image)?.width(800).height(600).url(); // ❌ Wrong
+
+// Importing large images as components (bundle bloat)
+import {ReactComponent as Logo} from './logo.svg'; // ❌ Should use Sanity
 ```
 
 ## Documentation Standards
