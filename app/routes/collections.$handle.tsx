@@ -30,6 +30,7 @@ import {
   combineStructuredData,
 } from '~/lib/seo/structured-data';
 import StructuredData from '~/components/StructuredData';
+import Sections from '~/components/Sections';
 
 export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   if (!data?.collection) {
@@ -53,8 +54,8 @@ export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   );
 
   // Check if page has non-indexable collection blocks
-  const hasNonIndexableCollections = data.sanityCollectionPage?.pageBuilder
-    ? pageHasNonIndexableCollections(data.sanityCollectionPage.pageBuilder)
+  const hasNonIndexableCollections = data.sanityCollectionPage?.sections
+    ? pageHasNonIndexableCollections(data.sanityCollectionPage.sections)
     : false;
 
   // Check route-based SEO rules
@@ -250,16 +251,9 @@ export default function Collection() {
       <CollectionProductsGrid collection={collection} />
 
       {/* Render Sanity page builder content if available */}
-      {sanityCollectionPage?.pageBuilder &&
-        sanityCollectionPage.pageBuilder.length > 0 && (
-          <PageBuilder
-            parent={{
-              _id: sanityCollectionPage._id,
-              _type: sanityCollectionPage._type,
-            }}
-            pageBuilder={sanityCollectionPage.pageBuilder}
-          />
-        )}
+      {sanityCollectionPage?.sections && (
+        <Sections sections={sanityCollectionPage?.sections} />
+      )}
     </>
   );
 }
