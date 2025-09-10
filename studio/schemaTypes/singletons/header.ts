@@ -13,6 +13,12 @@ export const header = defineType({
   icon: CogIcon,
   fields: [
     defineField({
+      name: 'mainMenu',
+      title: 'Main Menu',
+      type: 'menu',
+      description: 'Main navigation menu items displayed in the header',
+    }),
+    defineField({
       name: 'logo',
       title: 'Logo',
       type: 'image',

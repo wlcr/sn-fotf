@@ -542,6 +542,7 @@ export type Header = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  mainMenu?: Menu;
   logo?: {
     asset?: {
       _ref: string;
@@ -830,6 +831,20 @@ export type HeaderQueryResult = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  mainMenu: Array<{
+    title?: string;
+    link: {
+      _type: 'link';
+      linkType?: 'home' | 'href' | 'page' | 'productPage';
+      href?: string;
+      page: string | null;
+      productPage: string | null;
+      openInNewTab?: boolean;
+      home: '/';
+    } | null;
+    _type: 'menuItem';
+    _key: string;
+  }> | null;
   logo?: {
     asset?: {
       _ref: string;
@@ -861,7 +876,6 @@ export type HeaderQueryResult = {
     } | null;
     enabled?: boolean;
   } | null;
-  mainMenu: null;
 } | null;
 // Variable: footerQuery
 // Query: *[_type == "footer"][0] {    ...,    footerMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }

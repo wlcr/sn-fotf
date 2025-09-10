@@ -11,6 +11,21 @@
  */
 export const HEADER_QUERY = `
   *[_type == "header"][0] {
+    mainMenu[] {
+      title,
+      link {
+        _type,
+        linkType,
+        href,
+        page->{
+          slug
+        },
+        productPage->{
+          slug
+        },
+        openInNewTab
+      }
+    },
     logo {
       asset,
       alt,

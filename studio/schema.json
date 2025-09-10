@@ -3519,6 +3519,14 @@
           "type": "string"
         }
       },
+      "mainMenu": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "menu"
+        },
+        "optional": true
+      },
       "logo": {
         "type": "objectAttribute",
         "value": {

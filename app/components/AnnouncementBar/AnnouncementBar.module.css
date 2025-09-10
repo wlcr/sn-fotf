@@ -1,0 +1,63 @@
+/* Announcement Bar Styles */
+.AnnouncementBar {
+  background-color: var(--color-pale-ale);
+  color: var(--color-mills-river);
+  text-align: center;
+  padding: var(--size-2) var(--size-4);
+  font-size: var(--font-size-0);
+  font-weight: 500;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 12; /* Above header (z-index: 11) */
+
+  /* Animation-ready properties */
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+
+  /* Flexible height - content determines height */
+  min-height: var(--size-7); /* Minimum height for single line */
+
+  /* Support for multi-line content */
+  line-height: 1.4;
+}
+
+/* Animation state classes (for future use) */
+.AnnouncementBar.hidden {
+  transform: translateY(-100%);
+}
+
+.AnnouncementBar.animate-in {
+  transform: translateY(0);
+}
+
+.AnnouncementBar.animate-out {
+  transform: translateY(-100%);
+}
+
+.AnnouncementBarLink {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  display: block; /* Ensure full clickable area */
+}
+
+.AnnouncementBarLink:hover {
+  opacity: 0.8;
+}
+
+.AnnouncementBarText {
+  margin: 0;
+  /* Allow text to wrap naturally */
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .AnnouncementBar {
+    padding: var(--size-1) var(--size-3);
+    font-size: var(--font-size--1);
+  }
+}
