@@ -1,13 +1,10 @@
 import groq from 'groq';
-import {pageBuilder} from './fragments';
+import {sectionsFragment} from './fragments';
 
 export const HOME_QUERY = groq`
   *[_type == 'homepage'][0]{
     ...,
-    pageBuilder[]{
-      ...,
-      sectionBuilder[]${pageBuilder}
-    }
+    sections[]${sectionsFragment}
   }
 `;
 
@@ -27,7 +24,7 @@ export const PRODUCT_PAGE_QUERY = groq`
       customMetaDescription,
       seoNotes
     },
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }`;
 
 export const COLLECTION_PAGE_QUERY = groq`
@@ -47,7 +44,7 @@ export const COLLECTION_PAGE_QUERY = groq`
       customMetaDescription,
       seoNotes
     },
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }`;
 
 export const PAGE_QUERY = groq`
@@ -58,7 +55,7 @@ export const PAGE_QUERY = groq`
     slug,
     heading,
     subheading,
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }
 `;
 

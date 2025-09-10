@@ -1,5 +1,5 @@
 import {clsx} from 'clsx';
-import {ImageContentBlock} from '~/types/sanity';
+import type {ImageContentSection as ImageContentSectionData} from 'studio/sanity.types';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import CoverImage from './CoverImage';
@@ -7,16 +7,15 @@ import PortableText from './PortableText';
 import styles from './ImageContentSection.module.css';
 
 type ImageContentSectionProps = {
-  block: ImageContentBlock;
-  index: number;
+  section: ImageContentSectionData;
 };
 
-export default function ImageContentSectionBlock({
-  block,
+export default function ImageContentSection({
+  section,
 }: ImageContentSectionProps) {
   // these sub classes below never seem to get appended to the DOM
-  const sectionLayout = block.sectionLayout || 'imageLeft';
-  const contentAlign = block.contentAlign || 'alignLeft';
+  const sectionLayout = section.sectionLayout || 'imageLeft';
+  const contentAlign = section.contentAlign || 'alignLeft';
 
   const LayoutClasses = clsx(
     styles.layoutBlock,
@@ -50,29 +49,31 @@ export default function ImageContentSectionBlock({
   return (
     <div className={LayoutClasses}>
       <div className={styles.imageSide}>
-        {block?.image && <CoverImage image={block.image} priority />}
+        {section?.image && <CoverImage image={section.image} priority />}
       </div>
       <div className={styles.contentSide}>
-        {block?.content?.length && (
+        {section?.content?.length && (
           <div className={styles.contentContainer}>
             <PortableText
-              value={block.content?.map((blockItem) => ({
+              value={section.content?.map((blockItem) => ({
                 ...blockItem,
                 children: blockItem.children ?? [],
               }))}
             />
           </div>
         )}
-        {block?.button && block.button.link && block.button.buttonText && (
-          <Suspense fallback={null}>
-            <ResolvedLink
-              link={block.button.link}
-              className={clsx('button', styles.button)}
-            >
-              <span>{block.button.buttonText}</span>
-            </ResolvedLink>
-          </Suspense>
-        )}
+        {section?.button &&
+          section.button.link &&
+          section.button.buttonText && (
+            <Suspense fallback={null}>
+              <ResolvedLink
+                link={section.button.link}
+                className={clsx('button', styles.button)}
+              >
+                <span>{section.button.buttonText}</span>
+              </ResolvedLink>
+            </Suspense>
+          )}
       </div>
     </div>
   );

@@ -1,21 +1,21 @@
 import {useState} from 'react';
-import {NewsletterBlock} from '~/types/sanity';
+import type {NewsletterSection as NewsletterSectionData} from 'studio/sanity.types';
 
-type NewsletterBlockProps = {
-  block: NewsletterBlock;
+type NewsletterSectionProps = {
+  section?: NewsletterSectionData;
 };
 
-export default function NewsletterSectionBlock({block}: NewsletterBlockProps) {
+export default function NewsletterSection({section}: NewsletterSectionProps) {
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState(false);
 
-  if (!block?.klaviyoAccountId) return null;
+  if (!section?.klaviyoAccountId) return null;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // const email = (event.target as HTMLFormElement).email.value;
     console.log(
-      `Submitting email, ${email}, to Klaviyo account: ${block.klaviyoAccountId}`,
+      `Submitting email, ${email}, to Klaviyo account: ${section.klaviyoAccountId}`,
     );
     setTimeout(() => setSuccess(true), 1000);
   };

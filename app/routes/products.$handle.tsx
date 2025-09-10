@@ -19,7 +19,7 @@ import ProductDetail from '~/components/ProductDetail/ProductDetail';
 
 // Sanity integration
 import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries';
-import PageBuilder from '~/components/sanity/PageBuilder';
+// import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
@@ -41,6 +41,7 @@ import {
   combineStructuredData,
 } from '~/lib/seo/structured-data';
 import StructuredData from '~/components/StructuredData';
+import Sections from '~/components/Sections';
 
 export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   if (!data?.product) {
@@ -65,8 +66,8 @@ export const meta: MetaFunction<typeof loader> = ({data, location}) => {
   );
 
   // Check if page has non-indexable collection blocks
-  const hasNonIndexableCollections = data.sanityProductPage?.pageBuilder
-    ? pageHasNonIndexableCollections(data.sanityProductPage.pageBuilder)
+  const hasNonIndexableCollections = data.sanityProductPage?.sections
+    ? pageHasNonIndexableCollections(data.sanityProductPage.sections)
     : false;
 
   // Check route-based SEO rules
@@ -279,17 +280,9 @@ export default function Product() {
       {/* Use the new ProductDetail component from PR #10 */}
       <ProductDetail product={product} />
 
-      {/* Render Sanity page builder content if available */}
-      {sanityProductPage?.pageBuilder &&
-        sanityProductPage.pageBuilder.length > 0 && (
-          <PageBuilder
-            parent={{
-              _id: sanityProductPage._id,
-              _type: sanityProductPage._type,
-            }}
-            pageBuilder={sanityProductPage.pageBuilder}
-          />
-        )}
+      {sanityProductPage?.sections && (
+        <Sections sections={sanityProductPage?.sections} />
+      )}
     </>
   );
 }

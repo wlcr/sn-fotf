@@ -10,16 +10,13 @@ import {ProductItem} from '~/components/ProductItem';
 import type {SanityDocument} from '@sanity/client';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
-import type {
-  Homepage,
-  SettingsQueryResult,
-  PageBuilderResult,
-} from '~/types/sanity';
-import PageBuilder from '~/components/sanity/PageBuilder';
+import type {Homepage, Settings} from '~/types/sanity';
+// import PageBuilder from '~/components/sanity/PageBuilder';
 import {HOME_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
-import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
+// import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
 import StyleGuide from '~/components/StyleGuide';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+import Sections from '~/components/Sections';
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
@@ -45,7 +42,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const [{collections}, siteSettings, homepage, customer] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Fetch Sanity site settings for global content
-    sanityServerQuery<SettingsQueryResult | null>(
+    sanityServerQuery<Settings>(
       sanityClient,
       SETTINGS_QUERY,
       {},
@@ -122,28 +119,11 @@ export default function Homepage() {
     data.customer?.tags || null,
   );
   return (
-    <>
-      <StyleGuide></StyleGuide>
-      <div className="home">
-        {/* Render Sanity homepage content if available */}
-        {data.homepage?.pageBuilder && (
-          <PageSectionsBuilder
-            parent={{_id: data.homepage._id, _type: data.homepage._type}}
-            pageBuilder={data.homepage.pageBuilder}
-          />
-        )}
-        {/* {data.homepage && (
-        <PageBuilder
-          parent={{_id: data.homepage._id, _type: data.homepage._type}}
-          pageBuilder={data.homepage.pageBuilder as PageBuilderResult}
-        />
-      )} */}
-
-        {/* Keep existing Shopify content */}
-        <FeaturedCollection collection={data.featuredCollection} />
-        <RecommendedProducts products={data.recommendedProducts} />
-      </div>
-    </>
+    <div className="home">
+      {data?.homepage?.sections && (
+        <Sections sections={data.homepage.sections} />
+      )}
+    </div>
   );
 }
 

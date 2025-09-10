@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
+import sections from '../fields/sections';
 
 /**
  * Page schema.  Define and edit the fields for the 'page' content type.
@@ -34,29 +35,6 @@ export const page = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: 'pageBuilder',
-      title: 'Page builder',
-      type: 'array',
-      of: [
-        {type: 'collectionBlock'},
-        {type: 'faqBlock'},
-        {type: 'contentBlock'},
-        {type: 'imageContentBlock'},
-        {type: 'imageBlock'},
-      ],
-      options: {
-        insertMenu: {
-          // Configure the "Add Item" menu to display a thumbnail preview of the content type. https://www.sanity.io/docs/array-type#efb1fe03459d
-          views: [
-            {
-              name: 'grid',
-              previewImageUrl: (schemaTypeName) =>
-                `/static/page-builder-thumbnails/${schemaTypeName}.webp`,
-            },
-          ],
-        },
-      },
-    }),
+    sections,
   ],
 });

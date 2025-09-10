@@ -9,15 +9,15 @@ import {PackageIcon} from '@sanity/icons';
  * while controlling where they appear in the page flow.
  */
 
-export const collectionBlock = defineType({
-  name: 'collectionBlock',
-  title: 'Collection Block',
+export const collectionSection = defineType({
+  name: 'collectionSection',
+  title: 'Collection Section',
   type: 'object',
   icon: PackageIcon,
   fields: [
     defineField({
       name: 'heading',
-      title: 'Block Heading',
+      title: 'Section Heading',
       type: 'string',
       description: 'Optional heading to display above the collection',
       placeholder: 'e.g., "Featured Memberships" or "Merchandise"',

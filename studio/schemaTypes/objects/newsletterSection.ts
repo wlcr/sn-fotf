@@ -5,10 +5,10 @@ import {defineField, defineType} from 'sanity';
  * Newsletter Block
  */
 
-export const newsletterBlock = defineType({
-  name: 'newsletterBlock',
-  title: 'Newsletter Block',
-  description: 'Newsletter signup block',
+export const newsletterSection = defineType({
+  name: 'newsletterSection',
+  title: 'Newsletter Section',
+  description: 'Newsletter signup section',
   icon: DocumentTextIcon,
   type: 'object',
   fields: [
@@ -26,7 +26,7 @@ export const newsletterBlock = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Newsletter Block',
+        title: 'Newsletter Section',
         subtitle: 'Manage your newsletter settings',
       };
     },

@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useCallback} from 'react';
 import {clsx} from 'clsx';
 import accordionStyles from './FaqAccordion.module.css';
-import {FaqBlock} from '~/types/sanity';
+import type {FaqSection as FaqSectionData} from 'studio/sanity.types';
 import {PortableText} from '@portabletext/react';
 
 // Dynamic imports for motion components to avoid server-side inclusion
@@ -59,7 +59,7 @@ function PlusXIcon({
 }
 
 type FaqAccordionProps = {
-  items: FaqBlock['faqItems'];
+  items: FaqSectionData['faqItems'];
   className?: string;
   allowMultiple?: boolean;
 };

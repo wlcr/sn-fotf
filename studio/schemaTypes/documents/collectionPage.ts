@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
+import sections from '../fields/sections';
 
 /**
  * Collection Page schema.
@@ -94,30 +95,7 @@ export const collectionPage = defineType({
       description:
         'Custom social media sharing settings for this collection. If not set, defaults will be used.',
     }),
-    defineField({
-      name: 'pageBuilder',
-      title: 'Page builder',
-      type: 'array',
-      of: [
-        {type: 'collectionBlock'},
-        {type: 'faqBlock'},
-        {type: 'contentBlock'},
-        {type: 'imageContentBlock'},
-        {type: 'imageBlock'},
-      ],
-      options: {
-        insertMenu: {
-          // Configure the "Add Item" menu to display a thumbnail preview of the content type
-          views: [
-            {
-              name: 'grid',
-              previewImageUrl: (schemaTypeName) =>
-                `/static/page-builder-thumbnails/${schemaTypeName}.webp`,
-            },
-          ],
-        },
-      },
-    }),
+    sections,
   ],
   preview: {
     select: {

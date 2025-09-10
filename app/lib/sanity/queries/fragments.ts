@@ -29,10 +29,11 @@ export const portableText = groq`
   }
 `;
 
-export const pageBuilder = groq`
+export const sectionsFragment = groq`
   {
     ...,
-    _type == "imageContentBlock" => {
+    _type == "imageContentSection" => {
+      ...,
       image{
         ...,
         ${linkFields}
@@ -43,33 +44,26 @@ export const pageBuilder = groq`
         ${linkFields}
       }
     },
-    _type == "imageBlock" => {
+    _type == "imageSection" => {
+      ...,
       image{
         ...,
         ${linkFields}
       }
     },
-    _type == "contentBlock" => {
+    _type == "contentSection" => {
+      ...,
       content[]${portableText},
       button{
         ...,
         ${linkFields}
       }
     },
-    _type == "faqBlock" => {
+    _type == "faqSection" => {
+      ...,
       faqItems[]{
         ...,
         answer[]${portableText}
-      }
-    },
-    _type == "ctaBlock" => {
-      ctas[]{
-        ...,
-        content[]${portableText},
-        button{
-          ...,
-          ${linkFields}
-        }
       }
     }
   }

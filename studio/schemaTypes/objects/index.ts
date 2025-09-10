@@ -1,38 +1,38 @@
 import {blockContent} from './blockContent';
 import {callToAction} from './callToAction';
-import {collectionBlock} from './collectionBlock';
+import {collectionSection} from './collectionSection';
 import {link} from './link';
 import {mediaImage} from './mediaImage';
-import {imageContentBlock} from './imageContentBlock';
+import {imageContentSection} from './imageContentSection';
 import {linkButton} from './linkButton';
-import {contentBlock} from './contentBlock';
-import {imageBlock} from './imageBlock';
+import {contentSection} from './contentSection';
+import {imageSection} from './imageSection';
 import {menu} from './menu';
-import {faqBlock} from './faqBlock';
+import {faqSection} from './faqSection';
 import {ctaBlock} from './ctaBlock';
 import {specialComponentBlock} from './specialComponentBlock';
-import {newsletterBlock} from './newsletterBlock';
+import {newsletterSection} from './newsletterSection';
 import {mediaVimeo} from './mediaVimeo';
-import {pageSection} from './pageSection';
 import {openGraph, globalOpenGraph} from './openGraph';
+import {heroSection} from './heroSection';
 
 export default [
   blockContent,
   callToAction,
-  collectionBlock,
+  collectionSection,
   link,
   mediaImage,
-  imageContentBlock,
+  imageContentSection,
   linkButton,
-  contentBlock,
-  imageBlock,
+  contentSection,
+  imageSection,
   menu,
-  faqBlock,
+  faqSection,
   ctaBlock,
   specialComponentBlock,
-  newsletterBlock,
+  newsletterSection,
   mediaVimeo,
-  pageSection,
   openGraph,
   globalOpenGraph,
+  heroSection,
 ];

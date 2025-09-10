@@ -1,17 +1,16 @@
 import PortableText from './PortableText';
-import {ContentBlock} from '~/types/sanity';
+import type {ContentSection as ContentSectionType} from '~/types/sanity';
 import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import styles from './ContentSection.module.css';
 import {clsx} from 'clsx';
 
-type ContentBlockProps = {
-  block: ContentBlock;
-  index: number;
+type ContentSectionProps = {
+  section: ContentSectionType;
 };
 
-export default function ContentSectionBlock({block}: ContentBlockProps) {
-  const contentAlign = block.contentAlign || 'alignLeft';
+export default function ContentSection({section}: ContentSectionProps) {
+  const contentAlign = section.contentAlign || 'alignLeft';
   const textAlign =
     contentAlign === 'alignCenter'
       ? 'center'
@@ -32,29 +31,31 @@ export default function ContentSectionBlock({block}: ContentBlockProps) {
         className={styles.contentSide}
         style={{'--flexAlign': flexAlign} as React.CSSProperties}
       >
-        {block?.content?.length && (
+        {section?.content?.length && (
           <div
             className={styles.contentContainer}
             style={{'--textAlign': textAlign} as React.CSSProperties}
           >
             <PortableText
-              value={block.content?.map((blockItem) => ({
+              value={section.content?.map((blockItem) => ({
                 ...blockItem,
                 children: blockItem.children ?? [],
               }))}
             />
           </div>
         )}
-        {block?.button && block.button.link && block.button.buttonText && (
-          <Suspense fallback={null}>
-            <ResolvedLink
-              link={block.button.link}
-              className={clsx('button', styles.button)}
-            >
-              <span>{block.button.buttonText}</span>
-            </ResolvedLink>
-          </Suspense>
-        )}
+        {section?.button &&
+          section.button.link &&
+          section.button.buttonText && (
+            <Suspense fallback={null}>
+              <ResolvedLink
+                link={section.button.link}
+                className={clsx('button', styles.button)}
+              >
+                <span>{section.button.buttonText}</span>
+              </ResolvedLink>
+            </Suspense>
+          )}
       </div>
     </div>
   );
