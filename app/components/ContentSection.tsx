@@ -7,7 +7,6 @@ import {clsx} from 'clsx';
 
 type ContentSectionProps = {
   section: ContentSectionType;
-  index: number;
 };
 
 export default function ContentSection({section}: ContentSectionProps) {
