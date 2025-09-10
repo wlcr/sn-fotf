@@ -12,7 +12,6 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 
-import {productPageQuery} from 'studio/queries';
 // import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/studio/sanity.types';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
