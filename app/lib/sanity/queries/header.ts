@@ -47,22 +47,6 @@ export const HEADER_QUERY = `
         openInNewTab
       },
       enabled
-    },
-    announcementBar {
-      text,
-      link {
-        _type,
-        linkType,
-        href,
-        page->{
-          slug
-        },
-        productPage->{
-          slug
-        },
-        openInNewTab
-      },
-      enabled
     }
   }
 ` as const;

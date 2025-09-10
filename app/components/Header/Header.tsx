@@ -1,7 +1,8 @@
 import type {FC} from 'react';
 import {Link, NavLink, Await} from 'react-router';
 import {clsx} from 'clsx';
-import {Suspense} from 'react';
+import {Suspense, useState, useEffect} from 'react';
+import {motion} from 'motion/react';
 import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 import {useAside} from '~/components/Aside';
 import type {Header as HeaderType, Settings} from '~/types/sanity';
@@ -11,6 +12,14 @@ import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
 import {useCustomer} from '~/context/Customer';
 import ResolvedLink from '../sanity/ResolvedLink';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {
+  withReducedMotion,
+  buildTransition,
+  buildSlideVariants,
+  DURATIONS,
+  EASINGS,
+} from '~/utils/motion';
 
 export interface HeaderProps {
   header: HeaderType;
@@ -18,6 +27,15 @@ export interface HeaderProps {
   settings?: Settings | null;
   className?: string;
 }
+
+// Header-specific animation configuration
+// Easy to adjust without affecting other components
+const HEADER_ANIMATION = {
+  delay: 800, // ms delay before header appears
+  slideDistance: 100, // px to slide down from
+  duration: 0.4, // seconds for animation
+  easing: EASINGS.smooth,
+};
 
 export const Header: FC<HeaderProps> = ({
   header,
@@ -28,9 +46,32 @@ export const Header: FC<HeaderProps> = ({
   const {mainMenu, logo, ctaButton} = header;
   const {customer, isEligible} = useCustomer();
   const greeting = settings?.customerGreeting || 'Welcome';
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Header entrance animation with configurable delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, HEADER_ANIMATION.delay);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <header className={clsx(styles.Header, className)} role="banner">
+    <motion.header
+      className={clsx(styles.Header, className)}
+      role="banner"
+      initial={{y: -HEADER_ANIMATION.slideDistance, opacity: 0}}
+      animate={{
+        y: isVisible ? 0 : -HEADER_ANIMATION.slideDistance,
+        opacity: isVisible ? 1 : 0,
+      }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(HEADER_ANIMATION.duration, HEADER_ANIMATION.easing),
+      )}
+    >
       <div className={styles.HeaderLeft}>
         {ctaButton?.enabled && ctaButton.text && ctaButton.link ? (
           <ResolvedLink link={ctaButton.link}>
@@ -131,6 +172,6 @@ export const Header: FC<HeaderProps> = ({
           </ul>
         </nav>
       </div>
-    </header>
+    </motion.header>
   );
 };

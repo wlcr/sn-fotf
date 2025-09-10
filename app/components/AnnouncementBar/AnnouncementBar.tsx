@@ -1,11 +1,12 @@
 import type {FC} from 'react';
 import {clsx} from 'clsx';
-import type {Header as HeaderType} from '~/types/sanity';
+import {PortableText} from '@portabletext/react';
+import type {AnnouncementBar as AnnouncementBarType} from '~/types/sanity';
 import ResolvedLink from '../sanity/ResolvedLink';
 import styles from './AnnouncementBar.module.css';
 
 export interface AnnouncementBarProps {
-  announcementBar: HeaderType['announcementBar'];
+  announcementBar: AnnouncementBarType;
   className?: string;
 }
 
@@ -13,22 +14,43 @@ export const AnnouncementBar: FC<AnnouncementBarProps> = ({
   announcementBar,
   className,
 }) => {
-  // Don't render if disabled or no text
-  if (!announcementBar?.enabled || !announcementBar.text) {
+  // Don't render if disabled or no content
+  if (!announcementBar?.enabled || !announcementBar.content) {
     return null;
   }
 
+  const content = (
+    <div className={styles.AnnouncementBarText}>
+      <PortableText
+        value={announcementBar.content}
+        components={{
+          marks: {
+            link: ({children, value}) => (
+              <ResolvedLink link={value} className={styles.InlineLink}>
+                {children}
+              </ResolvedLink>
+            ),
+          },
+        }}
+      />
+    </div>
+  );
+
   return (
-    <div className={clsx(styles.AnnouncementBar, className)} role="banner">
-      {announcementBar.link ? (
+    <div
+      data-announcement-bar
+      className={clsx(styles.AnnouncementBar, className)}
+      role="banner"
+    >
+      {announcementBar.wrapperLink ? (
         <ResolvedLink
-          link={announcementBar.link}
+          link={announcementBar.wrapperLink}
           className={styles.AnnouncementBarLink}
         >
-          <p className={styles.AnnouncementBarText}>{announcementBar.text}</p>
+          {content}
         </ResolvedLink>
       ) : (
-        <p className={styles.AnnouncementBarText}>{announcementBar.text}</p>
+        content
       )}
     </div>
   );
