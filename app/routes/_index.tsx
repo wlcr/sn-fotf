@@ -10,11 +10,7 @@ import {ProductItem} from '~/components/ProductItem';
 import type {SanityDocument} from '@sanity/client';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
-import type {
-  Homepage,
-  SettingsQueryResult,
-  PageBuilderResult,
-} from '~/types/sanity';
+import type {Homepage, Settings} from '~/types/sanity';
 // import PageBuilder from '~/components/sanity/PageBuilder';
 import {HOME_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
 // import PageSectionsBuilder from '~/components/sanity/PageSectionsBuilder';
@@ -46,7 +42,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const [{collections}, siteSettings, homepage, customer] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Fetch Sanity site settings for global content
-    sanityServerQuery<SettingsQueryResult | null>(
+    sanityServerQuery<Settings>(
       sanityClient,
       SETTINGS_QUERY,
       {},
@@ -124,7 +120,9 @@ export default function Homepage() {
   );
   return (
     <div className="home">
-      <Sections sections={data.homepage.sections} />
+      {data?.homepage?.sections && (
+        <Sections sections={data.homepage.sections} />
+      )}
     </div>
   );
 }
