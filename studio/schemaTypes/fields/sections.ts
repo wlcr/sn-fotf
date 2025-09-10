@@ -1,5 +1,4 @@
 import {defineField, defineType} from 'sanity';
-import groq from 'groq';
 
 export default defineField({
   name: 'sections',
@@ -7,11 +6,11 @@ export default defineField({
   type: 'array',
   of: [
     {type: 'heroSection'},
-    {type: 'collectionBlock'},
-    {type: 'faqBlock'},
+    {type: 'collectionSection'},
+    {type: 'faqSection'},
     {type: 'contentSection'},
     {type: 'imageContentSection'},
-    {type: 'imageBlock'},
+    {type: 'imageSection'},
   ],
   options: {
     insertMenu: {

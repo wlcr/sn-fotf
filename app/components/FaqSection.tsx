@@ -6,7 +6,7 @@ type FaqBlockProps = {
   index: number;
 };
 
-export default function FaqSectionBlock({block}: FaqBlockProps) {
+export default function FaqSection({block}: FaqBlockProps) {
   if (!block?.faqItems?.length) return null;
 
   return (

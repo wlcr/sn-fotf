@@ -19,7 +19,7 @@ import ProductDetail from '~/components/ProductDetail/ProductDetail';
 
 // Sanity integration
 import {PRODUCT_PAGE_QUERY} from '~/lib/sanity/queries';
-import PageBuilder from '~/components/sanity/PageBuilder';
+// import PageBuilder from '~/components/sanity/PageBuilder';
 import {ProductPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 

@@ -1,12 +1,12 @@
-import {ImageBlock} from '~/types/sanity';
+import {ImageSection} from '~/types/sanity';
 import CoverImage from './CoverImage';
 
-type ImageBlockProps = {
-  block: ImageBlock;
+type ImageSectionProps = {
+  block: ImageSection;
   index: number;
 };
 
-export default function ImageSectionBlock({block}: ImageBlockProps) {
+export default function ImageSection({block}: ImageSectionProps) {
   return (
     <div className={'image-side'}>
       {block?.image && <CoverImage image={block.image} priority />}

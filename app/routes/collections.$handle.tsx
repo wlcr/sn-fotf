@@ -9,7 +9,7 @@ import CollectionProductsGrid from '~/components/CollectionProductsGrid/Collecti
 
 // Sanity integration
 import {COLLECTION_PAGE_QUERY} from '~/lib/sanity/queries';
-import PageBuilder from '~/components/sanity/PageBuilder';
+// import PageBuilder from '~/components/sanity/PageBuilder';
 import {CollectionPage} from '~/types/sanity';
 import {createSanityClient, sanityServerQuery} from '~/lib/sanity';
 
