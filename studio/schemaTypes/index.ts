@@ -1,12 +1,12 @@
-import * as documents from './documents';
-import * as objects from './objects';
-import * as singletons from './singletons';
+import documents from './documents';
+import objects from './objects';
+import singletons from './singletons';
 
 export const schemaTypes = [
   // Singletons
-  ...Object.values(singletons),
+  ...singletons,
   // Documents
-  ...Object.values(documents),
+  ...documents,
   // Objects
-  ...Object.values(objects),
+  ...objects,
 ];
