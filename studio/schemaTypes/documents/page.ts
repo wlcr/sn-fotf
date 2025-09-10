@@ -1,6 +1,6 @@
 import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
-import pageBuilder from '../fields/pageBuilder';
+import sections from '../fields/sections';
 
 /**
  * Page schema.  Define and edit the fields for the 'page' content type.
@@ -35,6 +35,6 @@ export const page = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-    pageBuilder,
+    sections,
   ],
 });

@@ -29,7 +29,7 @@ export const portableText = groq`
   }
 `;
 
-export const pageBuilder = groq`
+export const sectionsFragment = groq`
   {
     ...,
     _type == "imageContentBlock" => {

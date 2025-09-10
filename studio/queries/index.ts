@@ -1,5 +1,5 @@
 import groq from 'groq';
-import {linkFields, pageBuilder} from './fragments';
+import {linkFields, sectionsFragment} from './fragments';
 
 export const settingsQuery = groq`*[_type == "settings"][0]`;
 
@@ -30,10 +30,7 @@ export const footerQuery = groq`
 export const homeQuery = groq`
   *[_type == 'homepage'][0]{
     ...,
-    pageBuilder[]{
-      ...,
-      sectionBuilder[]${pageBuilder}
-    }
+      sections{${sectionsFragment}}
   }
 `;
 
@@ -53,7 +50,7 @@ export const productPageQuery = groq`
       customMetaDescription,
       seoNotes
     },
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }`;
 
 export const collectionPageQuery = groq`
@@ -73,7 +70,7 @@ export const collectionPageQuery = groq`
       customMetaDescription,
       seoNotes
     },
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }`;
 
 export const getPageQuery = groq`
@@ -84,7 +81,7 @@ export const getPageQuery = groq`
     slug,
     heading,
     subheading,
-    pageBuilder[]${pageBuilder}
+    sections[]${sectionsFragment}
   }
 `;
 
