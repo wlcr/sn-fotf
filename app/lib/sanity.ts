@@ -422,11 +422,32 @@ export function urlForImage(source: any) {
   return {
     width: (w: number) => ({
       height: (h: number) => ({
+        fit: (fitMode: string) => ({
+          auto: (format: string) => ({
+            url: () =>
+              getSanityImageUrlWithEnv(source, {
+                width: w,
+                height: h,
+                fit: fitMode as any,
+                format: 'auto',
+              }),
+          }),
+        }),
         auto: (format: string) => ({
           url: () =>
             getSanityImageUrlWithEnv(source, {
               width: w,
               height: h,
+              format: 'auto',
+            }),
+        }),
+      }),
+      fit: (fitMode: string) => ({
+        auto: (format: string) => ({
+          url: () =>
+            getSanityImageUrlWithEnv(source, {
+              width: w,
+              fit: fitMode as any,
               format: 'auto',
             }),
         }),
