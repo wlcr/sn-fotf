@@ -190,6 +190,7 @@ npx tsx app/test-open-graph.ts
 - 📚 **[Documentation Hub](./docs/)** - Complete guide navigation
 - 🔍 **[SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
 - 🏗️ **[Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
+- 🖼️ **[Image Utilities](./docs/IMAGE_UTILITIES.md)** - Sanity image handling, optimization, and best practices
 - 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 - 📦 **[Bundle Optimization](./docs/BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
@@ -291,6 +292,7 @@ Comprehensive documentation is available in the `/docs` folder:
 - **[📚 Documentation Hub](./docs/)** - Complete guide navigation
 - **[🏗️ Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
 - **[🔍 SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
+- **[🖼️ Image Utilities](./docs/IMAGE_UTILITIES.md)** - Sanity image handling, optimization, and best practices
 - **[🖼️ SVG Usage Guide](./docs/SVG_GUIDE.md)** - Automated SVG optimization pipeline
 - **[🤖 AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
