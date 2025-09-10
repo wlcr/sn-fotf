@@ -33,6 +33,7 @@ export const sectionsFragment = groq`
   {
     ...,
     _type == "imageContentSection" => {
+      ...,
       image{
         ...,
         ${linkFields}
@@ -44,12 +45,14 @@ export const sectionsFragment = groq`
       }
     },
     _type == "imageSection" => {
+      ...,
       image{
         ...,
         ${linkFields}
       }
     },
     _type == "contentSection" => {
+      ...,
       content[]${portableText},
       button{
         ...,
@@ -57,6 +60,7 @@ export const sectionsFragment = groq`
       }
     },
     _type == "faqSection" => {
+      ...,
       faqItems[]{
         ...,
         answer[]${portableText}
