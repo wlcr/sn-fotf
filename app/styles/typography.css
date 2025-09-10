@@ -1,7 +1,12 @@
 :root {
-  --font-body: 'Gotham Book Regular', monospace;
-  --font-heading: 'ABC Arizona Flare', monospace;
+  --font-body: 'gotham', monospace;
+  --font-heading: 'Nevada', monospace;
   --font-accent: 'Liberator Medium', monospace;
+}
+
+body {
+  font-family: var(--font-body);
+  line-height: 150%;
 }
 
 .body {

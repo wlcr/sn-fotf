@@ -88,6 +88,7 @@ export default defineConfig({
     allowedHosts: [
       process.env.VITE_DEV_HOST, // Set your ngrok URL in .env as VITE_DEV_HOST (without protocol)
       'ebe14be60c0d.ngrok-free.app', // Explicit ngrok domain for development
+      'use.typekit.net',
       'localhost',
       '127.0.0.1',
     ].filter(Boolean),

@@ -120,6 +120,7 @@ export default function Homepage() {
   );
   return (
     <div className="home">
+      <StyleGuide />
       {data?.homepage?.sections && (
         <Sections sections={data.homepage.sections} />
       )}

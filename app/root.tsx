@@ -243,6 +243,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={radixStyles}></link>
         <link rel="stylesheet" href={themeStyles}></link>
         <link rel="stylesheet" href={variableStyles}></link>
+        <link
+          rel="stylesheet"
+          href="https://use.typekit.net/uqh3oqk.css"
+        ></link>
         <Meta />
         <Links />
       </head>
