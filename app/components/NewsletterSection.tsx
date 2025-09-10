@@ -1,8 +1,8 @@
 import {useState} from 'react';
-import type {NewsletterSection as NewsletterSectionType} from '~/types/sanity';
+import type {NewsletterSection as NewsletterSectionData} from 'studio/sanity.types';
 
 type NewsletterSectionProps = {
-  section?: NewsletterSectionType;
+  section?: NewsletterSectionData;
 };
 
 export default function NewsletterSection({section}: NewsletterSectionProps) {

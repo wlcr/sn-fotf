@@ -59,6 +59,6 @@ export default function Sections({sections}: SectionsProps) {
       );
     }
 
-    return <Component key={section._key || section._type} {...section} />;
+    return <Component key={section._key || section._type} section={section} />;
   });
 }
