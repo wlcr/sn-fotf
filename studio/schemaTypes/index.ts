@@ -11,6 +11,7 @@ import {contentBlock} from './objects/contentBlock';
 import {imageBlock} from './objects/imageBlock';
 import {header} from './singletons/header';
 import {footer} from './singletons/footer';
+import announcementBar from './singletons/announcementBar';
 import {menu} from './objects/menu';
 import {faqBlock} from './objects/faqBlock';
 import {ctaBlock} from './objects/ctaBlock';
@@ -25,6 +26,7 @@ import {openGraph, globalOpenGraph} from './objects/openGraph';
 
 export const schemaTypes = [
   // Singletons
+  announcementBar,
   footer,
   header,
   homepage,

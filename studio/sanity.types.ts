@@ -348,63 +348,6 @@ export type CollectionPage = {
   >;
 };
 
-export type ProductPage = {
-  _id: string;
-  _type: 'productPage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  productHandle: string;
-  slug: Slug;
-  nameOverride?: string;
-  seoControls?: {
-    indexable?: boolean;
-    followable?: boolean;
-    customMetaDescription?: string;
-    seoNotes?: string;
-  };
-  openGraph?: OpenGraph;
-  pageBuilder?: Array<
-    | ({
-        _key: string;
-      } & CollectionBlock)
-    | ({
-        _key: string;
-      } & FaqBlock)
-    | ({
-        _key: string;
-      } & ContentBlock)
-    | ({
-        _key: string;
-      } & ImageContentBlock)
-    | ({
-        _key: string;
-      } & ImageBlock)
-  >;
-};
-
-export type OpenGraph = {
-  _type: 'openGraph';
-  title?: string;
-  description?: string;
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  type?: 'website' | 'article' | 'product';
-  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
-  noIndex?: boolean;
-};
-
 export type Settings = {
   _id: string;
   _type: 'settings';
@@ -477,34 +420,6 @@ export type Homepage = {
   >;
 };
 
-export type Page = {
-  _id: string;
-  _type: 'page';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  slug: Slug;
-  heading: string;
-  pageBuilder?: Array<
-    | ({
-        _key: string;
-      } & CollectionBlock)
-    | ({
-        _key: string;
-      } & FaqBlock)
-    | ({
-        _key: string;
-      } & ContentBlock)
-    | ({
-        _key: string;
-      } & ImageContentBlock)
-    | ({
-        _key: string;
-      } & ImageBlock)
-  >;
-};
-
 export type MediaVimeo = {
   _type: 'mediaVimeo';
   landscapeVimeoEmbed?: string;
@@ -561,11 +476,6 @@ export type Header = {
     link?: Link;
     enabled?: boolean;
   };
-  announcementBar?: {
-    text?: string;
-    link?: Link;
-    enabled?: boolean;
-  };
 };
 
 export type Footer = {
@@ -591,6 +501,48 @@ export type Footer = {
   externalLinks?: Menu;
 };
 
+export type AnnouncementBar = {
+  _id: string;
+  _type: 'announcementBar';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  enabled?: boolean;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal';
+    listItem?: never;
+    markDefs?: Array<{
+      linkType?: 'href' | 'page' | 'productPage';
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'page';
+      };
+      productPage?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'productPage';
+      };
+      openInNewTab?: boolean;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  wrapperLink?: Link;
+};
+
 export type Link = {
   _type: 'link';
   linkType?: 'home' | 'productPage' | 'page' | 'href';
@@ -608,6 +560,91 @@ export type Link = {
     [internalGroqTypeReferenceTo]?: 'productPage';
   };
   openInNewTab?: boolean;
+};
+
+export type ProductPage = {
+  _id: string;
+  _type: 'productPage';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  productHandle: string;
+  slug: Slug;
+  nameOverride?: string;
+  seoControls?: {
+    indexable?: boolean;
+    followable?: boolean;
+    customMetaDescription?: string;
+    seoNotes?: string;
+  };
+  openGraph?: OpenGraph;
+  pageBuilder?: Array<
+    | ({
+        _key: string;
+      } & CollectionBlock)
+    | ({
+        _key: string;
+      } & FaqBlock)
+    | ({
+        _key: string;
+      } & ContentBlock)
+    | ({
+        _key: string;
+      } & ImageContentBlock)
+    | ({
+        _key: string;
+      } & ImageBlock)
+  >;
+};
+
+export type OpenGraph = {
+  _type: 'openGraph';
+  title?: string;
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  type?: 'website' | 'article' | 'product';
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+  noIndex?: boolean;
+};
+
+export type Page = {
+  _id: string;
+  _type: 'page';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  heading: string;
+  pageBuilder?: Array<
+    | ({
+        _key: string;
+      } & CollectionBlock)
+    | ({
+        _key: string;
+      } & FaqBlock)
+    | ({
+        _key: string;
+      } & ContentBlock)
+    | ({
+        _key: string;
+      } & ImageContentBlock)
+    | ({
+        _key: string;
+      } & ImageBlock)
+  >;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -744,16 +781,17 @@ export type AllSanitySchemaTypes =
   | LinkButton
   | BlockContent
   | CollectionPage
-  | ProductPage
-  | OpenGraph
   | Settings
   | GlobalOpenGraph
   | Homepage
-  | Page
   | MediaVimeo
   | Header
   | Footer
+  | AnnouncementBar
   | Link
+  | ProductPage
+  | OpenGraph
+  | Page
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -863,19 +901,7 @@ export type HeaderQueryResult = {
     link?: Link;
     enabled?: boolean;
   };
-  announcementBar: {
-    text?: string;
-    link: {
-      _type: 'link';
-      linkType?: 'home' | 'href' | 'page' | 'productPage';
-      href?: string;
-      page: string | null;
-      productPage: string | null;
-      openInNewTab?: boolean;
-      home: '/';
-    } | null;
-    enabled?: boolean;
-  } | null;
+  announcementBar: null;
 } | null;
 // Variable: footerQuery
 // Query: *[_type == "footer"][0] {    ...,    footerMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }
