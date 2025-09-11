@@ -55,8 +55,7 @@ export default defineConfig({
       'sanity', // Heavy Studio package - client only
       '@sanity/vision', // Studio tool - client only
       '@sanity/visual-editing', // Studio tool - client only
-      'framer-motion', // Heavy animation library - client only
-      'motion', // Heavy animation library - client only
+      // Both 'motion' and 'framer-motion' removed for SSR compatibility
     ],
     noExternal: ['ultrahtml'],
     optimizeDeps: {

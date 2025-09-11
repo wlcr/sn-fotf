@@ -14,6 +14,7 @@ import {
 } from 'react-router';
 import favicon from '~/assets/favicon.svg?url';
 import {HEADER_QUERY, FOOTER_QUERY, SETTINGS_QUERY} from '~/lib/sanity/queries';
+import {ANNOUNCEMENT_BAR_QUERY} from '~/lib/sanity/queries/announcementBar';
 import {
   createSanityClient,
   validateSanityEnv,
@@ -23,7 +24,9 @@ import type {
   Header as SanityHeader,
   Footer as FooterType,
   Settings,
+  AnnouncementBar as AnnouncementBarType,
 } from '~/types/sanity';
+
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
@@ -92,62 +95,73 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const sanityEnv = validateSanityEnv(env);
   const sanityClient = createSanityClient(sanityEnv);
 
-  const [header, footer, settings, customer] = await Promise.all([
-    sanityServerQuery<SanityHeader>(
-      sanityClient,
-      HEADER_QUERY,
-      {},
-      {
-        displayName: 'Header Query',
-        env: sanityEnv,
-      },
-    ),
-    sanityServerQuery<FooterType>(
-      sanityClient,
-      FOOTER_QUERY,
-      {},
-      {
-        displayName: 'Footer Query',
-        env: sanityEnv,
-      },
-    ),
-    sanityServerQuery<Settings>(
-      sanityClient,
-      SETTINGS_QUERY,
-      {},
-      {
-        displayName: 'Settings Query',
-        env: sanityEnv,
-      },
-    ),
-    // Fetch customer data to determine if they can access account features
-    // Expected to fail for unauthenticated users
-    // TODO: Performance Consideration - Defer customer data loading
-    // 9. Customer data is currently loaded in root loader (blocking initial page render)
-    //    - Consider if customer eligibility is critical for first paint
-    //    - Could defer this to client-side or use React.lazy loading
-    //    - Measure impact on Time to First Byte (TTFB) and Core Web Vitals
-    //    - Consider loading customer data only when needed (e.g., account-related pages)
-    context.customerAccount
-      .query(CUSTOMER_DETAILS_QUERY)
-      .catch((error: unknown) => {
-        // Log unexpected errors in development for debugging
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        if (
-          process.env.NODE_ENV === 'development' &&
-          !errorMessage.includes('Unauthenticated')
-        ) {
-          console.warn('Customer query failed:', errorMessage);
-        }
-        return null;
-      }),
-  ]);
+  const [header, footer, settings, announcementBar, customer] =
+    await Promise.all([
+      sanityServerQuery<SanityHeader>(
+        sanityClient,
+        HEADER_QUERY,
+        {},
+        {
+          displayName: 'Header Query',
+          env: sanityEnv,
+        },
+      ),
+      sanityServerQuery<FooterType>(
+        sanityClient,
+        FOOTER_QUERY,
+        {},
+        {
+          displayName: 'Footer Query',
+          env: sanityEnv,
+        },
+      ),
+      sanityServerQuery<Settings>(
+        sanityClient,
+        SETTINGS_QUERY,
+        {},
+        {
+          displayName: 'Settings Query',
+          env: sanityEnv,
+        },
+      ),
+      sanityServerQuery<AnnouncementBarType>(
+        sanityClient,
+        ANNOUNCEMENT_BAR_QUERY,
+        {},
+        {
+          displayName: 'Announcement Bar Query',
+          env: sanityEnv,
+        },
+      ),
+      // Fetch customer data to determine if they can access account features
+      // Expected to fail for unauthenticated users
+      // TODO: Performance Consideration - Defer customer data loading
+      // 9. Customer data is currently loaded in root loader (blocking initial page render)
+      //    - Consider if customer eligibility is critical for first paint
+      //    - Could defer this to client-side or use React.lazy loading
+      //    - Measure impact on Time to First Byte (TTFB) and Core Web Vitals
+      //    - Consider loading customer data only when needed (e.g., account-related pages)
+      context.customerAccount
+        .query(CUSTOMER_DETAILS_QUERY)
+        .catch((error: unknown) => {
+          // Log unexpected errors in development for debugging
+          const errorMessage =
+            error instanceof Error ? error.message : String(error);
+          if (
+            process.env.NODE_ENV === 'development' &&
+            !errorMessage.includes('Unauthenticated')
+          ) {
+            console.warn('Customer query failed:', errorMessage);
+          }
+          return null;
+        }),
+    ]);
 
   return {
     header: header || null,
     footer: footer || null,
     settings: settings || null,
+    announcementBar: announcementBar || null,
     customer: customer?.data?.customer || null,
   };
 }
