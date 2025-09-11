@@ -28,6 +28,7 @@ export default async function handleRequest(
       'https://*.sanity-cdn.com', // Sanity CDN for modules/updates
       'wss://*.api.sanity.io', // Sanity WebSocket connections
       'wss://api.sanity.io', // Sanity WebSocket connections
+      'https://*.typekit.net',
     ],
     scriptSrc: [
       'https://www.klaviyo.com',
@@ -36,6 +37,7 @@ export default async function handleRequest(
       'https://*.sanity.io', // Sanity Studio assets
       'https://sanity-cdn.com', // Sanity CDN modules
       'https://*.sanity-cdn.com', // Sanity CDN modules
+      'https://*.typekit.net',
     ],
     // Style sources for external services including Sanity Studio
     styleSrc: [
@@ -45,6 +47,7 @@ export default async function handleRequest(
       'https://*.sanity.io', // Sanity Studio styles
       'https://sanity-cdn.com', // Sanity CDN styles
       'https://*.sanity-cdn.com', // Sanity CDN styles
+      'https://*.typekit.net',
     ],
     // Comprehensive img-src support (Hydrogen doesn't reliably auto-generate this)
     imgSrc: [
@@ -75,6 +78,12 @@ export default async function handleRequest(
       "'self'",
       'http://localhost:*',
       "'unsafe-inline'", // Required for React Router v7 inline script compatibility
+      'https://*.typekit.net',
+    ],
+    fontSrc: [
+      'https://*.typekit.net',
+      'http://localhost:*',
+      'https://cdn.shopify.com',
     ],
   });
 

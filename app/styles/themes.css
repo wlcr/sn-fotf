@@ -1,9 +1,9 @@
 .radix-themes {
-  --default-font-family: monospace;
-  --heading-font-family: monospace;
-  --strong-font-family: monospace;
-  --em-font-family: monospace;
-  --quote-font-family: monospace;
+  --default-font-family: inherit;
+  --heading-font-family: inherit;
+  --strong-font-family: inherit;
+  --em-font-family: inherit;
+  --quote-font-family: inherit;
 }
 
 :root,

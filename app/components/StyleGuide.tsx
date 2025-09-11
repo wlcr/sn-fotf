@@ -28,13 +28,13 @@ export default function StyleGuide() {
           </Flex>
 
           <Flex direction="column" gap="3">
-            <div className="heading">Heading - ABC Arizona Flare</div>
-            <div className="heading-1">Heading 1 - ABC Arizona Flare</div>
-            <div className="heading-2">Heading 2 - ABC Arizona Flare</div>
-            <div className="heading-3">Heading 3 - ABC Arizona Flare</div>
-            <div className="heading-4">Heading 4 - ABC Arizona Flare</div>
-            <div className="heading-5">Heading 5 - ABC Arizona Flare</div>
-            <div className="heading-6">Heading 6 - ABC Arizona Flare</div>
+            <div className="heading">Heading - Nevada</div>
+            <div className="heading-1">Heading 1 - Nevada</div>
+            <div className="heading-2">Heading 2 - Nevada</div>
+            <div className="heading-3">Heading 3 - Nevada</div>
+            <div className="heading-4">Heading 4 - Nevada</div>
+            <div className="heading-5">Heading 5 - Nevada</div>
+            <div className="heading-6">Heading 6 - Nevada</div>
           </Flex>
 
           <Flex direction="column" gap="3">
