@@ -21,6 +21,17 @@ export const structure: StructureResolver = (S) =>
         ),
 
       S.listItem()
+        .title('Announcement Bar')
+        .id('announcementBar')
+        .icon(() => '📢')
+        .child(
+          S.document()
+            .schemaType('announcementBar')
+            .documentId('announcementBar')
+            .title('Announcement Bar'),
+        ),
+
+      S.listItem()
         .title('Header')
         .id('header')
         .icon(CogIcon)
@@ -75,6 +86,7 @@ export const structure: StructureResolver = (S) =>
         (listItem) =>
           ![
             'settings',
+            'announcementBar',
             'header',
             'footer',
             'homepage',

@@ -1,9 +1,11 @@
 import {Link, useNavigate} from 'react-router';
+import {useEffect, useRef} from 'react';
 import {
   CartForm,
   type MappedProductOptions,
   type OptimisticCartLineInput,
 } from '@shopify/hydrogen';
+import {type FetcherWithComponents} from 'react-router';
 import type {
   Maybe,
   ProductOptionValueSwatch,
@@ -13,6 +15,46 @@ import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {Grid} from '@radix-ui/themes';
 import ProductOptions from './ProductOptions/ProductOptions';
+
+// Component to handle cart opening after successful add
+function AddToCartWithEffect({
+  fetcher,
+  open,
+  disabled,
+  loading,
+  lines,
+  variant,
+  children,
+  loadingText,
+}: {
+  fetcher: FetcherWithComponents<any>;
+  open: (type: 'cart') => void;
+  disabled: boolean;
+  loading: boolean;
+  lines: Array<OptimisticCartLineInput>;
+  variant: 'text' | 'solid' | 'outline' | 'round' | 'round-outline' | undefined;
+  children: React.ReactNode;
+  loadingText?: string;
+}) {
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      console.log('Item added to cart, opening drawer');
+      open('cart');
+    }
+  }, [fetcher.state, fetcher.data, open]);
+
+  return (
+    <AddToCartButton
+      disabled={disabled}
+      loading={loading}
+      lines={lines}
+      variant={variant}
+      loadingText={loadingText}
+    >
+      {children}
+    </AddToCartButton>
+  );
+}
 
 export function ProductForm({
   productOptions,
@@ -44,23 +86,52 @@ export function ProductForm({
       <ProductOptions options={productOptions} />
 
       <Grid gap="2">
-        <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onAddToCart={() => console.log('something added to cart')}
-          lines={lines}
-          variant="outline"
+        <CartForm
+          route="/cart"
+          inputs={{lines}}
+          action={CartForm.ACTIONS.LinesAdd}
         >
-          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-        </AddToCartButton>
+          {(fetcher) => (
+            <AddToCartWithEffect
+              fetcher={fetcher}
+              open={open}
+              disabled={
+                !selectedVariant ||
+                !selectedVariant.availableForSale ||
+                fetcher.state !== 'idle'
+              }
+              loading={fetcher.state === 'submitting'}
+              lines={lines}
+              variant="outline"
+            >
+              {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+            </AddToCartWithEffect>
+          )}
+        </CartForm>
         {selectedVariant?.availableForSale && (
-          <AddToCartButton
-            disabled={!selectedVariant || !selectedVariant.availableForSale}
-            onAddToCart={() => console.log('something added to cart')}
-            lines={lines}
-            variant="solid"
+          <CartForm
+            route="/cart"
+            inputs={{lines}}
+            action={CartForm.ACTIONS.LinesAdd}
           >
-            Buy now
-          </AddToCartButton>
+            {(fetcher) => (
+              <AddToCartWithEffect
+                fetcher={fetcher}
+                open={open}
+                disabled={
+                  !selectedVariant ||
+                  !selectedVariant.availableForSale ||
+                  fetcher.state !== 'idle'
+                }
+                loading={fetcher.state === 'submitting'}
+                lines={lines}
+                variant="solid"
+                loadingText="Processing..."
+              >
+                Buy now
+              </AddToCartWithEffect>
+            )}
+          </CartForm>
         )}
       </Grid>
     </Grid>

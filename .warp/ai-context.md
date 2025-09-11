@@ -3,10 +3,27 @@
 ## Project Identity
 
 - **Sierra Nevada - Friends of the Family**: Members-only e-commerce storefront
-- **Tech Stack**: Hydrogen + React Router v7 + Sanity CMS + Radix UI Themes (layout) + Open Props + PostCSS
+- **Tech Stack**: Hydrogen + React Router v7 + **Motion library** (NOT Framer Motion) + Sanity CMS + Radix UI Themes (layout) + Open Props + PostCSS
 - **Security**: Production-ready CSP configuration (don't modify)
 
 ## 🚨 Critical Rules
+
+### Motion Library Imports (NOT Framer Motion!)
+
+```typescript
+// ✅ ALWAYS use Motion library (successor to Framer Motion)
+import {motion, useScroll, useMotionValue} from 'motion/react';
+
+// ✅ ALWAYS use accessibility utilities
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS} from '~/utils/motion';
+
+// ❌ NEVER use Framer Motion (legacy library)
+import {motion} from 'framer-motion'; // DON'T USE
+
+// ❌ NEVER suggest Framer Motion patterns
+// When prompted about animations, look for Motion library patterns first!
+```
 
 ### React Router Imports (NOT Remix!)
 
@@ -148,7 +165,45 @@ npm run seo:test:local   # Local development SEO checks
 npm run seo:test:verbose # Detailed SEO analysis
 ```
 
-## 🚑 Critical Patterns
+## 🔥 Critical Patterns
+
+### Motion Animation Patterns (NOT Framer Motion!)
+
+```typescript
+// ✅ ALWAYS check existing Motion patterns first!
+// Look in: ~/utils/motion, ~/hooks/usePrefersReducedMotion
+
+// Component-local animation config (recommended)
+const COMPONENT_ANIMATION = {
+  duration: DURATIONS.medium,    // 0.5s
+  easing: EASINGS.smooth,        // easeInOut
+  slideDistance: 50,             // px
+  delay: 200,                    // ms
+};
+
+function AnimatedComponent() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ y: -COMPONENT_ANIMATION.slideDistance, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(COMPONENT_ANIMATION.duration, COMPONENT_ANIMATION.easing)
+      )}
+    >
+      Content
+    </motion.div>
+  );
+}
+
+// ❌ NEVER suggest Framer Motion imports
+// import {motion} from 'framer-motion';  // DON'T USE
+
+// ❌ NEVER ignore accessibility
+// <motion.div animate={{x: 100}} />  // Missing reduced motion handling!
+```
 
 ### Component Patterns (Hybrid Approach)
 
@@ -188,6 +243,32 @@ import type {ProductQuery} from '~/storefrontapi.generated';
 interface CustomProduct {
   title: string;
 } // Don't do this
+```
+
+### Sanity Image Optimization
+
+```typescript
+// ✅ MODERN approach - use getSanityImageUrlWithEnv()
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto',
+  quality: 85,
+  fit: 'crop',
+});
+
+// ✅ Different use cases
+// Thumbnails: quality: 70, format: 'webp'
+// Logos: fit: 'max' (preserve aspect ratio)
+// Social images: format: 'jpg', width: 1200, height: 630
+
+// ❌ LEGACY approach - deprecated, don't use
+// const imageUrl = urlForImage(image)?.width(800).height(600).url();
+
+// ❌ BUNDLE SIZE ISSUE - never import large images as React components
+// import {ReactComponent as Logo} from './logo.svg'; // Use Sanity instead
 ```
 
 ### Environment Variables

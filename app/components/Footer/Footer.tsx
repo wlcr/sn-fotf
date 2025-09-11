@@ -1,7 +1,7 @@
 import type {FC} from 'react';
 import {Link} from 'react-router';
 import {clsx} from 'clsx';
-import {urlForImage} from '~/lib/sanity';
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 import {linkResolver} from '~/lib/sanity/linkResolver';
 import type {Footer as FooterType} from '~/types/sanity';
 import styles from './Footer.module.css';
@@ -26,13 +26,13 @@ export const Footer: FC<FooterProps> = ({footer, className}) => {
               aria-label="Go to homepage"
             >
               <img
-                src={
-                  urlForImage(logo)
-                    ?.width(120)
-                    .height(60)
-                    .auto('format')
-                    .url() || ''
-                }
+                src={getSanityImageUrlWithEnv(logo, {
+                  width: 120,
+                  height: 60,
+                  format: 'auto',
+                  quality: 85,
+                  fit: 'max',
+                })}
                 alt={logo.alt || 'Site logo'}
                 className={styles.logo}
                 width={120}

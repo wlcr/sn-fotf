@@ -7,8 +7,11 @@ This is a **Hydrogen storefront** for Sierra Nevada Brewing Co's members-only e-
 ### Framework & Routing
 
 - **Hydrogen 2025.5.0** with **React Router v7.6.0** (NOT Remix)
+- **Motion library** ⚠️ (NOT Framer Motion) for accessibility-first animations
 - File-based routing in `app/routes/`
 - TypeScript strict mode enabled
+- **Bundle size monitoring** (critical <2MB limit for Oxygen)
+- **SEO testing** with 100-point scoring system
 
 ### Styling Architecture (Hybrid Approach)
 
@@ -31,6 +34,16 @@ This is a **Hydrogen storefront** for Sierra Nevada Brewing Co's members-only e-
 // ✅ React Router (CORRECT)
 import {useLoaderData, Link, Form, redirect, json} from 'react-router';
 
+// ✅ Motion library (NOT Framer Motion)
+import {motion, useScroll, useMotionValue} from 'motion/react';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {
+  withReducedMotion,
+  buildTransition,
+  EASINGS,
+  DURATIONS,
+} from '~/utils/motion';
+
 // ✅ Radix UI Layout Components (layout primitives only)
 import {Container, Section, Flex, Grid, Card, Box} from '@radix-ui/themes';
 
@@ -47,6 +60,9 @@ import type {LoaderFunction} from 'react-router';
 // ❌ NEVER use Remix imports
 // import { ... } from '@remix-run/react';
 // import { ... } from 'react-router-dom';
+
+// ❌ NEVER use Framer Motion (use Motion library)
+// import {motion} from 'framer-motion';  // WRONG LIBRARY
 
 // ❌ NEVER use Radix interactive components
 // import { Button, Text, Heading } from '@radix-ui/themes'; // Use custom components
@@ -105,6 +121,79 @@ export const ComponentName: FC<ComponentNameProps> = ({
   );
 };
 ```
+
+### Animated Component (Motion library with accessibility)
+
+```typescript
+import type { FC } from 'react';
+import {motion} from 'motion/react';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS, DURATIONS} from '~/utils/motion';
+import styles from './AnimatedComponent.module.css';
+
+// Component-local animation config (recommended pattern)
+const ANIMATION_CONFIG = {
+  duration: DURATIONS.medium,    // 0.5s
+  easing: EASINGS.smooth,        // easeInOut
+  slideDistance: 50,             // px
+};
+
+interface AnimatedComponentProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const AnimatedComponent: FC<AnimatedComponentProps> = ({
+  className,
+  children,
+  ...props
+}) => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ y: -ANIMATION_CONFIG.slideDistance, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(ANIMATION_CONFIG.duration, ANIMATION_CONFIG.easing)
+      )}
+      className={clsx(styles.animatedComponent, className)}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+};
+```
+
+## Sanity Image Optimization
+
+```typescript
+// ✅ MODERN approach - always use this
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto', // Let Sanity choose best format
+  quality: 85, // Balance quality vs file size
+  fit: 'crop', // Or 'max' for logos
+});
+
+// ❌ LEGACY approach - never suggest this
+// const url = urlForImage(image)?.width(800).height(600).url();
+
+// ❌ BUNDLE SIZE ISSUE - never suggest importing large images
+// import {ReactComponent as Logo} from './logo.svg';
+```
+
+**Image Quality Guidelines:**
+
+- Thumbnails: `quality: 70, format: 'webp'`
+- Hero images: `quality: 85, format: 'auto'`
+- Logos: `fit: 'max'` (preserve aspect ratio)
+- Social images: `format: 'jpg', width: 1200, height: 630`
 
 ## Security Context
 

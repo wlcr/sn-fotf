@@ -26,6 +26,16 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
 
+  // Debug logging to understand state
+  console.log('CartMain state:', {
+    layout,
+    cartHasItems,
+    totalQuantity: cart?.totalQuantity,
+    linesLength: cart?.lines?.nodes?.length,
+    emptyIsHidden: cartHasItems,
+    showingItems: cartHasItems,
+  });
+
   const mainClasses = clsx(
     styles.cartMain,
     layout === 'page' ? styles.cartMainPage : styles.cartMainAside,
@@ -43,7 +53,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
   return (
     <div className={mainClasses}>
-      <CartEmpty hidden={linesCount} layout={layout} />
+      <CartEmpty hidden={cartHasItems} layout={layout} />
       {cartHasItems && (
         <div className={detailsClasses}>
           <div className={linesClasses} aria-labelledby="cart-lines">
@@ -74,13 +84,19 @@ function CartEmpty({
 }) {
   const {close} = useAside();
 
+  console.log('CartEmpty render:', {hidden, layout, shouldBeHidden: hidden});
+
   const emptyClasses = clsx(
     styles.emptyCart,
     layout === 'page' ? styles.emptyCartPage : styles.emptyCartAside,
   );
 
   return (
-    <div hidden={hidden} className={emptyClasses}>
+    <div
+      hidden={hidden}
+      className={emptyClasses}
+      style={{display: hidden ? 'none' : 'block'}}
+    >
       <p className={styles.emptyCartMessage}>
         Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
         started!

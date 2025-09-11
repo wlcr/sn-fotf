@@ -1,8 +1,9 @@
 import type {FC} from 'react';
 import {Link, NavLink, Await} from 'react-router';
 import {clsx} from 'clsx';
-import {Suspense} from 'react';
-import {urlForImage} from '~/lib/sanity';
+import {Suspense, useState, useEffect} from 'react';
+import {motion} from 'motion/react';
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 import {useAside} from '~/components/Aside';
 import type {Header as HeaderType, Settings} from '~/types/sanity';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
@@ -11,6 +12,14 @@ import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
 import {useCustomer} from '~/context/Customer';
 import ResolvedLink from '../ResolvedLink';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {
+  withReducedMotion,
+  buildTransition,
+  buildSlideVariants,
+  DURATIONS,
+  EASINGS,
+} from '~/utils/motion';
 
 export interface HeaderProps {
   header: HeaderType;
@@ -19,156 +28,148 @@ export interface HeaderProps {
   className?: string;
 }
 
+// Header-specific animation configuration
+// Easy to adjust without affecting other components
+const HEADER_ANIMATION = {
+  delay: 800, // ms delay before header appears
+  slideDistance: 100, // px to slide down from
+  duration: 0.4, // seconds for animation
+  easing: EASINGS.smooth,
+};
+
 export const Header: FC<HeaderProps> = ({
   header,
   cart,
   settings,
   className,
 }) => {
-  const {logo, ctaButton, announcementBar} = header;
+  const {mainMenu, logo, ctaButton} = header;
   const {customer, isEligible} = useCustomer();
+  const {open} = useAside();
   const greeting = settings?.customerGreeting || 'Welcome';
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Header entrance animation with configurable delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, HEADER_ANIMATION.delay);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <>
-      <header className={clsx(styles.Header, className)} role="banner">
-        <div className={styles.HeaderLeft}>
+    <motion.header
+      className={clsx(styles.Header, className)}
+      role="banner"
+      initial={{y: -HEADER_ANIMATION.slideDistance, opacity: 0}}
+      animate={{
+        y: isVisible ? 0 : -HEADER_ANIMATION.slideDistance,
+        opacity: isVisible ? 1 : 0,
+      }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(HEADER_ANIMATION.duration, HEADER_ANIMATION.easing),
+      )}
+    >
+      <div className={styles.HeaderLeft}>
+        {ctaButton?.enabled && ctaButton.text && ctaButton.link ? (
+          <ResolvedLink link={ctaButton.link}>
+            <Button appearance="light" variant="outline">
+              {ctaButton.text}
+            </Button>
+          </ResolvedLink>
+        ) : (
           <Button appearance="light" variant="outline">
             Shop Now
           </Button>
+        )}
+      </div>
+
+      <div className={styles.HeaderCenter}>
+        <div className={styles.HeaderLogo}>
+          <Link to="/">
+            {logo && logo.asset ? (
+              <img
+                src={getSanityImageUrlWithEnv(logo, {
+                  width: 200,
+                  height: 80,
+                  fit: 'max',
+                  format: 'auto',
+                  quality: 85,
+                })}
+                alt={logo.alt || 'Site logo'}
+                className={styles.logoImage}
+              />
+            ) : (
+              <Logo />
+            )}
+          </Link>
         </div>
-        <div className={styles.HeaderCenter}>
-          <div className={styles.HeaderLogo}>
-            <Logo />
-          </div>
-        </div>
-        <div className={styles.HeaderRight}>
-          <nav>
-            <ul className={styles.HeaderUtilityList}>
-              <li>How it works</li>
-              {customer ? (
-                <li>
-                  <a
-                    href="https://sierranevada.com/account"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={clsx(
-                      styles.customerAccountLink,
-                      isEligible
-                        ? styles.customerEligible
-                        : styles.customerNotEligible,
-                    )}
-                  >
-                    {customer.imageUrl && (
-                      <img
-                        src={customer.imageUrl}
-                        alt={`${customer.firstName || 'Customer'} avatar`}
-                        className={styles.customerAvatar}
-                      />
-                    )}
-                    <span className={styles.customerGreeting}>
-                      {greeting}
-                      {customer.firstName ? `, ${customer.firstName}` : ''}
-                    </span>
-                  </a>
-                </li>
-              ) : (
+      </div>
+
+      <div className={styles.HeaderRight}>
+        <nav>
+          <ul className={styles.HeaderUtilityList}>
+            {/* Dynamic Navigation Menu */}
+            {mainMenu?.map((item, index: number) => (
+              <li key={index}>
+                {item.link ? (
+                  <ResolvedLink link={item.link}>{item.title}</ResolvedLink>
+                ) : (
+                  <span>{item.title}</span>
+                )}
+              </li>
+            ))}
+
+            {/* Customer Account/Login */}
+            {customer ? (
+              <li>
+                <a
+                  href="https://sierranevada.com/account"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={clsx(
+                    styles.customerAccountLink,
+                    isEligible
+                      ? styles.customerEligible
+                      : styles.customerNotEligible,
+                  )}
+                >
+                  {customer.imageUrl && (
+                    <img
+                      src={customer.imageUrl}
+                      alt={`${customer.firstName || 'Customer'} avatar`}
+                      className={styles.customerAvatar}
+                    />
+                  )}
+                  <span className={styles.customerGreeting}>
+                    {greeting}
+                    {customer.firstName ? `, ${customer.firstName}` : ''}
+                  </span>
+                </a>
+              </li>
+            ) : (
+              <li>
                 <NavLink to="/account" className={styles.loginLink}>
                   Login
                 </NavLink>
-              )}
-              <li>FAQ</li>
-              <li>Cart</li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-    </>
-  );
-};
+              </li>
+            )}
 
-// Temporary icon components - replace with actual SVG icons when available
-const AccountIcon: FC<{className?: string; 'aria-hidden'?: boolean}> = ({
-  className,
-  'aria-hidden': ariaHidden,
-}) => (
-  <svg
-    className={className}
-    aria-hidden={ariaHidden}
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
-const CartIcon: FC<{className?: string; 'aria-hidden'?: boolean}> = ({
-  className,
-  'aria-hidden': ariaHidden,
-}) => (
-  <svg
-    className={className}
-    aria-hidden={ariaHidden}
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zM8 6a2 2 0 114 0v1H8V6zm0 3a1 1 0 112 0 1 1 0 01-2 0z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
-const CartToggle: FC<{cart: CartApiQueryFragment | null}> = ({cart}) => {
-  const {open} = useAside();
-  const cartCount = cart?.totalQuantity || 0;
-
-  return (
-    <button
-      className={styles.utilityLink}
-      aria-label={`Open shopping cart with ${cartCount} items`}
-      onClick={() => open('cart')}
-    >
-      <span className={styles.utilityText}>Cart</span>
-      <div className={styles.cartIconWrapper}>
-        <CartIcon className={styles.utilityIcon} aria-hidden={true} />
-        {cartCount > 0 && (
-          <span
-            className={styles.cartCount}
-            aria-label={`${cartCount} items in cart`}
-          >
-            {cartCount > 99 ? '99+' : cartCount}
-          </span>
-        )}
+            <li>
+              <button
+                onClick={() => open('cart')}
+                className={styles.cartButton}
+                aria-label="Open cart"
+              >
+                Cart
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
-    </button>
-  );
-};
-
-const CartToggleFallback: FC = () => {
-  const {open} = useAside();
-
-  return (
-    <button
-      className={styles.utilityLink}
-      aria-label="Open shopping cart"
-      onClick={() => open('cart')}
-    >
-      <span className={styles.utilityText}>Cart</span>
-      <CartIcon className={styles.utilityIcon} aria-hidden={true} />
-    </button>
+    </motion.header>
   );
 };

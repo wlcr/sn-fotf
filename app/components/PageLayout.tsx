@@ -3,12 +3,14 @@ import type {
   Header as SanityHeader,
   Footer as SanityFooter,
   Settings,
+  AnnouncementBar as AnnouncementBarType,
 } from '~/types/sanity';
 import {Aside} from '~/components/Aside';
 import {CartAside} from '~/components/CartAside/CartAside';
 import {Footer} from '~/components/Footer/Footer';
 import {Header} from '~/components/Header/Header';
 import {SearchAside} from '~/components/SearchAside/SearchAside';
+import {AnnouncementBar} from '~/components/AnnouncementBar/AnnouncementBar';
 import {SkipLink} from '~/components/SkipLink';
 import {CustomerProvider} from '~/context/Customer';
 import type {CustomerDetailsQuery} from 'customer-accountapi.generated';
@@ -18,6 +20,7 @@ interface PageLayoutProps {
   footer: SanityFooter | null;
   header: SanityHeader | null;
   settings: Settings | null;
+  announcementBar: AnnouncementBarType | null;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
   customer: CustomerDetailsQuery['customer'] | null;
@@ -32,6 +35,7 @@ export function PageLayout({
   header,
   customer,
   settings,
+  announcementBar,
   isLoggedIn,
   publicStoreDomain,
   eligibleToPurchaseTag,
@@ -45,6 +49,9 @@ export function PageLayout({
         <CartAside cart={cart} />
         <SearchAside />
         <SkipLink />
+        {announcementBar && (
+          <AnnouncementBar announcementBar={announcementBar} />
+        )}
         {header && <Header header={header} cart={cart} settings={settings} />}
         <main id="main-content">{children}</main>
         {footer && <Footer footer={footer} />}

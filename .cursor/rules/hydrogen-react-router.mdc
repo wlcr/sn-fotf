@@ -1,16 +1,43 @@
 ---
-description: 
-globs: 
+description: Sierra Nevada Friends of the Family - Hydrogen + React Router v7 + Motion Library Rules
+globs: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']
 alwaysApply: true
 ---
 
-# React Router Import Rule for Hydrogen
+# SN Friends of the Family - Complete Development Rules
 
 ## Overview
 
-This Hydrogen project is based on React Router, not Remix. When working with documentation or code examples, you should always use imports from the appropriate React Router packages instead of Remix packages.
+This is a **members-only Hydrogen storefront** for Sierra Nevada Brewing Co. using:
+- **React Router v7** (NOT Remix)
+- **Motion library** (NOT Framer Motion) for accessibility-first animations
+- **Sanity CMS** for content management
+- **Hybrid styling** with Radix UI layout + custom brand components
 
-## Import Replacements
+## Critical Import Rules
+
+### 1. Motion Library (NOT Framer Motion)
+
+**ALWAYS use Motion library for animations:**
+
+```typescript
+// ✅ CORRECT - Motion library
+import {motion, useScroll, useMotionValue} from 'motion/react';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS, DURATIONS} from '~/utils/motion';
+
+// ❌ NEVER use Framer Motion
+import {motion} from 'framer-motion';  // WRONG - Use 'motion/react'
+
+// ❌ NEVER suggest animations without accessibility
+<motion.div animate={{ x: 100 }} />  // Missing reduced motion handling!
+
+// ✅ ALWAYS include accessibility utilities
+const prefersReducedMotion = usePrefersReducedMotion();
+const transition = withReducedMotion(prefersReducedMotion, buildTransition(0.5, EASINGS.smooth));
+```
+
+### 2. React Router (NOT Remix)
 
 When you see imports from Remix packages, replace them with their equivalent React Router v7 packages. Here are the common replacements:
 
@@ -33,7 +60,7 @@ NEVER USE 'react-router-dom' imports!
 
 ## Common Import Examples
 
-```js
+```typescript
 // INCORRECT (Remix style)
 import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } from '@remix-run/react';
 
@@ -41,12 +68,117 @@ import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } fr
 import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } from 'react-router';
 ```
 
+### 3. Hybrid Styling (Radix Layout + Custom Components)
+
+```typescript
+// ✅ CORRECT - Radix for LAYOUT only
+import { Container, Flex, Grid, Card, Section } from '@radix-ui/themes';
+
+// ✅ CORRECT - Custom components for interactions
+import Button from '~/components/Button/Button';
+
+// ❌ WRONG - Don't use Radix interactive components
+import { Button, Text, Heading } from '@radix-ui/themes';  // Use custom instead
+```
+
+### 4. Sanity Image Optimization
+
+```typescript
+// ✅ CORRECT - Modern approach
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
+
+const imageUrl = getSanityImageUrlWithEnv(sanityImage, {
+  width: 800,
+  height: 600,
+  format: 'auto',
+  quality: 85,
+  fit: 'crop',
+});
+
+// ❌ WRONG - Legacy approach (deprecated)
+// const url = urlForImage(image)?.width(800).height(600).url();
+```
+
+## Animation Development Guidelines
+
+### Component-Local Animation Config (Recommended)
+
+```typescript
+// At the top of your component file
+const ANIMATION_CONFIG = {
+  duration: DURATIONS.medium,    // 0.5s
+  easing: EASINGS.smooth,        // easeInOut
+  slideDistance: 50,             // px
+  delay: 200,                    // ms
+};
+
+function AnimatedComponent() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  
+  return (
+    <motion.div
+      initial={{ y: -ANIMATION_CONFIG.slideDistance, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(ANIMATION_CONFIG.duration, ANIMATION_CONFIG.easing)
+      )}
+    >
+      Content
+    </motion.div>
+  );
+}
+```
+
+### Available Animation Constants
+
+```typescript
+// Durations
+DURATIONS.instant  // 0s
+DURATIONS.quick    // 0.2s  
+DURATIONS.fast     // 0.3s
+DURATIONS.medium   // 0.5s
+DURATIONS.slow     // 0.8s
+
+// Easing Functions
+EASINGS.smooth  // easeInOut - natural, balanced
+EASINGS.snappy  // easeOut - quick start, slow end
+EASINGS.bouncy  // easeOut - energetic feel
+```
+
 ## Development Guidelines
 
-1. Always check existing code in the project to understand which specific React Router hooks and components are being used
-2. When generating new code or modifying existing code, ensure all routing-related imports come from the correct React Router packages
-3. If following documentation or examples based on Remix, adapt the code to use React Router equivalents
+### Critical Rules
 
-When working in this codebase, always follow the React Router patterns that are already established in the existing code.
+1. **Always check existing Motion patterns** in `~/utils/motion` before creating animations
+2. **Never suggest Framer Motion** - this project uses the newer Motion library
+3. **Always include accessibility utilities** (`usePrefersReducedMotion`, `withReducedMotion`)
+4. **Use component-local animation configs** instead of rigid centralized systems
+5. **Check existing code patterns** before suggesting new approaches
+6. **Maintain TypeScript strict mode** compliance
+7. **Keep bundle size under 2MB** for Oxygen deployment
 
-For more information, consult the official Remix to React Router upgrade guide: https://reactrouter.com/upgrading/remix
+### File Locations
+
+- Animation utilities: `~/utils/motion`
+- Animation hook: `~/hooks/usePrefersReducedMotion`
+- Components: `app/components/`
+- Routes: `app/routes/`
+- Sanity utilities: `~/lib/sanity`
+- Documentation: `docs/ANIMATIONS.md`
+
+### When Working on Animations
+
+1. **First**, check existing patterns in `~/utils/motion`
+2. **Always** use `usePrefersReducedMotion` hook
+3. **Always** use `withReducedMotion` utility
+4. **Prefer** component-local animation configuration
+5. **Test** with reduced motion preferences enabled
+
+When working in this codebase, always follow the established patterns for React Router, Motion animations, and hybrid styling that are already in place.
+
+## Resources
+
+- React Router upgrade guide: https://reactrouter.com/upgrading/remix
+- Motion library docs: https://motion.dev/docs
+- Project animation docs: `docs/ANIMATIONS.md`

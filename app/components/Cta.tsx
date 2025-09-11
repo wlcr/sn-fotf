@@ -3,7 +3,7 @@ import {Suspense} from 'react';
 import ResolvedLink from './ResolvedLink';
 import {CallToAction} from '~/types/sanity';
 import {PortableText} from '@portabletext/react';
-import {urlForImage} from '~/lib/sanity';
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 import styles from './SideBySideCtaSection.module.css';
 
 type CtaProps = {
@@ -11,11 +11,15 @@ type CtaProps = {
 };
 
 export default function CTA({block}: CtaProps) {
-  const backgroundImageUrl = urlForImage(block.backgroundImage)
-    ?.width(800)
-    .height(800)
-    .auto('format')
-    .url();
+  const backgroundImageUrl = block.backgroundImage
+    ? getSanityImageUrlWithEnv(block.backgroundImage, {
+        width: 800,
+        height: 800,
+        format: 'auto',
+        quality: 80,
+        fit: 'crop',
+      })
+    : '';
 
   return (
     <div

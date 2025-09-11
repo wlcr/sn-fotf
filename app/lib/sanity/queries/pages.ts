@@ -2,7 +2,7 @@ import groq from 'groq';
 import {sectionsFragment} from './fragments';
 
 export const HOME_QUERY = groq`
-  *[_type == 'homepage'][0]{
+  *[_type == 'homepage' && _id == 'homepage'][0]{
     ...,
     sections[]${sectionsFragment}
   }

@@ -1,4 +1,4 @@
-import {urlForImage} from '~/lib/sanity';
+import {getSanityImageUrlWithEnv} from '~/lib/sanity';
 
 type SanityImageProps = {
   image: any; // Replace 'any' with the actual image type if available
@@ -6,6 +6,7 @@ type SanityImageProps = {
   height?: number;
   aspectRatio?: number;
   alt?: string;
+  quality?: number;
 };
 
 export default function SanityImage({
@@ -14,6 +15,7 @@ export default function SanityImage({
   height,
   aspectRatio,
   alt,
+  quality = 80,
 }: SanityImageProps) {
   if (!image) {
     return null;
@@ -24,18 +26,26 @@ export default function SanityImage({
   // calculate a newWidth and newHeight based on the ar const and that max value; but always keep the aspect ratio in those values
   const maxWidth = 2000;
   const maxHeight = 2000;
-  let newWidth = maxWidth;
-  let newHeight = ar ? Math.round(newWidth / ar) : maxHeight;
-  if (newHeight > maxHeight) {
-    newHeight = maxHeight;
-    newWidth = ar ? Math.round(newHeight * ar) : maxWidth;
+  let newWidth = width || maxWidth;
+  let newHeight = height || (ar ? Math.round(newWidth / ar) : maxHeight);
+
+  // If no width/height provided, use max values with aspect ratio constraints
+  if (!width && !height) {
+    newWidth = maxWidth;
+    newHeight = ar ? Math.round(newWidth / ar) : maxHeight;
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = ar ? Math.round(newHeight * ar) : maxWidth;
+    }
   }
 
-  const imageUrl = urlForImage(image!)
-    ?.width(newWidth)
-    .height(newHeight)
-    .auto('format')
-    .url();
+  const imageUrl = getSanityImageUrlWithEnv(image, {
+    width: newWidth,
+    height: newHeight,
+    format: 'auto',
+    quality,
+    fit: 'crop',
+  });
 
   return (
     <img

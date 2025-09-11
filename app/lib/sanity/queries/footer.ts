@@ -10,7 +10,7 @@
  * @returns Footer data with navigation menu and legal page links
  */
 export const FOOTER_QUERY = `
-  *[_type == "footer"][0] {
+  *[_type == "footer" && _id == "footer"][0] {
     logo {
       asset,
       alt,

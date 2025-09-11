@@ -10,15 +10,9 @@
  * @returns Header data with logo, CTA button, and announcement bar
  */
 export const HEADER_QUERY = `
-  *[_type == "header"][0] {
-    logo {
-      asset,
-      alt,
-      hotspot,
-      crop
-    },
-    ctaButton {
-      text,
+  *[_type == "header" && _id == "header"][0] {
+    mainMenu[] {
+      title,
       link {
         _type,
         linkType,
@@ -30,10 +24,15 @@ export const HEADER_QUERY = `
           slug
         },
         openInNewTab
-      },
-      enabled
+      }
     },
-    announcementBar {
+    logo {
+      asset,
+      alt,
+      hotspot,
+      crop
+    },
+    ctaButton {
       text,
       link {
         _type,

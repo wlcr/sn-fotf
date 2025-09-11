@@ -7,6 +7,7 @@
 - **[📖 Project README](../README.md)** - Start here: Overview, setup, and quick start
 - **[🏗️ Sanity CMS Guide](./SANITY_GUIDE.md)** - Complete CMS integration and content setup
 - **[🔍 SEO Implementation](./SEO_GUIDE.md)** - SEO features, testing, and optimization
+- **[🖼️ Image Utilities](./IMAGE_UTILITIES.md)** - Sanity image handling, optimization, and best practices
 - **[🤖 AI Development](./AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
 - **[📦 Bundle Optimization](./BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues

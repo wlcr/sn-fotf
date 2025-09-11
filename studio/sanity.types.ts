@@ -13,23 +13,11 @@
  */
 
 // Source: schema.json
-export type SpecialComponentBlock = {
-  _type: 'specialComponentBlock';
-  specialComponent?: 'labelsComponent' | 'mapComponent' | 'dummyComponent';
+export type HeroSection = {
+  _type: 'heroSection';
+  name?: string;
+  vimeoUrl?: string;
 };
-
-export type NewsletterSection = {
-  _type: 'newsletterSection';
-  klaviyoAccountId?: string;
-  klaviyoListId?: string;
-};
-
-export type Menu = Array<{
-  title?: string;
-  link?: Link;
-  _type: 'menuItem';
-  _key: string;
-}>;
 
 export type MediaVimeo = {
   _type: 'mediaVimeo';
@@ -62,6 +50,70 @@ export type MediaVimeo = {
   vimeoDescription?: string;
 };
 
+export type NewsletterSection = {
+  _type: 'newsletterSection';
+  klaviyoAccountId?: string;
+  klaviyoListId?: string;
+};
+
+export type SpecialComponentBlock = {
+  _type: 'specialComponentBlock';
+  specialComponent?: 'labelsComponent' | 'mapComponent' | 'dummyComponent';
+};
+
+export type CtaBlock = {
+  _type: 'ctaBlock';
+  ctas?: Array<
+    {
+      _key: string;
+    } & CallToAction
+  >;
+};
+
+export type FaqSection = {
+  _type: 'faqSection';
+  title?: string;
+  faqItems?: Array<{
+    question?: string;
+    answer?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: 'span';
+        _key: string;
+      }>;
+      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+      listItem?: 'bullet' | 'number';
+      markDefs?: Array<{
+        linkType?: 'href' | 'page';
+        href?: string;
+        page?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'page';
+        };
+        openInNewTab?: boolean;
+        _type: 'link';
+        _key: string;
+      }>;
+      level?: number;
+      _type: 'block';
+      _key: string;
+    }>;
+    hidden?: boolean;
+    _type: 'faqItem';
+    _key: string;
+  }>;
+};
+
+export type Menu = Array<{
+  title?: string;
+  link?: Link;
+  _type: 'menuItem';
+  _key: string;
+}>;
+
 export type ImageSection = {
   _type: 'imageSection';
   image: {
@@ -77,6 +129,38 @@ export type ImageSection = {
     alt?: string;
     _type: 'mediaImage';
   };
+};
+
+export type ContentSection = {
+  _type: 'contentSection';
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      linkType?: 'href' | 'page';
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'page';
+      };
+      openInNewTab?: boolean;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  button?: LinkButton;
+  contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
 };
 
 export type ImageContentSection = {
@@ -137,90 +221,6 @@ export type MediaImage = {
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   alt?: string;
-};
-
-export type HeroSection = {
-  _type: 'heroSection';
-  name?: string;
-  vimeoUrl?: string;
-};
-
-export type FaqSection = {
-  _type: 'faqSection';
-  title?: string;
-  faqItems?: Array<{
-    question?: string;
-    answer?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: 'span';
-        _key: string;
-      }>;
-      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
-      listItem?: 'bullet' | 'number';
-      markDefs?: Array<{
-        linkType?: 'href' | 'page';
-        href?: string;
-        page?: {
-          _ref: string;
-          _type: 'reference';
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: 'page';
-        };
-        openInNewTab?: boolean;
-        _type: 'link';
-        _key: string;
-      }>;
-      level?: number;
-      _type: 'block';
-      _key: string;
-    }>;
-    hidden?: boolean;
-    _type: 'faqItem';
-    _key: string;
-  }>;
-};
-
-export type CtaBlock = {
-  _type: 'ctaBlock';
-  ctas?: Array<
-    {
-      _key: string;
-    } & CallToAction
-  >;
-};
-
-export type ContentSection = {
-  _type: 'contentSection';
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: 'span';
-      _key: string;
-    }>;
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
-    listItem?: 'bullet' | 'number';
-    markDefs?: Array<{
-      linkType?: 'href' | 'page';
-      href?: string;
-      page?: {
-        _ref: string;
-        _type: 'reference';
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: 'page';
-      };
-      openInNewTab?: boolean;
-      _type: 'link';
-      _key: string;
-    }>;
-    level?: number;
-    _type: 'block';
-    _key: string;
-  }>;
-  button?: LinkButton;
-  contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
 };
 
 export type CollectionSection = {
@@ -320,15 +320,16 @@ export type BlockContent = Array<{
   _key: string;
 }>;
 
-export type ProductPage = {
+export type CollectionPage = {
   _id: string;
-  _type: 'productPage';
+  _type: 'collectionPage';
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  productHandle: string;
+  collectionHandle: string;
   slug: Slug;
   nameOverride?: string;
+  descriptionOverride?: string;
   seoControls?: {
     indexable?: boolean;
     followable?: boolean;
@@ -358,16 +359,57 @@ export type ProductPage = {
   >;
 };
 
-export type CollectionPage = {
+export type AnnouncementBar = {
   _id: string;
-  _type: 'collectionPage';
+  _type: 'announcementBar';
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  collectionHandle: string;
+  enabled?: boolean;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal';
+    listItem?: never;
+    markDefs?: Array<{
+      linkType?: 'href' | 'page' | 'productPage';
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'page';
+      };
+      productPage?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'productPage';
+      };
+      openInNewTab?: boolean;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  wrapperLink?: Link;
+};
+
+export type ProductPage = {
+  _id: string;
+  _type: 'productPage';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  productHandle: string;
   slug: Slug;
   nameOverride?: string;
-  descriptionOverride?: string;
   seoControls?: {
     indexable?: boolean;
     followable?: boolean;
@@ -419,47 +461,13 @@ export type OpenGraph = {
   noIndex?: boolean;
 };
 
-export type Settings = {
+export type Footer = {
   _id: string;
-  _type: 'settings';
+  _type: 'footer';
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  description?: string;
-  keywords?: Array<string>;
-  openGraph?: GlobalOpenGraph;
-  gtmContainerId?: string;
-  ga4MeasurementId?: string;
-  facebookPixelId?: string;
-  companyName: string;
-  customerGreeting: string;
-  contactEmail?: string;
-  phoneNumber?: string;
-  address?: string;
-  socialMedia?: {
-    instagram?: string;
-    facebook?: string;
-    twitter?: string;
-    youtube?: string;
-    linkedin?: string;
-  };
-  cookieConsentMessage?: string;
-  showCookieConsent?: boolean;
-  globalSeoControls?: {
-    seoStrategy?: 'marketing' | 'private' | 'homepage_only' | 'custom';
-    siteDiscoverable?: boolean;
-    allowRobotsCrawling?: boolean;
-    emergencyPrivateMode?: boolean;
-    lastModified?: string;
-    customRobotsDirectives?: Array<string>;
-  };
-};
-
-export type GlobalOpenGraph = {
-  _type: 'globalOpenGraph';
-  siteName: string;
-  defaultImage?: {
+  logo?: {
     asset?: {
       _ref: string;
       _type: 'reference';
@@ -472,8 +480,54 @@ export type GlobalOpenGraph = {
     alt: string;
     _type: 'image';
   };
-  twitterHandle?: string;
-  facebookAppId?: string;
+  internalLinks?: Menu;
+  externalLinks?: Menu;
+};
+
+export type Header = {
+  _id: string;
+  _type: 'header';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  mainMenu?: Menu;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  ctaButton?: {
+    text?: string;
+    link?: Link;
+    enabled?: boolean;
+  };
+};
+
+export type Link = {
+  _type: 'link';
+  linkType?: 'home' | 'productPage' | 'page' | 'href';
+  href?: string;
+  page?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'page';
+  };
+  productPage?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'productPage';
+  };
+  openInNewTab?: boolean;
 };
 
 export type Homepage = {
@@ -536,13 +590,47 @@ export type Page = {
   >;
 };
 
-export type Header = {
+export type Settings = {
   _id: string;
-  _type: 'header';
+  _type: 'settings';
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  logo?: {
+  title: string;
+  description?: string;
+  keywords?: Array<string>;
+  openGraph?: GlobalOpenGraph;
+  gtmContainerId?: string;
+  ga4MeasurementId?: string;
+  facebookPixelId?: string;
+  companyName: string;
+  customerGreeting: string;
+  contactEmail?: string;
+  phoneNumber?: string;
+  address?: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
+  cookieConsentMessage?: string;
+  showCookieConsent?: boolean;
+  globalSeoControls?: {
+    seoStrategy?: 'marketing' | 'private' | 'homepage_only' | 'custom';
+    siteDiscoverable?: boolean;
+    allowRobotsCrawling?: boolean;
+    emergencyPrivateMode?: boolean;
+    lastModified?: string;
+    customRobotsDirectives?: Array<string>;
+  };
+};
+
+export type GlobalOpenGraph = {
+  _type: 'globalOpenGraph';
+  siteName: string;
+  defaultImage?: {
     asset?: {
       _ref: string;
       _type: 'reference';
@@ -555,58 +643,8 @@ export type Header = {
     alt: string;
     _type: 'image';
   };
-  ctaButton?: {
-    text?: string;
-    link?: Link;
-    enabled?: boolean;
-  };
-  announcementBar?: {
-    text?: string;
-    link?: Link;
-    enabled?: boolean;
-  };
-};
-
-export type Footer = {
-  _id: string;
-  _type: 'footer';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  logo?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  internalLinks?: Menu;
-  externalLinks?: Menu;
-};
-
-export type Link = {
-  _type: 'link';
-  linkType?: 'home' | 'productPage' | 'page' | 'href';
-  href?: string;
-  page?: {
-    _ref: string;
-    _type: 'reference';
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: 'page';
-  };
-  productPage?: {
-    _ref: string;
-    _type: 'reference';
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: 'productPage';
-  };
-  openInNewTab?: boolean;
+  twitterHandle?: string;
+  facebookAppId?: string;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -728,31 +766,32 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
-  | SpecialComponentBlock
-  | NewsletterSection
-  | Menu
+  | HeroSection
   | MediaVimeo
+  | NewsletterSection
+  | SpecialComponentBlock
+  | CtaBlock
+  | FaqSection
+  | Menu
   | ImageSection
+  | ContentSection
   | ImageContentSection
   | MediaImage
-  | HeroSection
-  | FaqSection
-  | CtaBlock
-  | ContentSection
   | CollectionSection
   | CallToAction
   | LinkButton
   | BlockContent
-  | ProductPage
   | CollectionPage
+  | AnnouncementBar
+  | ProductPage
   | OpenGraph
-  | Settings
-  | GlobalOpenGraph
+  | Footer
+  | Header
+  | Link
   | Homepage
   | Page
-  | Header
-  | Footer
-  | Link
+  | Settings
+  | GlobalOpenGraph
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions

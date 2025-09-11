@@ -13,6 +13,12 @@ export const header = defineType({
   icon: CogIcon,
   fields: [
     defineField({
+      name: 'mainMenu',
+      title: 'Main Menu',
+      type: 'menu',
+      description: 'Main navigation menu items displayed in the header',
+    }),
+    defineField({
       name: 'logo',
       title: 'Logo',
       type: 'image',
@@ -53,30 +59,6 @@ export const header = defineType({
           title: 'Show Button',
           type: 'boolean',
           initialValue: true,
-        }),
-      ],
-    }),
-    defineField({
-      name: 'announcementBar',
-      description: 'Announcement Bar content',
-      title: 'Announcement Bar',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'text',
-          title: 'Text',
-          type: 'string',
-        }),
-        defineField({
-          name: 'link',
-          title: 'Link',
-          type: 'link',
-        }),
-        defineField({
-          name: 'enabled',
-          title: 'Enabled',
-          type: 'boolean',
-          initialValue: false,
         }),
       ],
     }),
