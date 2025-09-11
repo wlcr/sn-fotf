@@ -1,5 +1,6 @@
 import {defineField, defineType} from 'sanity';
 import {DocumentIcon} from '@sanity/icons';
+import sections from '../fields/sections';
 
 /**
  * Page schema.  Define and edit the fields for the 'page' content type.
@@ -19,16 +20,6 @@ export const homepage = defineType({
       initialValue: 'Home',
       readOnly: true,
     }),
-    defineField({
-      name: 'heroVideo',
-      title: 'Hero Video Embed',
-      type: 'mediaVimeo',
-    }),
-    defineField({
-      name: 'pageBuilder',
-      title: 'Page builder',
-      type: 'array',
-      of: [{type: 'pageSection'}],
-    }),
+    sections,
   ],
 });

@@ -2,7 +2,7 @@ import type {FC} from 'react';
 import {clsx} from 'clsx';
 import {PortableText} from '@portabletext/react';
 import type {AnnouncementBar as AnnouncementBarType} from '~/types/sanity';
-import ResolvedLink from '../sanity/ResolvedLink';
+import ResolvedLink from '../ResolvedLink';
 import styles from './AnnouncementBar.module.css';
 
 export interface AnnouncementBarProps {

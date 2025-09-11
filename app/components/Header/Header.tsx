@@ -11,7 +11,7 @@ import styles from './Header.module.css';
 import Logo from '../Icons/LogoOptimized';
 import Button from '../Button/Button';
 import {useCustomer} from '~/context/Customer';
-import ResolvedLink from '../sanity/ResolvedLink';
+import ResolvedLink from '../ResolvedLink';
 import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
 import {
   withReducedMotion,

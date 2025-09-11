@@ -13,19 +13,158 @@
  */
 
 // Source: schema.json
+export type HeroSection = {
+  _type: 'heroSection';
+  name?: string;
+  vimeoUrl?: string;
+};
+
+export type MediaVimeo = {
+  _type: 'mediaVimeo';
+  landscapeVimeoEmbed?: string;
+  landscapePoster?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  };
+  portraitVimeoEmbed?: string;
+  portraitPoster?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: 'image';
+  };
+  vimeoDescription?: string;
+};
+
+export type NewsletterSection = {
+  _type: 'newsletterSection';
+  klaviyoAccountId?: string;
+  klaviyoListId?: string;
+};
+
 export type SpecialComponentBlock = {
   _type: 'specialComponentBlock';
   specialComponent?: 'labelsComponent' | 'mapComponent' | 'dummyComponent';
 };
 
-export type NewsletterBlock = {
-  _type: 'newsletterBlock';
-  klaviyoAccountId?: string;
-  klaviyoListId?: string;
+export type CtaBlock = {
+  _type: 'ctaBlock';
+  ctas?: Array<
+    {
+      _key: string;
+    } & CallToAction
+  >;
 };
 
-export type ImageContentBlock = {
-  _type: 'imageContentBlock';
+export type FaqSection = {
+  _type: 'faqSection';
+  title?: string;
+  faqItems?: Array<{
+    question?: string;
+    answer?: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: 'span';
+        _key: string;
+      }>;
+      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+      listItem?: 'bullet' | 'number';
+      markDefs?: Array<{
+        linkType?: 'href' | 'page';
+        href?: string;
+        page?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'page';
+        };
+        openInNewTab?: boolean;
+        _type: 'link';
+        _key: string;
+      }>;
+      level?: number;
+      _type: 'block';
+      _key: string;
+    }>;
+    hidden?: boolean;
+    _type: 'faqItem';
+    _key: string;
+  }>;
+};
+
+export type Menu = Array<{
+  title?: string;
+  link?: Link;
+  _type: 'menuItem';
+  _key: string;
+}>;
+
+export type ImageSection = {
+  _type: 'imageSection';
+  image: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: 'mediaImage';
+  };
+};
+
+export type ContentSection = {
+  _type: 'contentSection';
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+    listItem?: 'bullet' | 'number';
+    markDefs?: Array<{
+      linkType?: 'href' | 'page';
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'page';
+      };
+      openInNewTab?: boolean;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  button?: LinkButton;
+  contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
+};
+
+export type ImageContentSection = {
+  _type: 'imageContentSection';
   image: {
     asset?: {
       _ref: string;
@@ -70,103 +209,22 @@ export type ImageContentBlock = {
   contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
 };
 
-export type ImageBlock = {
-  _type: 'imageBlock';
-  image: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: 'mediaImage';
+export type MediaImage = {
+  _type: 'mediaImage';
+  asset?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
   };
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
 };
 
-export type FaqBlock = {
-  _type: 'faqBlock';
-  title?: string;
-  faqItems?: Array<{
-    question?: string;
-    answer?: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: 'span';
-        _key: string;
-      }>;
-      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
-      listItem?: 'bullet' | 'number';
-      markDefs?: Array<{
-        linkType?: 'href' | 'page';
-        href?: string;
-        page?: {
-          _ref: string;
-          _type: 'reference';
-          _weak?: boolean;
-          [internalGroqTypeReferenceTo]?: 'page';
-        };
-        openInNewTab?: boolean;
-        _type: 'link';
-        _key: string;
-      }>;
-      level?: number;
-      _type: 'block';
-      _key: string;
-    }>;
-    hidden?: boolean;
-    _type: 'faqItem';
-    _key: string;
-  }>;
-};
-
-export type CtaBlock = {
-  _type: 'ctaBlock';
-  ctas?: Array<
-    {
-      _key: string;
-    } & CallToAction
-  >;
-};
-
-export type ContentBlock = {
-  _type: 'contentBlock';
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: 'span';
-      _key: string;
-    }>;
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
-    listItem?: 'bullet' | 'number';
-    markDefs?: Array<{
-      linkType?: 'href' | 'page';
-      href?: string;
-      page?: {
-        _ref: string;
-        _type: 'reference';
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: 'page';
-      };
-      openInNewTab?: boolean;
-      _type: 'link';
-      _key: string;
-    }>;
-    level?: number;
-    _type: 'block';
-    _key: string;
-  }>;
-  button?: LinkButton;
-  contentAlign?: 'alignLeft' | 'alignRight' | 'alignCenter';
-};
-
-export type CollectionBlock = {
-  _type: 'collectionBlock';
+export type CollectionSection = {
+  _type: 'collectionSection';
   heading?: string;
   collectionHandle: string;
   displayOptions?: {
@@ -183,56 +241,6 @@ export type CollectionBlock = {
     backgroundColor?: 'default' | 'light-gray' | 'dark' | 'brand-primary';
     paddingSize?: 'small' | 'medium' | 'large';
   };
-};
-
-export type PageSection = {
-  _type: 'pageSection';
-  sectionBuilder?: Array<
-    | ({
-        _key: string;
-      } & CollectionBlock)
-    | ({
-        _key: string;
-      } & ContentBlock)
-    | ({
-        _key: string;
-      } & ImageContentBlock)
-    | ({
-        _key: string;
-      } & ImageBlock)
-    | ({
-        _key: string;
-      } & CtaBlock)
-    | ({
-        _key: string;
-      } & NewsletterBlock)
-    | ({
-        _key: string;
-      } & SpecialComponentBlock)
-  >;
-  sectionId?: string;
-  sectionClasses?: string;
-};
-
-export type Menu = Array<{
-  title?: string;
-  link?: Link;
-  _type: 'menuItem';
-  _key: string;
-}>;
-
-export type MediaImage = {
-  _type: 'mediaImage';
-  asset?: {
-    _ref: string;
-    _type: 'reference';
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-  };
-  media?: unknown;
-  hotspot?: SanityImageHotspot;
-  crop?: SanityImageCrop;
-  alt?: string;
 };
 
 export type CallToAction = {
@@ -329,22 +337,256 @@ export type CollectionPage = {
     seoNotes?: string;
   };
   openGraph?: OpenGraph;
-  pageBuilder?: Array<
+  sections?: Array<
     | ({
         _key: string;
-      } & CollectionBlock)
+      } & HeroSection)
     | ({
         _key: string;
-      } & FaqBlock)
+      } & CollectionSection)
     | ({
         _key: string;
-      } & ContentBlock)
+      } & FaqSection)
     | ({
         _key: string;
-      } & ImageContentBlock)
+      } & ContentSection)
     | ({
         _key: string;
-      } & ImageBlock)
+      } & ImageContentSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+  >;
+};
+
+export type AnnouncementBar = {
+  _id: string;
+  _type: 'announcementBar';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  enabled?: boolean;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: 'span';
+      _key: string;
+    }>;
+    style?: 'normal';
+    listItem?: never;
+    markDefs?: Array<{
+      linkType?: 'href' | 'page' | 'productPage';
+      href?: string;
+      page?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'page';
+      };
+      productPage?: {
+        _ref: string;
+        _type: 'reference';
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: 'productPage';
+      };
+      openInNewTab?: boolean;
+      _type: 'link';
+      _key: string;
+    }>;
+    level?: number;
+    _type: 'block';
+    _key: string;
+  }>;
+  wrapperLink?: Link;
+};
+
+export type ProductPage = {
+  _id: string;
+  _type: 'productPage';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  productHandle: string;
+  slug: Slug;
+  nameOverride?: string;
+  seoControls?: {
+    indexable?: boolean;
+    followable?: boolean;
+    customMetaDescription?: string;
+    seoNotes?: string;
+  };
+  openGraph?: OpenGraph;
+  sections?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & CollectionSection)
+    | ({
+        _key: string;
+      } & FaqSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & ImageContentSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+  >;
+};
+
+export type OpenGraph = {
+  _type: 'openGraph';
+  title?: string;
+  description?: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  type?: 'website' | 'article' | 'product';
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+  noIndex?: boolean;
+};
+
+export type Footer = {
+  _id: string;
+  _type: 'footer';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  internalLinks?: Menu;
+  externalLinks?: Menu;
+};
+
+export type Header = {
+  _id: string;
+  _type: 'header';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  mainMenu?: Menu;
+  logo?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: 'image';
+  };
+  ctaButton?: {
+    text?: string;
+    link?: Link;
+    enabled?: boolean;
+  };
+};
+
+export type Link = {
+  _type: 'link';
+  linkType?: 'home' | 'productPage' | 'page' | 'href';
+  href?: string;
+  page?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'page';
+  };
+  productPage?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'productPage';
+  };
+  openInNewTab?: boolean;
+};
+
+export type Homepage = {
+  _id: string;
+  _type: 'homepage';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  sections?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & CollectionSection)
+    | ({
+        _key: string;
+      } & FaqSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & ImageContentSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+  >;
+};
+
+export type Page = {
+  _id: string;
+  _type: 'page';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
+  heading: string;
+  sections?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & CollectionSection)
+    | ({
+        _key: string;
+      } & FaqSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & ImageContentSection)
+    | ({
+        _key: string;
+      } & ImageSection)
   >;
 };
 
@@ -403,248 +645,6 @@ export type GlobalOpenGraph = {
   };
   twitterHandle?: string;
   facebookAppId?: string;
-};
-
-export type Homepage = {
-  _id: string;
-  _type: 'homepage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  heroVideo?: MediaVimeo;
-  pageBuilder?: Array<
-    {
-      _key: string;
-    } & PageSection
-  >;
-};
-
-export type MediaVimeo = {
-  _type: 'mediaVimeo';
-  landscapeVimeoEmbed?: string;
-  landscapePoster?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: 'image';
-  };
-  portraitVimeoEmbed?: string;
-  portraitPoster?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: 'image';
-  };
-  vimeoDescription?: string;
-};
-
-export type Header = {
-  _id: string;
-  _type: 'header';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  mainMenu?: Menu;
-  logo?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  ctaButton?: {
-    text?: string;
-    link?: Link;
-    enabled?: boolean;
-  };
-};
-
-export type Footer = {
-  _id: string;
-  _type: 'footer';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  logo?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  internalLinks?: Menu;
-  externalLinks?: Menu;
-};
-
-export type AnnouncementBar = {
-  _id: string;
-  _type: 'announcementBar';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  enabled?: boolean;
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: 'span';
-      _key: string;
-    }>;
-    style?: 'normal';
-    listItem?: never;
-    markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'productPage';
-      href?: string;
-      page?: {
-        _ref: string;
-        _type: 'reference';
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: 'page';
-      };
-      productPage?: {
-        _ref: string;
-        _type: 'reference';
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: 'productPage';
-      };
-      openInNewTab?: boolean;
-      _type: 'link';
-      _key: string;
-    }>;
-    level?: number;
-    _type: 'block';
-    _key: string;
-  }>;
-  wrapperLink?: Link;
-};
-
-export type Link = {
-  _type: 'link';
-  linkType?: 'home' | 'productPage' | 'page' | 'href';
-  href?: string;
-  page?: {
-    _ref: string;
-    _type: 'reference';
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: 'page';
-  };
-  productPage?: {
-    _ref: string;
-    _type: 'reference';
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: 'productPage';
-  };
-  openInNewTab?: boolean;
-};
-
-export type ProductPage = {
-  _id: string;
-  _type: 'productPage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  productHandle: string;
-  slug: Slug;
-  nameOverride?: string;
-  seoControls?: {
-    indexable?: boolean;
-    followable?: boolean;
-    customMetaDescription?: string;
-    seoNotes?: string;
-  };
-  openGraph?: OpenGraph;
-  pageBuilder?: Array<
-    | ({
-        _key: string;
-      } & CollectionBlock)
-    | ({
-        _key: string;
-      } & FaqBlock)
-    | ({
-        _key: string;
-      } & ContentBlock)
-    | ({
-        _key: string;
-      } & ImageContentBlock)
-    | ({
-        _key: string;
-      } & ImageBlock)
-  >;
-};
-
-export type OpenGraph = {
-  _type: 'openGraph';
-  title?: string;
-  description?: string;
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  type?: 'website' | 'article' | 'product';
-  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
-  noIndex?: boolean;
-};
-
-export type Page = {
-  _id: string;
-  _type: 'page';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  slug: Slug;
-  heading: string;
-  pageBuilder?: Array<
-    | ({
-        _key: string;
-      } & CollectionBlock)
-    | ({
-        _key: string;
-      } & FaqBlock)
-    | ({
-        _key: string;
-      } & ContentBlock)
-    | ({
-        _key: string;
-      } & ImageContentBlock)
-    | ({
-        _key: string;
-      } & ImageBlock)
-  >;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -766,32 +766,32 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
+  | HeroSection
+  | MediaVimeo
+  | NewsletterSection
   | SpecialComponentBlock
-  | NewsletterBlock
-  | ImageContentBlock
-  | ImageBlock
-  | FaqBlock
   | CtaBlock
-  | ContentBlock
-  | CollectionBlock
-  | PageSection
+  | FaqSection
   | Menu
+  | ImageSection
+  | ContentSection
+  | ImageContentSection
   | MediaImage
+  | CollectionSection
   | CallToAction
   | LinkButton
   | BlockContent
   | CollectionPage
-  | Settings
-  | GlobalOpenGraph
-  | Homepage
-  | MediaVimeo
-  | Header
-  | Footer
   | AnnouncementBar
-  | Link
   | ProductPage
   | OpenGraph
+  | Footer
+  | Header
+  | Link
+  | Homepage
   | Page
+  | Settings
+  | GlobalOpenGraph
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -804,1044 +804,3 @@ export type AllSanitySchemaTypes =
   | Slug
   | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
-// Source: ./studio/queries/fragments.ts
-// Variable: linkReference
-// Query: {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }
-export type LinkReferenceResult = {
-  home: '/';
-  page: never;
-  productPage: never;
-};
-// Variable: linkFields
-// Query: link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }
-export type LinkFieldsResult = never;
-// Variable: portableText
-// Query: {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }
-export type PortableTextResult = never;
-// Variable: pageBuilder
-// Query: {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }
-export type PageBuilderResult = never;
-
-// Source: ./studio/queries/index.ts
-// Variable: settingsQuery
-// Query: *[_type == "settings"][0]
-export type SettingsQueryResult = {
-  _id: string;
-  _type: 'settings';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  description?: string;
-  keywords?: Array<string>;
-  openGraph?: GlobalOpenGraph;
-  gtmContainerId?: string;
-  ga4MeasurementId?: string;
-  facebookPixelId?: string;
-  companyName: string;
-  customerGreeting: string;
-  contactEmail?: string;
-  phoneNumber?: string;
-  address?: string;
-  socialMedia?: {
-    instagram?: string;
-    facebook?: string;
-    twitter?: string;
-    youtube?: string;
-    linkedin?: string;
-  };
-  cookieConsentMessage?: string;
-  showCookieConsent?: boolean;
-  globalSeoControls?: {
-    seoStrategy?: 'custom' | 'homepage_only' | 'marketing' | 'private';
-    siteDiscoverable?: boolean;
-    allowRobotsCrawling?: boolean;
-    emergencyPrivateMode?: boolean;
-    lastModified?: string;
-    customRobotsDirectives?: Array<string>;
-  };
-} | null;
-// Variable: headerQuery
-// Query: *[_type == "header"][0] {    ...,    mainMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    },    announcementBar{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }
-export type HeaderQueryResult = {
-  _id: string;
-  _type: 'header';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  mainMenu: Array<{
-    title?: string;
-    link: {
-      _type: 'link';
-      linkType?: 'home' | 'href' | 'page' | 'productPage';
-      href?: string;
-      page: string | null;
-      productPage: string | null;
-      openInNewTab?: boolean;
-      home: '/';
-    } | null;
-    _type: 'menuItem';
-    _key: string;
-  }> | null;
-  logo?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  ctaButton?: {
-    text?: string;
-    link?: Link;
-    enabled?: boolean;
-  };
-  announcementBar: null;
-} | null;
-// Variable: footerQuery
-// Query: *[_type == "footer"][0] {    ...,    footerMenu[]{      ...,        link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }    }  }
-export type FooterQueryResult = {
-  _id: string;
-  _type: 'footer';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  logo?: {
-    asset?: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt: string;
-    _type: 'image';
-  };
-  internalLinks?: Menu;
-  externalLinks?: Menu;
-  footerMenu: null;
-} | null;
-// Variable: homeQuery
-// Query: *[_type == 'homepage'][0]{    ...,    pageBuilder[]{      ...,      sectionBuilder[]  {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }    }  }
-export type HomeQueryResult = {
-  _id: string;
-  _type: 'homepage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  heroVideo?: MediaVimeo;
-  pageBuilder: Array<{
-    _key: string;
-    _type: 'pageSection';
-    sectionBuilder: Array<
-      | {
-          _key: string;
-          _type: 'collectionBlock';
-          heading?: string;
-          collectionHandle: string;
-          displayOptions?: {
-            productsToShow?: number;
-            showDescription?: boolean;
-            layout?: 'carousel' | 'grid' | 'list';
-            showViewAllLink?: boolean;
-          };
-          seoControls?: {
-            preventIndexing?: boolean;
-            seoNote?: string;
-          };
-          styling?: {
-            backgroundColor?:
-              | 'brand-primary'
-              | 'dark'
-              | 'default'
-              | 'light-gray';
-            paddingSize?: 'large' | 'medium' | 'small';
-          };
-        }
-      | {
-          _key: string;
-          _type: 'contentBlock';
-          content: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: 'span';
-              _key: string;
-            }>;
-            style?:
-              | 'blockquote'
-              | 'h1'
-              | 'h2'
-              | 'h3'
-              | 'h4'
-              | 'h5'
-              | 'h6'
-              | 'normal';
-            listItem?: 'bullet' | 'number';
-            markDefs: Array<{
-              linkType?: 'href' | 'page';
-              href?: string;
-              page: string | null;
-              openInNewTab?: boolean;
-              _type: 'link';
-              _key: string;
-              home: '/';
-              productPage: null;
-            }> | null;
-            level?: number;
-            _type: 'block';
-            _key: string;
-          }> | null;
-          button: {
-            _type: 'linkButton';
-            buttonText?: string;
-            link: {
-              _type: 'link';
-              linkType?: 'home' | 'href' | 'page' | 'productPage';
-              href?: string;
-              page: string | null;
-              productPage: string | null;
-              openInNewTab?: boolean;
-              home: '/';
-            } | null;
-          } | null;
-          contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-        }
-      | {
-          _key: string;
-          _type: 'ctaBlock';
-          ctas: Array<{
-            _key: string;
-            _type: 'callToAction';
-            heading: string;
-            content: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: 'span';
-                _key: string;
-              }>;
-              style?:
-                | 'blockquote'
-                | 'h1'
-                | 'h2'
-                | 'h3'
-                | 'h4'
-                | 'h5'
-                | 'h6'
-                | 'normal';
-              listItem?: 'bullet' | 'number';
-              markDefs: Array<{
-                linkType?: 'href' | 'page';
-                href?: string;
-                page: string | null;
-                openInNewTab?: boolean;
-                _type: 'link';
-                _key: string;
-                home: '/';
-                productPage: null;
-              }> | null;
-              level?: number;
-              _type: 'block';
-              _key: string;
-            }> | null;
-            button: {
-              _type: 'linkButton';
-              buttonText?: string;
-              link: {
-                _type: 'link';
-                linkType?: 'home' | 'href' | 'page' | 'productPage';
-                href?: string;
-                page: string | null;
-                productPage: string | null;
-                openInNewTab?: boolean;
-                home: '/';
-              } | null;
-            };
-            backgroundImage?: {
-              asset?: {
-                _ref: string;
-                _type: 'reference';
-                _weak?: boolean;
-                [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-              };
-              media?: unknown;
-              hotspot?: SanityImageHotspot;
-              crop?: SanityImageCrop;
-              _type: 'image';
-            };
-          }> | null;
-        }
-      | {
-          _key: string;
-          _type: 'imageBlock';
-          image: {
-            asset?: {
-              _ref: string;
-              _type: 'reference';
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-            };
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt?: string;
-            _type: 'mediaImage';
-            link: null;
-          };
-        }
-      | {
-          _key: string;
-          _type: 'imageContentBlock';
-          image: {
-            asset?: {
-              _ref: string;
-              _type: 'reference';
-              _weak?: boolean;
-              [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-            };
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt?: string;
-            _type: 'mediaImage';
-            link: null;
-          };
-          content: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: 'span';
-              _key: string;
-            }>;
-            style?:
-              | 'blockquote'
-              | 'h1'
-              | 'h2'
-              | 'h3'
-              | 'h4'
-              | 'h5'
-              | 'h6'
-              | 'normal';
-            listItem?: 'bullet' | 'number';
-            markDefs: Array<{
-              linkType?: 'href' | 'page';
-              href?: string;
-              page: string | null;
-              openInNewTab?: boolean;
-              _type: 'link';
-              _key: string;
-              home: '/';
-              productPage: null;
-            }> | null;
-            level?: number;
-            _type: 'block';
-            _key: string;
-          }> | null;
-          button: {
-            _type: 'linkButton';
-            buttonText?: string;
-            link: {
-              _type: 'link';
-              linkType?: 'home' | 'href' | 'page' | 'productPage';
-              href?: string;
-              page: string | null;
-              productPage: string | null;
-              openInNewTab?: boolean;
-              home: '/';
-            } | null;
-          } | null;
-          sectionLayout?: 'imageAbove' | 'imageLeft' | 'imageRight';
-          contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-        }
-      | {
-          _key: string;
-          _type: 'newsletterBlock';
-          klaviyoAccountId?: string;
-          klaviyoListId?: string;
-        }
-      | {
-          _key: string;
-          _type: 'specialComponentBlock';
-          specialComponent?:
-            | 'dummyComponent'
-            | 'labelsComponent'
-            | 'mapComponent';
-        }
-    > | null;
-    sectionId?: string;
-    sectionClasses?: string;
-  }> | null;
-} | null;
-// Variable: productPageQuery
-// Query: *[_type == "productPage" && slug.current == $handle][0]{    _id,    _type,    _createdAt,    _updatedAt,    _rev,    productHandle,    slug,    nameOverride,    seoControls {      indexable,      followable,      customMetaDescription,      seoNotes    },    pageBuilder[]  {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }  }
-export type ProductPageQueryResult = {
-  _id: string;
-  _type: 'productPage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  productHandle: string;
-  slug: Slug;
-  nameOverride: string | null;
-  seoControls: {
-    indexable: boolean | null;
-    followable: boolean | null;
-    customMetaDescription: string | null;
-    seoNotes: string | null;
-  } | null;
-  pageBuilder: Array<
-    | {
-        _key: string;
-        _type: 'collectionBlock';
-        heading?: string;
-        collectionHandle: string;
-        displayOptions?: {
-          productsToShow?: number;
-          showDescription?: boolean;
-          layout?: 'carousel' | 'grid' | 'list';
-          showViewAllLink?: boolean;
-        };
-        seoControls?: {
-          preventIndexing?: boolean;
-          seoNote?: string;
-        };
-        styling?: {
-          backgroundColor?: 'brand-primary' | 'dark' | 'default' | 'light-gray';
-          paddingSize?: 'large' | 'medium' | 'small';
-        };
-      }
-    | {
-        _key: string;
-        _type: 'contentBlock';
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-    | {
-        _key: string;
-        _type: 'faqBlock';
-        title?: string;
-        faqItems: Array<{
-          question?: string;
-          answer: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: 'span';
-              _key: string;
-            }>;
-            style?:
-              | 'blockquote'
-              | 'h1'
-              | 'h2'
-              | 'h3'
-              | 'h4'
-              | 'h5'
-              | 'h6'
-              | 'normal';
-            listItem?: 'bullet' | 'number';
-            markDefs: Array<{
-              linkType?: 'href' | 'page';
-              href?: string;
-              page: string | null;
-              openInNewTab?: boolean;
-              _type: 'link';
-              _key: string;
-              home: '/';
-              productPage: null;
-            }> | null;
-            level?: number;
-            _type: 'block';
-            _key: string;
-          }> | null;
-          hidden?: boolean;
-          _type: 'faqItem';
-          _key: string;
-        }> | null;
-      }
-    | {
-        _key: string;
-        _type: 'imageBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-      }
-    | {
-        _key: string;
-        _type: 'imageContentBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        sectionLayout?: 'imageAbove' | 'imageLeft' | 'imageRight';
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-  > | null;
-} | null;
-// Variable: collectionPageQuery
-// Query: *[_type == "collectionPage" && slug.current == $handle][0]{    _id,    _type,    _createdAt,    _updatedAt,    _rev,    collectionHandle,    slug,    nameOverride,    descriptionOverride,    seoControls {      indexable,      followable,      customMetaDescription,      seoNotes    },    pageBuilder[]  {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }  }
-export type CollectionPageQueryResult = {
-  _id: string;
-  _type: 'collectionPage';
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  collectionHandle: string;
-  slug: Slug;
-  nameOverride: string | null;
-  descriptionOverride: string | null;
-  seoControls: {
-    indexable: boolean | null;
-    followable: boolean | null;
-    customMetaDescription: string | null;
-    seoNotes: string | null;
-  } | null;
-  pageBuilder: Array<
-    | {
-        _key: string;
-        _type: 'collectionBlock';
-        heading?: string;
-        collectionHandle: string;
-        displayOptions?: {
-          productsToShow?: number;
-          showDescription?: boolean;
-          layout?: 'carousel' | 'grid' | 'list';
-          showViewAllLink?: boolean;
-        };
-        seoControls?: {
-          preventIndexing?: boolean;
-          seoNote?: string;
-        };
-        styling?: {
-          backgroundColor?: 'brand-primary' | 'dark' | 'default' | 'light-gray';
-          paddingSize?: 'large' | 'medium' | 'small';
-        };
-      }
-    | {
-        _key: string;
-        _type: 'contentBlock';
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-    | {
-        _key: string;
-        _type: 'faqBlock';
-        title?: string;
-        faqItems: Array<{
-          question?: string;
-          answer: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: 'span';
-              _key: string;
-            }>;
-            style?:
-              | 'blockquote'
-              | 'h1'
-              | 'h2'
-              | 'h3'
-              | 'h4'
-              | 'h5'
-              | 'h6'
-              | 'normal';
-            listItem?: 'bullet' | 'number';
-            markDefs: Array<{
-              linkType?: 'href' | 'page';
-              href?: string;
-              page: string | null;
-              openInNewTab?: boolean;
-              _type: 'link';
-              _key: string;
-              home: '/';
-              productPage: null;
-            }> | null;
-            level?: number;
-            _type: 'block';
-            _key: string;
-          }> | null;
-          hidden?: boolean;
-          _type: 'faqItem';
-          _key: string;
-        }> | null;
-      }
-    | {
-        _key: string;
-        _type: 'imageBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-      }
-    | {
-        _key: string;
-        _type: 'imageContentBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        sectionLayout?: 'imageAbove' | 'imageLeft' | 'imageRight';
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-  > | null;
-} | null;
-// Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    pageBuilder[]  {    ...,    _type == "imageContentBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      },      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "imageBlock" => {      image{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "contentBlock" => {      content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },      button{        ...,          link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }      }    },    _type == "faqBlock" => {      faqItems[]{        ...,        answer[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  }      }    },    _type == "ctaBlock" => {      ctas[]{        ...,        content[]  {    ...,    markDefs[]{      ...,      _type == "link" =>   {    "home": '/',    "page": page->slug.current,    "productPage": productPage->slug.current,  }    }  },        button{          ...,            link {    ...,    _type == "link" => {      "home": '/',      "page": page->slug.current,      "productPage": productPage->slug.current,    }  }        }      }    }  }  }
-export type GetPageQueryResult = {
-  _id: string;
-  _type: 'page';
-  name: string;
-  slug: Slug;
-  heading: string;
-  subheading: null;
-  pageBuilder: Array<
-    | {
-        _key: string;
-        _type: 'collectionBlock';
-        heading?: string;
-        collectionHandle: string;
-        displayOptions?: {
-          productsToShow?: number;
-          showDescription?: boolean;
-          layout?: 'carousel' | 'grid' | 'list';
-          showViewAllLink?: boolean;
-        };
-        seoControls?: {
-          preventIndexing?: boolean;
-          seoNote?: string;
-        };
-        styling?: {
-          backgroundColor?: 'brand-primary' | 'dark' | 'default' | 'light-gray';
-          paddingSize?: 'large' | 'medium' | 'small';
-        };
-      }
-    | {
-        _key: string;
-        _type: 'contentBlock';
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-    | {
-        _key: string;
-        _type: 'faqBlock';
-        title?: string;
-        faqItems: Array<{
-          question?: string;
-          answer: Array<{
-            children?: Array<{
-              marks?: Array<string>;
-              text?: string;
-              _type: 'span';
-              _key: string;
-            }>;
-            style?:
-              | 'blockquote'
-              | 'h1'
-              | 'h2'
-              | 'h3'
-              | 'h4'
-              | 'h5'
-              | 'h6'
-              | 'normal';
-            listItem?: 'bullet' | 'number';
-            markDefs: Array<{
-              linkType?: 'href' | 'page';
-              href?: string;
-              page: string | null;
-              openInNewTab?: boolean;
-              _type: 'link';
-              _key: string;
-              home: '/';
-              productPage: null;
-            }> | null;
-            level?: number;
-            _type: 'block';
-            _key: string;
-          }> | null;
-          hidden?: boolean;
-          _type: 'faqItem';
-          _key: string;
-        }> | null;
-      }
-    | {
-        _key: string;
-        _type: 'imageBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-      }
-    | {
-        _key: string;
-        _type: 'imageContentBlock';
-        image: {
-          asset?: {
-            _ref: string;
-            _type: 'reference';
-            _weak?: boolean;
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
-          };
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: 'mediaImage';
-          link: null;
-        };
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: 'span';
-            _key: string;
-          }>;
-          style?:
-            | 'blockquote'
-            | 'h1'
-            | 'h2'
-            | 'h3'
-            | 'h4'
-            | 'h5'
-            | 'h6'
-            | 'normal';
-          listItem?: 'bullet' | 'number';
-          markDefs: Array<{
-            linkType?: 'href' | 'page';
-            href?: string;
-            page: string | null;
-            openInNewTab?: boolean;
-            _type: 'link';
-            _key: string;
-            home: '/';
-            productPage: null;
-          }> | null;
-          level?: number;
-          _type: 'block';
-          _key: string;
-        }> | null;
-        button: {
-          _type: 'linkButton';
-          buttonText?: string;
-          link: {
-            _type: 'link';
-            linkType?: 'home' | 'href' | 'page' | 'productPage';
-            href?: string;
-            page: string | null;
-            productPage: string | null;
-            openInNewTab?: boolean;
-            home: '/';
-          } | null;
-        } | null;
-        sectionLayout?: 'imageAbove' | 'imageLeft' | 'imageRight';
-        contentAlign?: 'alignCenter' | 'alignLeft' | 'alignRight';
-      }
-  > | null;
-} | null;
-// Variable: sitemapData
-// Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
-export type SitemapDataResult = Array<{
-  slug: string;
-  _type: 'page';
-  _updatedAt: string;
-}>;
-// Variable: pagesSlugs
-// Query: *[_type == "page" && defined(slug.current)]  {"slug": slug.current}
-export type PagesSlugsResult = Array<{
-  slug: string;
-}>;
-
-// Query TypeMap
-import '@sanity/client';
-declare module '@sanity/client' {
-  interface SanityQueries {
-    '\n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n': LinkReferenceResult;
-    '\n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n': LinkFieldsResult;
-    '\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n': PortableTextResult;
-    '\n  {\n    ...,\n    _type == "imageContentBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      },\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "imageBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "contentBlock" => {\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "faqBlock" => {\n      faqItems[]{\n        ...,\n        answer[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n\n      }\n    },\n    _type == "ctaBlock" => {\n      ctas[]{\n        ...,\n        content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n        button{\n          ...,\n          \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n        }\n      }\n    }\n  }\n': PageBuilderResult;
-    '*[_type == "settings"][0]': SettingsQueryResult;
-    '\n  *[_type == "header"][0] {\n    ...,\n    mainMenu[]{\n      ...,\n      \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n    },\n    announcementBar{\n      ...,\n      \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n    }\n  }\n': HeaderQueryResult;
-    '\n  *[_type == "footer"][0] {\n    ...,\n    footerMenu[]{\n      ...,\n      \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n    }\n  }\n': FooterQueryResult;
-    '\n  *[_type == \'homepage\'][0]{\n    ...,\n    pageBuilder[]{\n      ...,\n      sectionBuilder[]\n  {\n    ...,\n    _type == "imageContentBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      },\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "imageBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "contentBlock" => {\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "faqBlock" => {\n      faqItems[]{\n        ...,\n        answer[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n\n      }\n    },\n    _type == "ctaBlock" => {\n      ctas[]{\n        ...,\n        content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n        button{\n          ...,\n          \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n        }\n      }\n    }\n  }\n\n    }\n  }\n': HomeQueryResult;
-    '\n  *[_type == "productPage" && slug.current == $handle][0]{\n    _id,\n    _type,\n    _createdAt,\n    _updatedAt,\n    _rev,\n    productHandle,\n    slug,\n    nameOverride,\n    seoControls {\n      indexable,\n      followable,\n      customMetaDescription,\n      seoNotes\n    },\n    pageBuilder[]\n  {\n    ...,\n    _type == "imageContentBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      },\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "imageBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "contentBlock" => {\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "faqBlock" => {\n      faqItems[]{\n        ...,\n        answer[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n\n      }\n    },\n    _type == "ctaBlock" => {\n      ctas[]{\n        ...,\n        content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n        button{\n          ...,\n          \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n        }\n      }\n    }\n  }\n\n  }': ProductPageQueryResult;
-    '\n  *[_type == "collectionPage" && slug.current == $handle][0]{\n    _id,\n    _type,\n    _createdAt,\n    _updatedAt,\n    _rev,\n    collectionHandle,\n    slug,\n    nameOverride,\n    descriptionOverride,\n    seoControls {\n      indexable,\n      followable,\n      customMetaDescription,\n      seoNotes\n    },\n    pageBuilder[]\n  {\n    ...,\n    _type == "imageContentBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      },\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "imageBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "contentBlock" => {\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "faqBlock" => {\n      faqItems[]{\n        ...,\n        answer[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n\n      }\n    },\n    _type == "ctaBlock" => {\n      ctas[]{\n        ...,\n        content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n        button{\n          ...,\n          \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n        }\n      }\n    }\n  }\n\n  }': CollectionPageQueryResult;
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    pageBuilder[]\n  {\n    ...,\n    _type == "imageContentBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      },\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "imageBlock" => {\n      image{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "contentBlock" => {\n      content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n      button{\n        ...,\n        \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n      }\n    },\n    _type == "faqBlock" => {\n      faqItems[]{\n        ...,\n        answer[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n\n      }\n    },\n    _type == "ctaBlock" => {\n      ctas[]{\n        ...,\n        content[]\n  {\n    ...,\n    markDefs[]{\n      ...,\n      _type == "link" => \n  {\n    "home": \'/\',\n    "page": page->slug.current,\n    "productPage": productPage->slug.current,\n  }\n\n    }\n  }\n,\n        button{\n          ...,\n          \n  link {\n    ...,\n    _type == "link" => {\n      "home": \'/\',\n      "page": page->slug.current,\n      "productPage": productPage->slug.current,\n    }\n  }\n\n        }\n      }\n    }\n  }\n\n  }\n': GetPageQueryResult;
-    '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult;
-    '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult;
-  }
-}

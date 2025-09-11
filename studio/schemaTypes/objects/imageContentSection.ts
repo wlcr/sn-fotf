@@ -6,9 +6,9 @@ import {defineField, defineType} from 'sanity';
  * Learn more: https://www.sanity.io/docs/schema-types
  */
 
-export const imageContentBlock = defineType({
-  name: 'imageContentBlock',
-  title: 'Image / Content Block',
+export const imageContentSection = defineType({
+  name: 'imageContentSection',
+  title: 'Image / Content Section',
   icon: DocumentTextIcon,
   type: 'object',
   fields: [

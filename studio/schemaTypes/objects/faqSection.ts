@@ -1,9 +1,9 @@
 import {defineField, defineType} from 'sanity';
 import {HelpCircleIcon} from '@sanity/icons';
 
-export const faqBlock = defineType({
-  name: 'faqBlock',
-  title: 'FAQ Block',
+export const faqSection = defineType({
+  name: 'faqSection',
+  title: 'FAQ Section',
   type: 'object',
   icon: HelpCircleIcon,
   fields: [
