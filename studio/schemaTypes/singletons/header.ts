@@ -62,30 +62,6 @@ export const header = defineType({
         }),
       ],
     }),
-    defineField({
-      name: 'announcementBar',
-      description: 'Announcement Bar content',
-      title: 'Announcement Bar',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'text',
-          title: 'Text',
-          type: 'string',
-        }),
-        defineField({
-          name: 'link',
-          title: 'Link',
-          type: 'link',
-        }),
-        defineField({
-          name: 'enabled',
-          title: 'Enabled',
-          type: 'boolean',
-          initialValue: false,
-        }),
-      ],
-    }),
   ],
   preview: {
     prepare() {
