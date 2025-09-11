@@ -11,6 +11,7 @@ A **members-only** Hydrogen-powered headless commerce storefront for Sierra Neva
 - **Routing**: React Router v7.6.0 ⚠️ **(NOT Remix)**
 - **Styling**: CSS Modules + PostCSS + Open Props + Radix UI Themes
 - **UI Components**: Custom Button system with Sierra Nevada "Mills River" brand theme
+- **Animations**: Motion library with accessibility and SSR support
 - **CMS**: Sanity CMS (not Shopify metafields)
 - **Icons**: SVG-Go via vite-plugin-svgr + Custom Sierra Nevada logo
 - **State**: React Query + React hooks
@@ -44,6 +45,7 @@ You can also create your own [custom environments](https://shopify.dev/docs/cust
 - PostCSS with preset-env configuration
 - Open Props for CSS custom properties
 - Radix UI Themes for component styling
+- Motion library with accessibility-first animation system
 - SVG support with vite-plugin-svgr
 - Custom Sierra Nevada logo component
 - Complete Button component system with brand variants
@@ -191,6 +193,7 @@ npx tsx app/test-open-graph.ts
 - 🔍 **[SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
 - 🏗️ **[Sanity CMS Guide](./docs/SANITY_GUIDE.md)** - CMS integration and content setup
 - 🖼️ **[Image Utilities](./docs/IMAGE_UTILITIES.md)** - Sanity image handling, optimization, and best practices
+- ✨ **[Animation System](./docs/ANIMATIONS.md)** - Motion library integration with accessibility and SSR support
 - 🤖 **[AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - 🔧 **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 - 📦 **[Bundle Optimization](./docs/BUNDLE_OPTIMIZATION.md)** - Fix Oxygen deployment bundle size issues
@@ -294,6 +297,7 @@ Comprehensive documentation is available in the `/docs` folder:
 - **[🔍 SEO Implementation](./docs/SEO_GUIDE.md)** - SEO features, testing, and optimization
 - **[🖼️ Image Utilities](./docs/IMAGE_UTILITIES.md)** - Sanity image handling, optimization, and best practices
 - **[🖼️ SVG Usage Guide](./docs/SVG_GUIDE.md)** - Automated SVG optimization pipeline
+- **[✨ Animation System](./docs/ANIMATIONS.md)** - Motion library integration with accessibility and SSR support
 - **[🤖 AI Development](./docs/AI_DEVELOPMENT.md)** - AI-assisted development workflow
 - **[🔧 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
