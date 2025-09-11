@@ -8,10 +8,13 @@ This file provides context to GitHub Copilot for more accurate and helpful code 
 
 - **React Router**: v7.6.0 (not Remix, not Next.js)
 - **Hydrogen**: 2025.5.0 (Shopify's React framework)
+- **Animations**: Motion library ⚠️ (NOT Framer Motion) with accessibility and SSR support
 - **Radix UI Themes**: Layout primitives only (Container, Flex, Grid, Card)
 - **Custom Components**: Brand-specific interactive elements (Button, Header, etc.)
 - **TypeScript**: 5.2.2 with strict mode enabled
 - **Sanity CMS**: Custom integration (not using hydrogen-sanity package)
+- **Bundle Monitoring**: Critical size limits for Oxygen deployment (<2MB)
+- **SEO Testing**: Comprehensive 100-point scoring system with embedded Studio tool
 - **Deployment**: Shopify Oxygen (edge functions)
 
 ### Architecture Patterns
@@ -50,10 +53,13 @@ This file provides context to GitHub Copilot for more accurate and helpful code 
 ### What to Flag as Issues
 
 1. **Framework Mismatches**: Using Next.js or old Remix patterns instead of React Router v7
-2. **Type Safety**: `any` types without justification, missing interfaces
-3. **Environment Issues**: Direct global access without safety checks
-4. **Performance**: Missing error handling, inefficient patterns
-5. **Documentation**: Complex patterns without explanatory comments
+2. **Animation Library**: Using Framer Motion instead of Motion library
+3. **Animation Accessibility**: Missing `usePrefersReducedMotion` or `withReducedMotion` utilities
+4. **Type Safety**: `any` types without justification, missing interfaces
+5. **Environment Issues**: Direct global access without safety checks
+6. **Performance**: Missing error handling, inefficient patterns
+7. **Bundle Size**: Large imports or patterns that could cause bundle bloat
+8. **Documentation**: Complex patterns without explanatory comments
 
 ### What NOT to Flag
 
@@ -71,6 +77,35 @@ This file provides context to GitHub Copilot for more accurate and helpful code 
 export async function loader({ context }: Route.LoaderArgs) {
   const client = createSanityClient(context.env);
   return await sanityServerQuery(client, GROQ_QUERY);
+}
+
+// Motion library animations (NOT Framer Motion)
+import {motion} from 'motion/react';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS, DURATIONS} from '~/utils/motion';
+
+// Component-local animation config (recommended pattern)
+const COMPONENT_ANIMATION = {
+  duration: DURATIONS.medium,  // 0.5s
+  easing: EASINGS.smooth,      // easeInOut
+  slideDistance: 50,           // px
+};
+
+function AnimatedComponent() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ y: -COMPONENT_ANIMATION.slideDistance, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(COMPONENT_ANIMATION.duration, COMPONENT_ANIMATION.easing)
+      )}
+    >
+      Content
+    </motion.div>
+  );
 }
 
 // Hybrid styling approach - Radix for layout, custom for interactions
@@ -110,6 +145,22 @@ throw new SanityError('Helpful message', 500, query);
 ```typescript
 // Next.js patterns (wrong for this project)
 export async function getServerSideProps() { }
+
+// Framer Motion imports (wrong library - use Motion instead)
+import {motion} from 'framer-motion';  // ❌ Use 'motion/react' instead
+
+// Animations without accessibility (CRITICAL)
+<motion.div animate={{ x: 100 }} />  // ❌ Missing reduced motion handling
+
+// Missing animation accessibility utilities
+function BadAnimation() {
+  return (
+    <motion.div
+      animate={{ scale: 1.1 }}
+      transition={{ duration: 0.5 }}  // ❌ No reduced motion consideration
+    />
+  );
+}
 
 // Using Radix interactive components (should use custom)
 import { Button, Text, Heading } from '@radix-ui/themes'; // ❌ Wrong

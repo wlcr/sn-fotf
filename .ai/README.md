@@ -9,6 +9,7 @@
 - **Framework**: Shopify Hydrogen 2025.5.0
 - **Routing**: React Router v7.6.0 ⚠️ **(NOT Remix)**
 - **Styling**: CSS Modules + PostCSS + Open Props
+- **Animations**: Motion library ⚠️ **(NOT Framer Motion)** with accessibility and SSR support
 - **CMS**: Sanity CMS (not Shopify metafields)
 - **Icons**: SVG-Go via vite-plugin-svgr
 - **State**: React Query + React hooks
@@ -16,7 +17,25 @@
 
 ## 🚨 Critical Import Rules
 
-This project uses **React Router v7**, not Remix. Always use correct imports:
+This project uses **React Router v7** (not Remix) and **Motion library** (not Framer Motion). Always use correct imports:
+
+### Animation Library - Motion (NOT Framer Motion)
+
+```typescript
+// ✅ CORRECT - Motion library (successor to Framer Motion)
+import {motion, useScroll, useMotionValue} from 'motion/react';
+
+// ✅ ALWAYS use accessibility utilities with animations
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS} from '~/utils/motion';
+
+// ❌ INCORRECT - Never use Framer Motion (legacy library)
+import {motion} from 'framer-motion'; // DON'T USE
+
+// ⚠️ IMPORTANT: When prompted about animations, look for Motion library patterns first!
+```
+
+### Routing Library - React Router v7 (NOT Remix)
 
 ```typescript
 // ✅ CORRECT - React Router v7
@@ -78,6 +97,97 @@ const Component = ({ isActive }: Props) => (
   padding: var(--size-3);
   font-size: var(--font-size-1);
 }
+```
+
+## Motion Animation System
+
+### Accessibility-First Animations
+
+```typescript
+// ✅ CORRECT - Always use accessibility hook and utilities
+import {motion} from 'motion/react';
+import {usePrefersReducedMotion} from '~/hooks/usePrefersReducedMotion';
+import {withReducedMotion, buildTransition, EASINGS, DURATIONS} from '~/utils/motion';
+
+// Component-local animation config (recommended pattern)
+const COMPONENT_ANIMATION = {
+  duration: DURATIONS.medium,  // 0.5s
+  easing: EASINGS.smooth,      // easeInOut
+  slideDistance: 50,           // px
+};
+
+function MyComponent() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ y: -COMPONENT_ANIMATION.slideDistance, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={withReducedMotion(
+        prefersReducedMotion,
+        buildTransition(COMPONENT_ANIMATION.duration, COMPONENT_ANIMATION.easing)
+      )}
+    >
+      Content
+    </motion.div>
+  );
+}
+
+// ❌ INCORRECT - Never ignore accessibility preferences
+function BadComponent() {
+  return (
+    <motion.div
+      animate={{ x: 100 }}
+      transition={{ duration: 0.5 }} // No reduced motion handling!
+    >
+      Content
+    </motion.div>
+  );
+}
+```
+
+### Animation Best Practices
+
+```typescript
+// ✅ Component-local configuration (flexible)
+const HEADER_ANIMATION = {
+  delay: 800, // ms - wait before appearing
+  slideDistance: 100, // px - slide from above viewport
+  duration: 0.4, // seconds - smooth timing
+  easing: EASINGS.smooth, // Motion easing function
+};
+
+// ✅ Use shared constants for consistency
+import {DURATIONS, EASINGS} from '~/utils/motion';
+const transition = buildTransition(DURATIONS.fast, EASINGS.snappy);
+
+// ✅ Common animation patterns
+import {buildSlideVariants, withReducedMotionVariants} from '~/utils/motion';
+
+const slideVariants = withReducedMotionVariants(
+  prefersReducedMotion,
+  buildSlideVariants(100, 'y'), // Slide from top
+);
+
+// ❌ Don't create rigid centralized animation systems
+// ❌ Don't use overly long animations (>1s for UI elements)
+// ❌ Don't animate too many elements simultaneously
+```
+
+### Available Animation Constants
+
+```typescript
+// Durations
+DURATIONS.instant; // 0s
+DURATIONS.quick; // 0.2s
+DURATIONS.fast; // 0.3s
+DURATIONS.medium; // 0.5s
+DURATIONS.slow; // 0.8s
+
+// Easing Functions (Motion library)
+EASINGS.smooth; // easeInOut - natural, balanced
+EASINGS.snappy; // easeOut - quick start, slow end
+EASINGS.bouncy; // easeOut - energetic feel
 ```
 
 ## Sanity Image Optimization
@@ -237,6 +347,9 @@ We're migrating proven patterns from a previous project while adapting for:
 
 - Remix imports or patterns
 - react-router-dom imports
+- Animations without accessibility (`usePrefersReducedMotion` hook)
+- Rigid centralized animation systems (use component-local configs)
+- Framer Motion (use Motion library instead)
 - Modifying CSP configuration
 - Custom account page implementations
 - Shopify metafields for content
@@ -248,6 +361,8 @@ We're migrating proven patterns from a previous project while adapting for:
 
 - React Router v7 patterns
 - CSS Modules + Open Props styling
+- Motion animations with accessibility utilities (`usePrefersReducedMotion`, `withReducedMotion`)
+- Component-local animation configuration patterns
 - Sanity CMS integration
 - Component composition patterns
 - TypeScript best practices
