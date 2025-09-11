@@ -1,22 +1,24 @@
-import {type FetcherWithComponents} from 'react-router';
-import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
-import {useAside} from '~/components/Aside';
+import {type OptimisticCartLineInput} from '@shopify/hydrogen';
 import Button from './Button/Button';
-import {useEffect} from 'react';
+import {Spinner} from './Icons/Spinner';
 
 export function AddToCartButton({
   analytics,
   children,
   disabled,
   lines,
-  onAddToCart,
+  loading,
+  loadingText,
+  onClick,
   variant = 'solid',
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
-  onAddToCart?: () => void;
+  loading?: boolean;
+  loadingText?: string;
+  onClick?: () => void;
   variant?:
     | 'text'
     | 'solid'
@@ -25,36 +27,33 @@ export function AddToCartButton({
     | 'round-outline'
     | undefined;
 }) {
-  const {open} = useAside();
-
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<any>) => {
-        // Open cart drawer when item is successfully added
-        const isAdding = fetcher.state === 'submitting';
-        const wasAdding = fetcher.state === 'idle' && fetcher.data;
+    <>
+      <input name="analytics" type="hidden" value={JSON.stringify(analytics)} />
 
-        if (wasAdding) onAddToCart?.();
-
-        return (
-          <>
-            <input
-              name="analytics"
-              type="hidden"
-              value={JSON.stringify(analytics)}
-            />
-
-            <Button
-              type="submit"
-              disabled={disabled ?? fetcher.state !== 'idle'}
-              variant={variant}
-              width="full"
-            >
-              {children}
-            </Button>
-          </>
-        );
-      }}
-    </CartForm>
+      <Button
+        type="submit"
+        onClick={onClick}
+        disabled={disabled}
+        variant={variant}
+        width="full"
+      >
+        {loading ? (
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              justifyContent: 'center',
+            }}
+          >
+            <Spinner size={16} />
+            {loadingText || 'Adding...'}
+          </span>
+        ) : (
+          children
+        )}
+      </Button>
+    </>
   );
 }

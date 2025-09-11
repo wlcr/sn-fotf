@@ -46,11 +46,18 @@
 }
 
 .HeaderUtilityList {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: auto;
-  grid-gap: var(--size-5);
+  display: flex;
+  align-items: center;
+  gap: var(--size-5);
   justify-content: end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.HeaderUtilityList li {
+  display: flex;
+  align-items: center;
 }
 
 .HeaderLogo {
@@ -114,6 +121,22 @@
 }
 
 .loginLink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.cartButton {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: var(--size-1) var(--size-2);
+  border-radius: var(--radius-2);
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.cartButton:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 

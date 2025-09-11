@@ -45,6 +45,7 @@ export const Header: FC<HeaderProps> = ({
 }) => {
   const {mainMenu, logo, ctaButton} = header;
   const {customer, isEligible} = useCustomer();
+  const {open} = useAside();
   const greeting = settings?.customerGreeting || 'Welcome';
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
@@ -161,10 +162,9 @@ export const Header: FC<HeaderProps> = ({
             {/* Cart functionality was fully built out there - reuse that implementation */}
             <li>
               <button
-                onClick={() =>
-                  console.log('Cart toggle - TODO: implement from Rubato Wines')
-                }
-                className={styles.loginLink}
+                onClick={() => open('cart')}
+                className={styles.cartButton}
+                aria-label="Open cart"
               >
                 Cart
               </button>
