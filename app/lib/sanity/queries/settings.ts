@@ -11,7 +11,7 @@ import type {Settings} from '~/types/sanity';
  * @returns Global site settings including metadata, contact info, and SEO data
  */
 export const SETTINGS_QUERY = `
-  *[_type == "settings"][0] {
+  *[_type == "settings" && _id == "settings"][0] {
     // SEO & Metadata
     title,
     description,

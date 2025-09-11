@@ -10,7 +10,7 @@
  * @returns Header data with logo, CTA button, and announcement bar
  */
 export const HEADER_QUERY = `
-  *[_type == "header"][0] {
+  *[_type == "header" && _id == "header"][0] {
     mainMenu[] {
       title,
       link {
