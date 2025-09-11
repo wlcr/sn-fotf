@@ -80,7 +80,11 @@ export default async function handleRequest(
       "'unsafe-inline'", // Required for React Router v7 inline script compatibility
       'https://*.typekit.net',
     ],
-    fontSrc: ['https://*.typekit.net', 'http://localhost:*'],
+    fontSrc: [
+      'https://*.typekit.net',
+      'http://localhost:*',
+      'https://cdn.shopify.com',
+    ],
   });
 
   const body = await renderToReadableStream(
