@@ -1,4 +1,6 @@
 :root {
+  --font-gotham: 'gotham', monospace;
+  --font-nevada: 'Nevada', monospace;
   --font-body: 'gotham', monospace;
   --font-heading: 'Nevada', monospace;
   --font-accent: 'Liberator Medium', monospace;

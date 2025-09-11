@@ -1,5 +1,6 @@
 .Button,
 .ButtonDarkSolid {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -17,6 +18,7 @@
 }
 
 .ButtonDarkOutline {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -34,6 +36,7 @@
 }
 
 .ButtonLightSolid {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -51,6 +54,7 @@
 }
 
 .ButtonLightOutline {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -68,6 +72,7 @@
 }
 
 .ButtonDarkRound {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -86,6 +91,7 @@
 }
 
 .ButtonLightRound {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -104,6 +110,7 @@
 }
 
 .ButtonDarkText {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -123,6 +130,7 @@
 }
 
 .ButtonLightText {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
@@ -142,6 +150,7 @@
 }
 
 .ButtonLightRoundOutline {
+  font-family: var(--font-nevada);
   font-size: var(--font-size-3);
   text-transform: uppercase;
   white-space: nowrap;
