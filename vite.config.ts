@@ -55,7 +55,7 @@ export default defineConfig({
       'sanity', // Heavy Studio package - client only
       '@sanity/vision', // Studio tool - client only
       '@sanity/visual-editing', // Studio tool - client only
-      // 'motion' removed for SSR compatibility
+      // Motion library removed from externals for SSR compatibility - allows server-side rendering of animations
     ],
     noExternal: ['ultrahtml'],
     optimizeDeps: {

@@ -15,7 +15,7 @@ export type {Transition, Variants};
 export const EASINGS = {
   smooth: easeInOut,
   snappy: easeOut,
-  bouncy: easeOut,
+  bouncy: [0.68, -0.55, 0.265, 1.55] as const, // Custom bouncy cubic-bezier curve
 } as const;
 
 /**

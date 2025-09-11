@@ -158,8 +158,6 @@ export const Header: FC<HeaderProps> = ({
               </li>
             )}
 
-            {/* TODO: Review cart toggle implementation from Rubato Wines site */}
-            {/* Cart functionality was fully built out there - reuse that implementation */}
             <li>
               <button
                 onClick={() => open('cart')}

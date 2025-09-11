@@ -48,7 +48,6 @@
   hyphens: auto;
 }
 
-/* TODO: Inline link styles - these may not be needed and should be updated to better match the designs */
 .InlineLink {
   color: inherit;
   text-decoration: underline;

@@ -73,17 +73,17 @@ function useFocusManagement(
         closeButtonRef.current?.focus();
       }, FOCUS_DELAY);
       return () => clearTimeout(timer);
-    } else {
-      // Restore focus to the previously focused element
-      if (previousFocusRef.current) {
-        const timer = setTimeout(() => {
-          previousFocusRef.current?.focus();
-        }, FOCUS_DELAY);
-        return () => clearTimeout(timer);
-      }
-      // Return empty cleanup function if no focus restoration needed
-      return () => {};
     }
+
+    // Restore focus to the previously focused element
+    if (previousFocusRef.current) {
+      const timer = setTimeout(() => {
+        previousFocusRef.current?.focus();
+      }, FOCUS_DELAY);
+      return () => clearTimeout(timer);
+    }
+    // No cleanup needed if no focus restoration
+    return undefined;
   }, [expanded, closeButtonRef]);
 }
 
