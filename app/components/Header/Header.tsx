@@ -113,7 +113,7 @@ export const Header: FC<HeaderProps> = ({
         <nav>
           <ul className={styles.HeaderUtilityList}>
             {/* Dynamic Navigation Menu */}
-            {mainMenu?.map((item: any, index: number) => (
+            {mainMenu?.map((item, index: number) => (
               <li key={index}>
                 {item.link ? (
                   <ResolvedLink link={item.link}>{item.title}</ResolvedLink>

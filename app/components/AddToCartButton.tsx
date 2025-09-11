@@ -18,7 +18,7 @@ export function AddToCartButton({
   lines: Array<OptimisticCartLineInput>;
   loading?: boolean;
   loadingText?: string;
-  onClick?: () => void;
+  onClick?: () => void; // Used for additional click handling (not form submission)
   variant?:
     | 'text'
     | 'solid'
