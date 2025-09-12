@@ -15,8 +15,6 @@ export default function HeroSection({section}: HeroSectionProps) {
   const mobileVimeoUrl = makeVimeoEmbedUrl(mobileVimeoId);
   const desktopVimeoUrl = makeVimeoEmbedUrl(desktopVimeoId);
 
-  console.log({mobileVimeoId, desktopVimeoId});
-
   return (
     <div className={styles.HeroSection}>
       <div className={styles.HeroSectionVideo}>
