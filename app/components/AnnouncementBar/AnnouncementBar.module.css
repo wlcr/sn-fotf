@@ -6,7 +6,8 @@
   padding: 8px 16px;
   font-size: 14px;
   font-weight: 500;
-  position: relative; /* Changed to relative for normal document flow */
+  position: fixed; /* Changed to relative for normal document flow */
+  top: 0;
   width: 100%;
   z-index: 12; /* Above header (z-index: 11) */
 
