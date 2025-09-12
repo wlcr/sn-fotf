@@ -16,7 +16,9 @@
 export type HeroSection = {
   _type: 'heroSection';
   name?: string;
-  vimeoUrl?: string;
+  title?: string;
+  mobileVimeoUrl?: string;
+  desktopVimeoUrl?: string;
 };
 
 export type MediaVimeo = {

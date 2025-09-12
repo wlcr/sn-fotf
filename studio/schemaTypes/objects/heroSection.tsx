@@ -14,8 +14,19 @@ export const heroSection = defineType({
       initialValue: 'Hero Section',
     }),
     defineField({
-      name: 'vimeoUrl',
-      title: 'Landscape Vimeo Embed URL',
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      initialValue: 'Video title',
+    }),
+    defineField({
+      name: 'mobileVimeoUrl',
+      title: 'Mobile Vimeo Embed URL',
+      type: 'url',
+    }),
+    defineField({
+      name: 'desktopVimeoUrl',
+      title: 'Desktop Vimeo Embed URL',
       type: 'url',
     }),
   ],

@@ -19,7 +19,21 @@
           },
           "optional": true
         },
-        "vimeoUrl": {
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "mobileVimeoUrl": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "desktopVimeoUrl": {
           "type": "objectAttribute",
           "value": {
             "type": "string"

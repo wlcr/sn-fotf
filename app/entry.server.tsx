@@ -85,6 +85,7 @@ export default async function handleRequest(
       'http://localhost:*',
       'https://cdn.shopify.com',
     ],
+    frameSrc: ['https://*.vimeo.com'],
   });
 
   const body = await renderToReadableStream(
