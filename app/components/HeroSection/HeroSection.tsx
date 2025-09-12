@@ -12,8 +12,20 @@ export type HeroSectionProps = {
 export default function HeroSection({section}: HeroSectionProps) {
   const mobileVimeoId = getVimeoId(section.mobileVimeoUrl);
   const desktopVimeoId = getVimeoId(section.desktopVimeoUrl);
-  const mobileVimeoUrl = makeVimeoEmbedUrl(mobileVimeoId);
-  const desktopVimeoUrl = makeVimeoEmbedUrl(desktopVimeoId);
+  const mobileVimeoUrl = makeVimeoEmbedUrl(mobileVimeoId, {
+    controls: false,
+    autoplay: true,
+    muted: true,
+    playsinline: true,
+    loop: true,
+  });
+  const desktopVimeoUrl = makeVimeoEmbedUrl(desktopVimeoId, {
+    controls: false,
+    autoplay: true,
+    muted: true,
+    playsinline: true,
+    loop: true,
+  });
 
   return (
     <div className={styles.HeroSection}>
