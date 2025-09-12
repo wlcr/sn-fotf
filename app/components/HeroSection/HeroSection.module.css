@@ -1,0 +1,39 @@
+.HeroSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--color-mills-river);
+}
+
+.HeroSectionLogos {
+  display: grid;
+  grid-gap: var(--space-6);
+  justify-content: center;
+  align-items: center;
+}
+
+.HeroSectionLogo {
+  display: grid;
+  justify-content: center;
+  width: 387px;
+  color: var(--color-dry-malt);
+
+  & svg {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.HeroSectionFriendsLogo {
+  display: grid;
+  justify-content: center;
+  width: 387px;
+  color: var(--color-dry-malt);
+
+  & svg {
+    width: 100%;
+    height: auto;
+  }
+}

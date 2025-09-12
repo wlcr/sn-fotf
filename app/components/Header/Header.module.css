@@ -13,8 +13,8 @@
   align-items: center;
   background-color: var(--color-mills-river);
   color: var(--color-white);
-  position: sticky;
-  top: 0; /* Stick to top once announcement bar scrolls away */
+  position: fixed;
+  top: 40px;
   width: 100%;
   z-index: 11;
   padding: 20px; /* fallback for var(--size-5) */
